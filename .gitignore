@@ -1,0 +1,3 @@
+# Base de dades del rànquing (només al servidor)
+*.db
+__pycache__/

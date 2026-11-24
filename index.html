@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#120a2e">
+  <title>🦸 Phrasal Hero</title>
+  <link rel="stylesheet" href="css/estils.css?v=6">
+</head>
+<body>
+  <div class="fons" aria-hidden="true">
+    <span class="flotant flotant-1">⭐</span>
+    <span class="flotant flotant-2">✨</span>
+    <span class="flotant flotant-3">🚀</span>
+    <span class="flotant flotant-4">💫</span>
+    <span class="flotant flotant-5">🌟</span>
+  </div>
+
+  <header class="capcalera">
+    <a class="logotip-mini" href="#inici">🦸 <span>PHRASAL HERO</span></a>
+    <button id="boto-so" type="button" class="boto-so" aria-label="Silenciar el so" aria-pressed="true">🔊</button>
+  </header>
+
+  <main class="contenidor">
+    <section id="inici" class="pantalla" aria-labelledby="titul-inici">
+      <h1 id="titul-inici" class="logotip">🦸 <span>PHRASAL<br>HERO</span></h1>
+      <p class="subtitul">Domina els phrasal verbs per a la PAU 💪</p>
+
+      <div class="menu-principal">
+        <button type="button" class="boto boto-repassar" data-ruta="#repas">📚 <span>Repassar</span></button>
+        <button type="button" class="boto boto-jugar" data-ruta="#joc">🎮 <span>Jugar</span></button>
+        <button type="button" class="boto boto-ranking" data-fase="ranking">🏆 <span>Rànquing</span></button>
+      </div>
+
+      <button type="button" id="resum-inici" class="resum-inici">
+        <span>🧠 Dominats: <strong id="resum-dominats">0/161</strong></span>
+        <span>🔥 Rècord: <strong id="resum-record">0</strong></span>
+        <span>📅 Ratxa: <strong id="resum-ratxa">0 dies</strong></span>
+        <span class="resum-mes">📊 Veure el progrés →</span>
+      </button>
+
+      <p id="error-dades" class="error-dades" hidden>
+        📡 No s'han pogut carregar les targetes. Comprova la connexió i torna-ho a provar.
+      </p>
+      <button type="button" id="boto-retry" class="boto boto-petit" hidden>🔁 Torna-ho a provar</button>
+    </section>
+
+    <section id="repas" class="pantalla" hidden aria-labelledby="titul-repas">
+      <div class="capcapantalla">
+        <h2 id="titul-repas">📚 Repassar</h2>
+        <a class="boto-tornar" href="#inici">← Inici</a>
+      </div>
+
+      <div id="repas-continua" class="banner" hidden>
+        <p id="repas-continua-text"></p>
+        <div class="banner-accions">
+          <button type="button" id="repas-continuar" class="boto boto-verd">▶️ Continuar</button>
+          <button type="button" id="repas-nova" class="boto boto-fantasma">🆕 Nova</button>
+        </div>
+      </div>
+
+      <div id="repas-preparacio">
+        <p class="pista">Tria un filtre i et preparo <strong id="repas-comptador">20</strong> targetes. 🎯</p>
+        <div id="filtres" class="filtres"></div>
+        <button type="button" id="repas-comenca" class="boto boto-principal">▶️ Comença (20 targetes)</button>
+      </div>
+
+      <div id="repas-sessio" hidden>
+        <div class="sessio-cap">
+          <span id="repas-progres" class="marcador">1/20</span>
+          <button type="button" id="repas-estrella" class="boto-estrella" aria-pressed="false" aria-label="Afegir a preferits">⭐</button>
+        </div>
+        <div class="barra-progres" role="progressbar" aria-label="Targetes repassades" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0">
+          <div id="repas-barra"></div>
+        </div>
+
+        <div id="targeta" class="targeta" role="button" tabindex="0" aria-label="Gira la targeta per veure la resposta">
+          <div class="targeta-inner">
+            <div class="cara cara-davant">
+              <span class="cara-etiqueta">🤔 Què vol dir?</span>
+              <strong id="targeta-phrasal" class="targeta-phrasal" lang="en"></strong>
+              <p id="targeta-forat" class="targeta-forat" lang="en"></p>
+              <span class="pista-gir">Toca per girar 👆</span>
+            </div>
+            <div class="cara cara-darrere">
+              <span id="targeta-tema" class="etiqueta-tema"></span>
+              <p id="targeta-significat" class="targeta-significat"></p>
+              <p id="targeta-sinonim" class="targeta-sinonim" lang="en"></p>
+              <p id="targeta-exemple" class="targeta-exemple" lang="en"></p>
+              <p id="targeta-traduccio" class="targeta-traduccio"></p>
+            </div>
+          </div>
+        </div>
+
+        <div id="targeta-accions" class="accions-targeta" hidden>
+          <button type="button" id="boto-encara-no" class="boto boto-vermell">❌ Encara no</button>
+          <button type="button" id="boto-mel-se" class="boto boto-verd">✅ Me'l sé</button>
+        </div>
+        <p class="consell-teclat">Teclat: <kbd>Espai</kbd> gira · <kbd>←</kbd> encara no · <kbd>→</kbd> me'l sé</p>
+        <p id="resultat-repas" class="resultat" aria-live="polite"></p>
+      </div>
+
+      <div id="repas-resum" class="resum-sessio" hidden>
+        <h3>🎉 Sessió acabada!</h3>
+        <p id="repas-resum-text" class="resum-text"></p>
+        <div class="resum-accions">
+          <button type="button" id="repas-repassa-fallats" class="boto boto-vermell">🔁 Repassa els ❌</button>
+          <button type="button" id="repas-a-jugar" class="boto boto-principal">🎮 Ara, a jugar!</button>
+          <a class="boto boto-fantasma" href="#inici">🏠 Torna a l'inici</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="joc" class="pantalla" hidden aria-labelledby="titul-joc">
+      <div class="capcapantalla">
+        <h2 id="titul-joc">🎮 Jugar</h2>
+        <a class="boto-tornar" href="#inici">← Inici</a>
+      </div>
+
+      <div class="joc-cap">
+        <span id="joc-vides" class="joc-vides" aria-label="Vides">❤️❤️❤️</span>
+        <span id="joc-temps" class="joc-temps" aria-label="Segons restants">90</span>
+        <span id="joc-punts" class="joc-punts" aria-label="Punts">0</span>
+      </div>
+      <div class="barra-temps" role="progressbar" aria-label="Temps restant" aria-valuemin="0" aria-valuemax="90" aria-valuenow="90">
+        <div id="joc-barra"></div>
+      </div>
+
+      <p id="joc-ratxa" class="joc-ratxa" aria-live="polite">🔥 x1</p>
+
+      <div class="joc-pregunta-caixa">
+        <span id="joc-tipus" class="cara-etiqueta">🤔 Què vol dir?</span>
+        <strong id="joc-pregunta" class="joc-pregunta" lang="en"></strong>
+        <p id="joc-traduccio" class="joc-traduccio" lang="ca" hidden></p>
+      </div>
+      <div id="joc-opcions" class="joc-opcions"></div>
+      <p id="joc-resultat" class="resultat" aria-live="polite"></p>
+    </section>
+
+    <section id="gameover" class="pantalla" hidden aria-labelledby="gameover-titol">
+      <h2 id="gameover-titol" class="gameover-titol">💀 GAME OVER</h2>
+      <div class="gameover-numeros">
+        <p>💰 Punts: <strong id="gameover-punts">0</strong></p>
+        <p>✅ Encerts: <strong id="gameover-encerts">0</strong></p>
+        <p>❌ Errors: <strong id="gameover-errors">0</strong></p>
+        <p>Millor ratxa: <strong id="gameover-ratxa">🔥 0</strong></p>
+      </div>
+      <button type="button" id="gameover-rejuga" class="boto boto-principal">🔁 Tornar a jugar</button>
+      <a class="boto boto-fantasma" href="#inici">🏠 Torna a l'inici</a>
+    </section>
+
+    <section id="progres" class="pantalla" hidden aria-labelledby="titul-progres">
+      <div class="capcapantalla">
+        <h2 id="titul-progres">📊 Progrés</h2>
+        <a class="boto-tornar" href="#inici">← Inici</a>
+      </div>
+
+      <h3 class="subtitul-seccio">🧠 Caixes Leitner</h3>
+      <div id="caixes" class="caixes"></div>
+
+      <h3 class="subtitul-seccio">📖 Progrés per verb base</h3>
+      <div id="progres-verbs" class="progres-verbs"></div>
+
+      <button type="button" id="boto-esborra" class="boto boto-perill">🗑️ Esborrar el meu progrés</button>
+    </section>
+  </main>
+
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-titol">
+    <div class="modal-caixa">
+      <p id="modal-titol" class="modal-titol"></p>
+      <p id="modal-text" class="modal-text"></p>
+      <div class="modal-accions">
+        <button type="button" id="modal-cancella" class="boto boto-fantasma">Cancel·la</button>
+        <button type="button" id="modal-confirma" class="boto boto-principal">Confirma</button>
+      </div>
+    </div>
+  </div>
+
+  <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
+
+  <script type="module" src="js/app.js?v=6"></script>
+</body>
+</html>

@@ -1,0 +1,1799 @@
+{
+ "versio": 1,
+ "connectors": [
+  {
+   "id": "moreover",
+   "connector": "moreover",
+   "funcio": "addicio",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 2,
+   "significat": "a més (formal)",
+   "exemple": "The city is beautiful. Moreover, it is very cheap to live there.",
+   "exempleMarcat": "The city is beautiful. **Moreover**, it is very cheap to live there.",
+   "forat": "The city is beautiful. ___, it is very cheap to live there.",
+   "iniciFrase": true,
+   "traduccio": "La ciutat és preciosa. A més, és molt barat viure-hi.",
+   "equivalents": [
+    "furthermore",
+    "in addition",
+    "what is more"
+   ],
+   "distractors": [
+    "however",
+    "therefore",
+    "for instance",
+    "otherwise"
+   ],
+   "nota": "A l'inici de la frase i amb coma. Molt més elegant que *also* a la redacció."
+  },
+  {
+   "id": "furthermore",
+   "connector": "furthermore",
+   "funcio": "addicio",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 2,
+   "significat": "a més, d'altra banda",
+   "exemple": "Social media can be addictive. Furthermore, it can affect our self-esteem.",
+   "exempleMarcat": "Social media can be addictive. **Furthermore**, it can affect our self-esteem.",
+   "forat": "Social media can be addictive. ___, it can affect our self-esteem.",
+   "iniciFrase": true,
+   "traduccio": "Les xarxes socials poden ser addictives. A més, poden afectar la nostra autoestima.",
+   "equivalents": [
+    "moreover",
+    "in addition",
+    "what is more"
+   ],
+   "distractors": [
+    "nevertheless",
+    "as a result",
+    "for example",
+    "instead"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "in-addition",
+   "connector": "in addition",
+   "funcio": "addicio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "a més",
+   "exemple": "Students have to study for the PAU. In addition, many of them have part-time jobs.",
+   "exempleMarcat": "Students have to study for the PAU. **In addition**, many of them have part-time jobs.",
+   "forat": "Students have to study for the PAU. ___, many of them have part-time jobs.",
+   "iniciFrase": true,
+   "traduccio": "Els alumnes han d'estudiar per a la PAU. A més, molts tenen feines a temps parcial.",
+   "equivalents": [
+    "moreover",
+    "furthermore",
+    "what is more"
+   ],
+   "distractors": [
+    "however",
+    "consequently",
+    "in conclusion",
+    "otherwise"
+   ],
+   "nota": "No el confonguis amb *in addition to*, que va seguit d'un nom o d'un -ing."
+  },
+  {
+   "id": "what-is-more",
+   "connector": "what is more",
+   "funcio": "addicio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "a més, i encara més",
+   "exemple": "The flat is very small. What is more, it doesn't have any heating.",
+   "exempleMarcat": "The flat is very small. **What is more**, it doesn't have any heating.",
+   "forat": "The flat is very small. ___, it doesn't have any heating.",
+   "iniciFrase": true,
+   "traduccio": "El pis és molt petit. I a més, no té calefacció.",
+   "equivalents": [
+    "moreover",
+    "furthermore",
+    "in addition"
+   ],
+   "distractors": [
+    "on the other hand",
+    "therefore",
+    "for instance",
+    "instead"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "besides",
+   "connector": "besides",
+   "funcio": "addicio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "a més (per afegir una raó)",
+   "exemple": "I don't want to go out tonight. Besides, I have an exam tomorrow.",
+   "exempleMarcat": "I don't want to go out tonight. **Besides**, I have an exam tomorrow.",
+   "forat": "I don't want to go out tonight. ___, I have an exam tomorrow.",
+   "iniciFrase": true,
+   "traduccio": "No vull sortir aquesta nit. A més, demà tinc un examen.",
+   "equivalents": [
+    "moreover",
+    "what is more",
+    "in addition"
+   ],
+   "distractors": [
+    "however",
+    "so",
+    "for example",
+    "otherwise"
+   ],
+   "nota": "També pot anar davant d'un nom o d'un -ing: *Besides studying, she works.*"
+  },
+  {
+   "id": "in-addition-to",
+   "connector": "in addition to",
+   "funcio": "addicio",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "a més de",
+   "exemple": "In addition to studying, she works at weekends.",
+   "exempleMarcat": "**In addition to** studying, she works at weekends.",
+   "forat": "___ studying, she works at weekends.",
+   "iniciFrase": true,
+   "traduccio": "A més d'estudiar, treballa els caps de setmana.",
+   "equivalents": [
+    "besides",
+    "as well as"
+   ],
+   "distractors": [
+    "although",
+    "in order to",
+    "unless",
+    "so that"
+   ],
+   "nota": "Va seguit d'un nom o d'un verb en -ing, mai d'una frase."
+  },
+  {
+   "id": "as-well-as",
+   "connector": "as well as",
+   "funcio": "addicio",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "a més de, així com",
+   "exemple": "The course includes grammar as well as vocabulary.",
+   "exempleMarcat": "The course includes grammar **as well as** vocabulary.",
+   "forat": "The course includes grammar ___ vocabulary.",
+   "iniciFrase": false,
+   "traduccio": "El curs inclou gramàtica, així com vocabulari.",
+   "equivalents": [
+    "in addition to"
+   ],
+   "distractors": [
+    "although",
+    "because",
+    "so that",
+    "unless"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "also",
+   "connector": "also",
+   "funcio": "addicio",
+   "estructura": "adverbi",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "també",
+   "exemple": "She plays the piano and she also sings in a choir.",
+   "exempleMarcat": "She plays the piano and she **also** sings in a choir.",
+   "forat": "She plays the piano and she ___ sings in a choir.",
+   "iniciFrase": false,
+   "traduccio": "Toca el piano i també canta en un cor.",
+   "equivalents": [],
+   "distractors": [
+    "although",
+    "because",
+    "unless",
+    "despite"
+   ],
+   "nota": "Va davant del verb principal, però darrere de *to be*: *She is also tired.*"
+  },
+  {
+   "id": "too",
+   "connector": "too",
+   "funcio": "addicio",
+   "estructura": "final",
+   "registre": "informal",
+   "nivell": 1,
+   "significat": "també (al final de la frase)",
+   "exemple": "I love horror films, and my sister loves them too.",
+   "exempleMarcat": "I love horror films, and my sister loves them **too**.",
+   "forat": "I love horror films, and my sister loves them ___.",
+   "iniciFrase": false,
+   "traduccio": "M'encanten les pel·lícules de terror, i a la meva germana també.",
+   "equivalents": [
+    "as well"
+   ],
+   "distractors": [
+    "either",
+    "although",
+    "because",
+    "despite"
+   ],
+   "nota": "En frases negatives es fa servir *either*: *I don't like it either.*"
+  },
+  {
+   "id": "as-well",
+   "connector": "as well",
+   "funcio": "addicio",
+   "estructura": "final",
+   "registre": "informal",
+   "nivell": 1,
+   "significat": "també (al final de la frase)",
+   "exemple": "I'm going to the party, and Marc is coming as well.",
+   "exempleMarcat": "I'm going to the party, and Marc is coming **as well**.",
+   "forat": "I'm going to the party, and Marc is coming ___.",
+   "iniciFrase": false,
+   "traduccio": "Vaig a la festa, i en Marc també hi ve.",
+   "equivalents": [
+    "too"
+   ],
+   "distractors": [
+    "either",
+    "although",
+    "unless",
+    "despite"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "however",
+   "connector": "however",
+   "funcio": "contrast",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 1,
+   "significat": "tanmateix, però (formal)",
+   "exemple": "The exam was difficult. However, most students passed.",
+   "exempleMarcat": "The exam was difficult. **However**, most students passed.",
+   "forat": "The exam was difficult. ___, most students passed.",
+   "iniciFrase": true,
+   "traduccio": "L'examen era difícil. Tanmateix, la majoria d'alumnes van aprovar.",
+   "equivalents": [
+    "nevertheless",
+    "nonetheless"
+   ],
+   "distractors": [
+    "moreover",
+    "therefore",
+    "for example",
+    "in addition"
+   ],
+   "nota": "És el *but* formal. A l'inici de la frase i amb coma. A la redacció de la PAU queda molt millor que *but*."
+  },
+  {
+   "id": "nevertheless",
+   "connector": "nevertheless",
+   "funcio": "contrast",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 2,
+   "significat": "no obstant això",
+   "exemple": "The weather was terrible. Nevertheless, we enjoyed the trip.",
+   "exempleMarcat": "The weather was terrible. **Nevertheless**, we enjoyed the trip.",
+   "forat": "The weather was terrible. ___, we enjoyed the trip.",
+   "iniciFrase": true,
+   "traduccio": "Feia un temps horrible. No obstant això, vam gaudir del viatge.",
+   "equivalents": [
+    "however",
+    "nonetheless",
+    "even so"
+   ],
+   "distractors": [
+    "furthermore",
+    "consequently",
+    "for instance",
+    "similarly"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "nonetheless",
+   "connector": "nonetheless",
+   "funcio": "contrast",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "no obstant això, tot i així",
+   "exemple": "It was a risky plan. Nonetheless, they decided to go ahead.",
+   "exempleMarcat": "It was a risky plan. **Nonetheless**, they decided to go ahead.",
+   "forat": "It was a risky plan. ___, they decided to go ahead.",
+   "iniciFrase": true,
+   "traduccio": "Era un pla arriscat. Tot i així, van decidir tirar endavant.",
+   "equivalents": [
+    "however",
+    "nevertheless"
+   ],
+   "distractors": [
+    "as a result",
+    "moreover",
+    "likewise",
+    "for example"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "but",
+   "connector": "but",
+   "funcio": "contrast",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "però",
+   "exemple": "I wanted to go to the concert, but the tickets were too expensive.",
+   "exempleMarcat": "I wanted to go to the concert, **but** the tickets were too expensive.",
+   "forat": "I wanted to go to the concert, ___ the tickets were too expensive.",
+   "iniciFrase": false,
+   "traduccio": "Volia anar al concert, però les entrades eren massa cares.",
+   "equivalents": [
+    "yet"
+   ],
+   "distractors": [
+    "so",
+    "moreover",
+    "in order to",
+    "such as"
+   ],
+   "nota": "Uneix dues frases dins la mateixa oració. Per començar frase, millor *However,*."
+  },
+  {
+   "id": "yet",
+   "connector": "yet",
+   "funcio": "contrast",
+   "estructura": "oracio",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "però, i tanmateix",
+   "exemple": "The task seemed easy, yet nobody could solve it.",
+   "exempleMarcat": "The task seemed easy, **yet** nobody could solve it.",
+   "forat": "The task seemed easy, ___ nobody could solve it.",
+   "iniciFrase": false,
+   "traduccio": "La tasca semblava fàcil, però ningú no la va saber resoldre.",
+   "equivalents": [
+    "but"
+   ],
+   "distractors": [
+    "so",
+    "moreover",
+    "such as",
+    "in order to"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "although",
+   "connector": "although",
+   "funcio": "contrast",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "encara que, tot i que",
+   "exemple": "Although it was raining, we went to the beach.",
+   "exempleMarcat": "**Although** it was raining, we went to the beach.",
+   "forat": "___ it was raining, we went to the beach.",
+   "iniciFrase": true,
+   "traduccio": "Tot i que plovia, vam anar a la platja.",
+   "equivalents": [
+    "even though",
+    "though"
+   ],
+   "distractors": [
+    "despite",
+    "in spite of",
+    "due to",
+    "therefore"
+   ],
+   "nota": "⚠️ Va seguit d'una frase (subjecte + verb). Amb un nom fes servir *despite*: *Despite the rain...*"
+  },
+  {
+   "id": "even-though",
+   "connector": "even though",
+   "funcio": "contrast",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "tot i que (més emfàtic)",
+   "exemple": "Even though he studied hard, he failed the exam.",
+   "exempleMarcat": "**Even though** he studied hard, he failed the exam.",
+   "forat": "___ he studied hard, he failed the exam.",
+   "iniciFrase": true,
+   "traduccio": "Tot i que va estudiar molt, va suspendre l'examen.",
+   "equivalents": [
+    "although",
+    "though"
+   ],
+   "distractors": [
+    "despite",
+    "because of",
+    "as a result",
+    "so that"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "though",
+   "connector": "though",
+   "funcio": "contrast",
+   "estructura": "oracio",
+   "registre": "informal",
+   "nivell": 2,
+   "significat": "encara que; també: però (al final)",
+   "exemple": "Though she was tired, she kept on working.",
+   "exempleMarcat": "**Though** she was tired, she kept on working.",
+   "forat": "___ she was tired, she kept on working.",
+   "iniciFrase": true,
+   "traduccio": "Encara que estava cansada, va continuar treballant.",
+   "equivalents": [
+    "although",
+    "even though"
+   ],
+   "distractors": [
+    "despite",
+    "due to",
+    "therefore",
+    "in order to"
+   ],
+   "nota": "També pot anar al final: *It was hard, though.* (Va ser difícil, però.)"
+  },
+  {
+   "id": "despite",
+   "connector": "despite",
+   "funcio": "contrast",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "malgrat, tot i",
+   "exemple": "Despite the rain, the match went ahead.",
+   "exempleMarcat": "**Despite** the rain, the match went ahead.",
+   "forat": "___ the rain, the match went ahead.",
+   "iniciFrase": true,
+   "traduccio": "Malgrat la pluja, el partit es va jugar.",
+   "equivalents": [
+    "in spite of"
+   ],
+   "distractors": [
+    "although",
+    "even though",
+    "as a result",
+    "in order to"
+   ],
+   "nota": "⚠️ Va seguit d'un nom o d'un -ing, mai d'una frase. Error típic: ~~despite it was raining~~. I sense *of*: ~~despite of~~."
+  },
+  {
+   "id": "in-spite-of",
+   "connector": "in spite of",
+   "funcio": "contrast",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "malgrat, a pesar de",
+   "exemple": "In spite of being very tired, she finished her essay.",
+   "exempleMarcat": "**In spite of** being very tired, she finished her essay.",
+   "forat": "___ being very tired, she finished her essay.",
+   "iniciFrase": true,
+   "traduccio": "Malgrat que estava molt cansada, va acabar la redacció.",
+   "equivalents": [
+    "despite"
+   ],
+   "distractors": [
+    "although",
+    "even though",
+    "because",
+    "in order to"
+   ],
+   "nota": "Com *despite*, però amb *of*. Va seguit d'un nom o d'un -ing."
+  },
+  {
+   "id": "whereas",
+   "connector": "whereas",
+   "funcio": "contrast",
+   "estructura": "oracio",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "mentre que (comparant dues coses)",
+   "exemple": "My brother loves maths, whereas I prefer languages.",
+   "exempleMarcat": "My brother loves maths, **whereas** I prefer languages.",
+   "forat": "My brother loves maths, ___ I prefer languages.",
+   "iniciFrase": false,
+   "traduccio": "Al meu germà li encanten les mates, mentre que jo prefereixo les llengües.",
+   "equivalents": [
+    "while"
+   ],
+   "distractors": [
+    "because",
+    "so that",
+    "therefore",
+    "as a result"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "while-contrast",
+   "connector": "while",
+   "funcio": "contrast",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "mentre que (contrast)",
+   "exemple": "Some people love social media, while others hate it.",
+   "exempleMarcat": "Some people love social media, **while** others hate it.",
+   "forat": "Some people love social media, ___ others hate it.",
+   "iniciFrase": false,
+   "traduccio": "A alguns els encanten les xarxes socials, mentre que d'altres les odien.",
+   "equivalents": [
+    "whereas"
+   ],
+   "distractors": [
+    "because",
+    "so",
+    "for instance",
+    "in order to"
+   ],
+   "nota": "*While* també vol dir \"mentre\" (temps). Aquí compara dues idees."
+  },
+  {
+   "id": "on-the-other-hand",
+   "connector": "on the other hand",
+   "funcio": "contrast",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "d'altra banda, en canvi",
+   "exemple": "Living in a city is exciting. On the other hand, it can be very stressful.",
+   "exempleMarcat": "Living in a city is exciting. **On the other hand**, it can be very stressful.",
+   "forat": "Living in a city is exciting. ___, it can be very stressful.",
+   "iniciFrase": true,
+   "traduccio": "Viure en una ciutat és emocionant. En canvi, pot ser molt estressant.",
+   "equivalents": [
+    "however"
+   ],
+   "distractors": [
+    "as a result",
+    "for example",
+    "similarly",
+    "in conclusion"
+   ],
+   "nota": "Sovint fa parella amb *On the one hand* (d'una banda). Ideal per a redaccions d'avantatges i inconvenients."
+  },
+  {
+   "id": "instead",
+   "connector": "instead",
+   "funcio": "contrast",
+   "estructura": "final",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "en lloc d'això",
+   "exemple": "We didn't take the bus. We walked instead.",
+   "exempleMarcat": "We didn't take the bus. We walked **instead**.",
+   "forat": "We didn't take the bus. We walked ___.",
+   "iniciFrase": false,
+   "traduccio": "No vam agafar el bus. En lloc d'això, vam anar a peu.",
+   "equivalents": [],
+   "distractors": [
+    "too",
+    "as well",
+    "although",
+    "because"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "instead-of",
+   "connector": "instead of",
+   "funcio": "contrast",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "en lloc de",
+   "exemple": "Instead of going out, I stayed at home to study.",
+   "exempleMarcat": "**Instead of** going out, I stayed at home to study.",
+   "forat": "___ going out, I stayed at home to study.",
+   "iniciFrase": true,
+   "traduccio": "En lloc de sortir, em vaig quedar a casa a estudiar.",
+   "equivalents": [],
+   "distractors": [
+    "in order to",
+    "although",
+    "because",
+    "so that"
+   ],
+   "nota": "Va seguit d'un nom o d'un -ing."
+  },
+  {
+   "id": "on-the-contrary",
+   "connector": "on the contrary",
+   "funcio": "contrast",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "al contrari",
+   "exemple": "The film wasn't boring. On the contrary, it was fascinating.",
+   "exempleMarcat": "The film wasn't boring. **On the contrary**, it was fascinating.",
+   "forat": "The film wasn't boring. ___, it was fascinating.",
+   "iniciFrase": true,
+   "traduccio": "La pel·lícula no era avorrida. Al contrari, era fascinant.",
+   "equivalents": [],
+   "distractors": [
+    "similarly",
+    "as a result",
+    "for instance",
+    "otherwise"
+   ],
+   "nota": "Serveix per negar el que s'ha dit abans. No és el mateix que *on the other hand*."
+  },
+  {
+   "id": "in-contrast",
+   "connector": "in contrast",
+   "funcio": "contrast",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "en canvi, per contra",
+   "exemple": "In the north, it's cold and rainy. In contrast, the south is hot and dry.",
+   "exempleMarcat": "In the north, it's cold and rainy. **In contrast**, the south is hot and dry.",
+   "forat": "In the north, it's cold and rainy. ___, the south is hot and dry.",
+   "iniciFrase": true,
+   "traduccio": "Al nord fa fred i plou. En canvi, el sud és càlid i sec.",
+   "equivalents": [
+    "by contrast",
+    "on the other hand"
+   ],
+   "distractors": [
+    "similarly",
+    "likewise",
+    "as a result",
+    "for example"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "because",
+   "connector": "because",
+   "funcio": "causa",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "perquè",
+   "exemple": "I stayed at home because I had a terrible cold.",
+   "exempleMarcat": "I stayed at home **because** I had a terrible cold.",
+   "forat": "I stayed at home ___ I had a terrible cold.",
+   "iniciFrase": false,
+   "traduccio": "Em vaig quedar a casa perquè tenia un refredat terrible.",
+   "equivalents": [
+    "since",
+    "as"
+   ],
+   "distractors": [
+    "because of",
+    "so",
+    "although",
+    "unless"
+   ],
+   "nota": "⚠️ *because* + frase; *because of* + nom."
+  },
+  {
+   "id": "because-of",
+   "connector": "because of",
+   "funcio": "causa",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "a causa de",
+   "exemple": "The flight was cancelled because of the storm.",
+   "exempleMarcat": "The flight was cancelled **because of** the storm.",
+   "forat": "The flight was cancelled ___ the storm.",
+   "iniciFrase": false,
+   "traduccio": "El vol es va cancel·lar a causa de la tempesta.",
+   "equivalents": [
+    "due to",
+    "owing to"
+   ],
+   "distractors": [
+    "because",
+    "although",
+    "so that",
+    "despite"
+   ],
+   "nota": "Va seguit d'un nom, no d'una frase."
+  },
+  {
+   "id": "since-causa",
+   "connector": "since",
+   "funcio": "causa",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "ja que, com que",
+   "exemple": "Since it was late, we decided to take a taxi.",
+   "exempleMarcat": "**Since** it was late, we decided to take a taxi.",
+   "forat": "___ it was late, we decided to take a taxi.",
+   "iniciFrase": true,
+   "traduccio": "Com que era tard, vam decidir agafar un taxi.",
+   "equivalents": [
+    "because",
+    "as"
+   ],
+   "distractors": [
+    "although",
+    "unless",
+    "despite",
+    "so that"
+   ],
+   "nota": "*Since* també vol dir \"des de\" (temps)."
+  },
+  {
+   "id": "as-causa",
+   "connector": "as",
+   "funcio": "causa",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "com que, ja que",
+   "exemple": "As I didn't have any money, I couldn't buy the book.",
+   "exempleMarcat": "**As** I didn't have any money, I couldn't buy the book.",
+   "forat": "___ I didn't have any money, I couldn't buy the book.",
+   "iniciFrase": true,
+   "traduccio": "Com que no tenia diners, no vaig poder comprar el llibre.",
+   "equivalents": [
+    "since",
+    "because"
+   ],
+   "distractors": [
+    "although",
+    "unless",
+    "despite",
+    "so"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "due-to",
+   "connector": "due to",
+   "funcio": "causa",
+   "estructura": "nom",
+   "registre": "formal",
+   "nivell": 2,
+   "significat": "a causa de, degut a",
+   "exemple": "The match was postponed due to bad weather.",
+   "exempleMarcat": "The match was postponed **due to** bad weather.",
+   "forat": "The match was postponed ___ bad weather.",
+   "iniciFrase": false,
+   "traduccio": "El partit es va ajornar a causa del mal temps.",
+   "equivalents": [
+    "because of",
+    "owing to"
+   ],
+   "distractors": [
+    "because",
+    "although",
+    "in spite of",
+    "so that"
+   ],
+   "nota": "Va seguit d'un nom. Per a una frase: *due to the fact that...*"
+  },
+  {
+   "id": "owing-to",
+   "connector": "owing to",
+   "funcio": "causa",
+   "estructura": "nom",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "a causa de, per culpa de",
+   "exemple": "Owing to a technical problem, the train was delayed.",
+   "exempleMarcat": "**Owing to** a technical problem, the train was delayed.",
+   "forat": "___ a technical problem, the train was delayed.",
+   "iniciFrase": true,
+   "traduccio": "A causa d'un problema tècnic, el tren va anar amb retard.",
+   "equivalents": [
+    "due to",
+    "because of"
+   ],
+   "distractors": [
+    "although",
+    "because",
+    "despite",
+    "in order to"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "thanks-to",
+   "connector": "thanks to",
+   "funcio": "causa",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "gràcies a",
+   "exemple": "Thanks to her help, I passed the exam.",
+   "exempleMarcat": "**Thanks to** her help, I passed the exam.",
+   "forat": "___ her help, I passed the exam.",
+   "iniciFrase": true,
+   "traduccio": "Gràcies a la seva ajuda, vaig aprovar l'examen.",
+   "equivalents": [],
+   "distractors": [
+    "although",
+    "because",
+    "so that",
+    "unless"
+   ],
+   "nota": "Per a causes positives."
+  },
+  {
+   "id": "therefore",
+   "connector": "therefore",
+   "funcio": "consequencia",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 2,
+   "significat": "per tant",
+   "exemple": "He didn't study at all. Therefore, he failed the exam.",
+   "exempleMarcat": "He didn't study at all. **Therefore**, he failed the exam.",
+   "forat": "He didn't study at all. ___, he failed the exam.",
+   "iniciFrase": true,
+   "traduccio": "No va estudiar gens. Per tant, va suspendre l'examen.",
+   "equivalents": [
+    "consequently",
+    "as a result",
+    "thus"
+   ],
+   "distractors": [
+    "however",
+    "nevertheless",
+    "for instance",
+    "on the contrary"
+   ],
+   "nota": "El *so* formal. Perfecte per a la redacció."
+  },
+  {
+   "id": "consequently",
+   "connector": "consequently",
+   "funcio": "consequencia",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 2,
+   "significat": "en conseqüència",
+   "exemple": "The company lost a lot of money. Consequently, 200 workers were laid off.",
+   "exempleMarcat": "The company lost a lot of money. **Consequently**, 200 workers were laid off.",
+   "forat": "The company lost a lot of money. ___, 200 workers were laid off.",
+   "iniciFrase": true,
+   "traduccio": "L'empresa va perdre molts diners. En conseqüència, van acomiadar 200 treballadors.",
+   "equivalents": [
+    "therefore",
+    "as a result"
+   ],
+   "distractors": [
+    "however",
+    "nevertheless",
+    "for example",
+    "similarly"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "as-a-result",
+   "connector": "as a result",
+   "funcio": "consequencia",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "com a resultat, per això",
+   "exemple": "Many people work from home now. As a result, there is less traffic.",
+   "exempleMarcat": "Many people work from home now. **As a result**, there is less traffic.",
+   "forat": "Many people work from home now. ___, there is less traffic.",
+   "iniciFrase": true,
+   "traduccio": "Ara molta gent treballa des de casa. Per això, hi ha menys trànsit.",
+   "equivalents": [
+    "therefore",
+    "consequently"
+   ],
+   "distractors": [
+    "however",
+    "nevertheless",
+    "for example",
+    "on the contrary"
+   ],
+   "nota": "No el confonguis amb *as a result of* + nom (causa)."
+  },
+  {
+   "id": "so",
+   "connector": "so",
+   "funcio": "consequencia",
+   "estructura": "oracio",
+   "registre": "informal",
+   "nivell": 1,
+   "significat": "així que, per tant",
+   "exemple": "It was raining, so we stayed at home.",
+   "exempleMarcat": "It was raining, **so** we stayed at home.",
+   "forat": "It was raining, ___ we stayed at home.",
+   "iniciFrase": false,
+   "traduccio": "Plovia, així que ens vam quedar a casa.",
+   "equivalents": [],
+   "distractors": [
+    "because",
+    "although",
+    "unless",
+    "despite"
+   ],
+   "nota": "Informal. A la redacció, millor *therefore* o *as a result*."
+  },
+  {
+   "id": "thus",
+   "connector": "thus",
+   "funcio": "consequencia",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "així doncs, per tant",
+   "exemple": "Prices went up. Thus, many families had to spend less.",
+   "exempleMarcat": "Prices went up. **Thus**, many families had to spend less.",
+   "forat": "Prices went up. ___, many families had to spend less.",
+   "iniciFrase": true,
+   "traduccio": "Els preus van pujar. Així doncs, moltes famílies van haver de gastar menys.",
+   "equivalents": [
+    "therefore",
+    "consequently"
+   ],
+   "distractors": [
+    "however",
+    "nevertheless",
+    "for instance",
+    "on the contrary"
+   ],
+   "nota": "Molt formal."
+  },
+  {
+   "id": "in-order-to",
+   "connector": "in order to",
+   "funcio": "finalitat",
+   "estructura": "infinitiu",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "per (tal de)",
+   "exemple": "She saved money in order to travel around Europe.",
+   "exempleMarcat": "She saved money **in order to** travel around Europe.",
+   "forat": "She saved money ___ travel around Europe.",
+   "iniciFrase": false,
+   "traduccio": "Va estalviar diners per viatjar per Europa.",
+   "equivalents": [
+    "so as to"
+   ],
+   "distractors": [
+    "so that",
+    "because",
+    "although",
+    "in spite of"
+   ],
+   "nota": "Va seguit de l'infinitiu sense *to* extra: *in order to travel*. Negatiu: *in order not to*."
+  },
+  {
+   "id": "so-as-to",
+   "connector": "so as to",
+   "funcio": "finalitat",
+   "estructura": "infinitiu",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "per (tal de)",
+   "exemple": "We left early so as to avoid the traffic.",
+   "exempleMarcat": "We left early **so as to** avoid the traffic.",
+   "forat": "We left early ___ avoid the traffic.",
+   "iniciFrase": false,
+   "traduccio": "Vam sortir d'hora per evitar el trànsit.",
+   "equivalents": [
+    "in order to"
+   ],
+   "distractors": [
+    "so that",
+    "because of",
+    "although",
+    "despite"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "so-that",
+   "connector": "so that",
+   "funcio": "finalitat",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "perquè (finalitat), de manera que",
+   "exemple": "I'll write it down so that I don't forget it.",
+   "exempleMarcat": "I'll write it down **so that** I don't forget it.",
+   "forat": "I'll write it down ___ I don't forget it.",
+   "iniciFrase": false,
+   "traduccio": "Ho apuntaré perquè no se m'oblidi.",
+   "equivalents": [],
+   "distractors": [
+    "in order to",
+    "because of",
+    "although",
+    "despite"
+   ],
+   "nota": "⚠️ Va seguit d'una frase (sovint amb *can*, *could*, *will*, *would*). Amb un infinitiu, *in order to*."
+  },
+  {
+   "id": "unless",
+   "connector": "unless",
+   "funcio": "condicio",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "si no, tret que",
+   "exemple": "You won't pass unless you study harder.",
+   "exempleMarcat": "You won't pass **unless** you study harder.",
+   "forat": "You won't pass ___ you study harder.",
+   "iniciFrase": false,
+   "traduccio": "No aprovaràs si no estudies més.",
+   "equivalents": [],
+   "distractors": [
+    "if",
+    "although",
+    "so that",
+    "despite"
+   ],
+   "nota": "*unless* = *if ... not*. Mai no porta *not* al darrere: ~~unless you don't study~~."
+  },
+  {
+   "id": "as-long-as",
+   "connector": "as long as",
+   "funcio": "condicio",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "sempre que, mentre",
+   "exemple": "You can borrow my laptop as long as you're careful with it.",
+   "exempleMarcat": "You can borrow my laptop **as long as** you're careful with it.",
+   "forat": "You can borrow my laptop ___ you're careful with it.",
+   "iniciFrase": false,
+   "traduccio": "Pots agafar el meu portàtil sempre que hi vagis amb compte.",
+   "equivalents": [
+    "provided that"
+   ],
+   "distractors": [
+    "unless",
+    "although",
+    "because of",
+    "in order to"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "provided-that",
+   "connector": "provided that",
+   "funcio": "condicio",
+   "estructura": "oracio",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "sempre que, a condició que",
+   "exemple": "You can go to the party provided that you're home by midnight.",
+   "exempleMarcat": "You can go to the party **provided that** you're home by midnight.",
+   "forat": "You can go to the party ___ you're home by midnight.",
+   "iniciFrase": false,
+   "traduccio": "Pots anar a la festa sempre que siguis a casa a mitjanit.",
+   "equivalents": [
+    "as long as"
+   ],
+   "distractors": [
+    "unless",
+    "although",
+    "despite",
+    "so as to"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "in-case",
+   "connector": "in case",
+   "funcio": "condicio",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "per si de cas",
+   "exemple": "Take an umbrella in case it rains.",
+   "exempleMarcat": "Take an umbrella **in case** it rains.",
+   "forat": "Take an umbrella ___ it rains.",
+   "iniciFrase": false,
+   "traduccio": "Agafa un paraigua per si de cas plou.",
+   "equivalents": [],
+   "distractors": [
+    "unless",
+    "although",
+    "so that",
+    "because of"
+   ],
+   "nota": "No és el mateix que *if*: *in case* vol dir prevenir."
+  },
+  {
+   "id": "otherwise",
+   "connector": "otherwise",
+   "funcio": "condicio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "si no, altrament",
+   "exemple": "Hurry up. Otherwise, we'll miss the bus.",
+   "exempleMarcat": "Hurry up. **Otherwise**, we'll miss the bus.",
+   "forat": "Hurry up. ___, we'll miss the bus.",
+   "iniciFrase": true,
+   "traduccio": "Afanya't. Si no, perdrem el bus.",
+   "equivalents": [],
+   "distractors": [
+    "therefore",
+    "moreover",
+    "for example",
+    "similarly"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "for-example",
+   "connector": "for example",
+   "funcio": "exemple",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "per exemple",
+   "exemple": "There are many ways to reduce stress. For example, you can do some exercise.",
+   "exempleMarcat": "There are many ways to reduce stress. **For example**, you can do some exercise.",
+   "forat": "There are many ways to reduce stress. ___, you can do some exercise.",
+   "iniciFrase": true,
+   "traduccio": "Hi ha moltes maneres de reduir l'estrès. Per exemple, pots fer exercici.",
+   "equivalents": [
+    "for instance"
+   ],
+   "distractors": [
+    "however",
+    "therefore",
+    "otherwise",
+    "on the contrary"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "for-instance",
+   "connector": "for instance",
+   "funcio": "exemple",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "per exemple",
+   "exemple": "Some jobs are very stressful. For instance, doctors often work very long hours.",
+   "exempleMarcat": "Some jobs are very stressful. **For instance**, doctors often work very long hours.",
+   "forat": "Some jobs are very stressful. ___, doctors often work very long hours.",
+   "iniciFrase": true,
+   "traduccio": "Algunes feines són molt estressants. Per exemple, els metges sovint treballen moltes hores.",
+   "equivalents": [
+    "for example"
+   ],
+   "distractors": [
+    "however",
+    "nevertheless",
+    "as a result",
+    "otherwise"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "such-as",
+   "connector": "such as",
+   "funcio": "exemple",
+   "estructura": "nom",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "com ara",
+   "exemple": "I love outdoor activities such as hiking and climbing.",
+   "exempleMarcat": "I love outdoor activities **such as** hiking and climbing.",
+   "forat": "I love outdoor activities ___ hiking and climbing.",
+   "iniciFrase": false,
+   "traduccio": "M'encanten les activitats a l'aire lliure com ara el senderisme i l'escalada.",
+   "equivalents": [
+    "like"
+   ],
+   "distractors": [
+    "although",
+    "so that",
+    "unless",
+    "despite"
+   ],
+   "nota": "Va seguit de noms (els exemples), no d'una frase."
+  },
+  {
+   "id": "firstly",
+   "connector": "firstly",
+   "funcio": "ordre",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "en primer lloc",
+   "exemple": "I disagree for two reasons. Firstly, it is too expensive. Secondly, it is not safe.",
+   "exempleMarcat": "I disagree for two reasons. **Firstly**, it is too expensive. Secondly, it is not safe.",
+   "forat": "I disagree for two reasons. ___, it is too expensive. Secondly, it is not safe.",
+   "iniciFrase": true,
+   "traduccio": "No hi estic d'acord per dues raons. En primer lloc, és massa car. En segon lloc, no és segur.",
+   "equivalents": [
+    "first of all",
+    "to begin with"
+   ],
+   "distractors": [
+    "in conclusion",
+    "however",
+    "therefore",
+    "otherwise"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "secondly",
+   "connector": "secondly",
+   "funcio": "ordre",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "en segon lloc",
+   "exemple": "Firstly, the tickets are too expensive. Secondly, the stadium is very far away.",
+   "exempleMarcat": "Firstly, the tickets are too expensive. **Secondly**, the stadium is very far away.",
+   "forat": "Firstly, the tickets are too expensive. ___, the stadium is very far away.",
+   "iniciFrase": true,
+   "traduccio": "En primer lloc, les entrades són massa cares. En segon lloc, l'estadi és molt lluny.",
+   "equivalents": [],
+   "distractors": [
+    "in conclusion",
+    "on the contrary",
+    "for instance",
+    "therefore"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "finally",
+   "connector": "finally",
+   "funcio": "ordre",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "finalment, per acabar",
+   "exemple": "Firstly, it is expensive. Secondly, it is dangerous. Finally, it is bad for the environment.",
+   "exempleMarcat": "Firstly, it is expensive. Secondly, it is dangerous. **Finally**, it is bad for the environment.",
+   "forat": "Firstly, it is expensive. Secondly, it is dangerous. ___, it is bad for the environment.",
+   "iniciFrase": true,
+   "traduccio": "En primer lloc, és car. En segon lloc, és perillós. Finalment, és dolent per al medi ambient.",
+   "equivalents": [
+    "lastly"
+   ],
+   "distractors": [
+    "firstly",
+    "however",
+    "for instance",
+    "on the contrary"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "then",
+   "connector": "then",
+   "funcio": "ordre",
+   "estructura": "enllac",
+   "registre": "informal",
+   "nivell": 1,
+   "significat": "després, aleshores",
+   "exemple": "First, we had dinner. Then, we went to the cinema.",
+   "exempleMarcat": "First, we had dinner. **Then**, we went to the cinema.",
+   "forat": "First, we had dinner. ___, we went to the cinema.",
+   "iniciFrase": true,
+   "traduccio": "Primer vam sopar. Després, vam anar al cinema.",
+   "equivalents": [
+    "after that",
+    "afterwards"
+   ],
+   "distractors": [
+    "however",
+    "because",
+    "although",
+    "unless"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "after-that",
+   "connector": "after that",
+   "funcio": "ordre",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "després d'això",
+   "exemple": "I finished my homework. After that, I went for a run.",
+   "exempleMarcat": "I finished my homework. **After that**, I went for a run.",
+   "forat": "I finished my homework. ___, I went for a run.",
+   "iniciFrase": true,
+   "traduccio": "Vaig acabar els deures. Després d'això, vaig anar a córrer.",
+   "equivalents": [
+    "then",
+    "afterwards"
+   ],
+   "distractors": [
+    "however",
+    "otherwise",
+    "on the contrary",
+    "for instance"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "eventually",
+   "connector": "eventually",
+   "funcio": "temps",
+   "estructura": "adverbi",
+   "registre": "neutre",
+   "nivell": 3,
+   "significat": "finalment, al final",
+   "exemple": "After hours of searching, we eventually found the hotel.",
+   "exempleMarcat": "After hours of searching, we **eventually** found the hotel.",
+   "forat": "After hours of searching, we ___ found the hotel.",
+   "iniciFrase": false,
+   "traduccio": "Després d'hores buscant, finalment vam trobar l'hotel.",
+   "equivalents": [
+    "finally"
+   ],
+   "distractors": [
+    "actually",
+    "however",
+    "therefore",
+    "otherwise"
+   ],
+   "nota": "⚠️ Fals amic! No vol dir \"eventualment\": vol dir \"al final, després de molt temps\"."
+  },
+  {
+   "id": "meanwhile",
+   "connector": "meanwhile",
+   "funcio": "temps",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 3,
+   "significat": "mentrestant",
+   "exemple": "I was cooking dinner. Meanwhile, my brother was watching TV.",
+   "exempleMarcat": "I was cooking dinner. **Meanwhile**, my brother was watching TV.",
+   "forat": "I was cooking dinner. ___, my brother was watching TV.",
+   "iniciFrase": true,
+   "traduccio": "Jo feia el sopar. Mentrestant, el meu germà mirava la tele.",
+   "equivalents": [
+    "in the meantime"
+   ],
+   "distractors": [
+    "therefore",
+    "for example",
+    "otherwise",
+    "as a result"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "as-soon-as",
+   "connector": "as soon as",
+   "funcio": "temps",
+   "estructura": "oracio",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "tan aviat com, així que",
+   "exemple": "I'll call you as soon as I arrive.",
+   "exempleMarcat": "I'll call you **as soon as** I arrive.",
+   "forat": "I'll call you ___ I arrive.",
+   "iniciFrase": false,
+   "traduccio": "Et trucaré tan aviat com arribi.",
+   "equivalents": [
+    "once"
+   ],
+   "distractors": [
+    "although",
+    "despite",
+    "because of",
+    "in order to"
+   ],
+   "nota": "⚠️ Amb futur, el verb que el segueix va en present: ~~as soon as I will arrive~~."
+  },
+  {
+   "id": "nowadays",
+   "connector": "nowadays",
+   "funcio": "temps",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "avui dia, actualment",
+   "exemple": "Nowadays, most teenagers have a smartphone.",
+   "exempleMarcat": "**Nowadays**, most teenagers have a smartphone.",
+   "forat": "___, most teenagers have a smartphone.",
+   "iniciFrase": true,
+   "traduccio": "Avui dia, la majoria d'adolescents tenen un mòbil.",
+   "equivalents": [
+    "these days"
+   ],
+   "distractors": [
+    "eventually",
+    "otherwise",
+    "unless",
+    "despite"
+   ],
+   "nota": "\"Actualment\" és *nowadays* o *currently*, no ~~actually~~."
+  },
+  {
+   "id": "in-conclusion",
+   "connector": "in conclusion",
+   "funcio": "conclusio",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 1,
+   "significat": "en conclusió",
+   "exemple": "In conclusion, I believe that social media has more advantages than disadvantages.",
+   "exempleMarcat": "**In conclusion**, I believe that social media has more advantages than disadvantages.",
+   "forat": "___, I believe that social media has more advantages than disadvantages.",
+   "iniciFrase": true,
+   "traduccio": "En conclusió, crec que les xarxes socials tenen més avantatges que inconvenients.",
+   "equivalents": [
+    "to sum up",
+    "to conclude"
+   ],
+   "distractors": [
+    "for example",
+    "otherwise",
+    "as well as",
+    "because of"
+   ],
+   "nota": "El clàssic per començar l'últim paràgraf de la redacció."
+  },
+  {
+   "id": "to-sum-up",
+   "connector": "to sum up",
+   "funcio": "conclusio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "en resum",
+   "exemple": "To sum up, there are good and bad things about living abroad.",
+   "exempleMarcat": "**To sum up**, there are good and bad things about living abroad.",
+   "forat": "___, there are good and bad things about living abroad.",
+   "iniciFrase": true,
+   "traduccio": "En resum, viure a l'estranger té coses bones i dolentes.",
+   "equivalents": [
+    "in conclusion",
+    "to conclude"
+   ],
+   "distractors": [
+    "for instance",
+    "otherwise",
+    "despite",
+    "so that"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "all-in-all",
+   "connector": "all in all",
+   "funcio": "conclusio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "en general, tot plegat",
+   "exemple": "All in all, it was a fantastic trip.",
+   "exempleMarcat": "**All in all**, it was a fantastic trip.",
+   "forat": "___, it was a fantastic trip.",
+   "iniciFrase": true,
+   "traduccio": "Tot plegat, va ser un viatge fantàstic.",
+   "equivalents": [
+    "overall",
+    "on the whole"
+   ],
+   "distractors": [
+    "for example",
+    "otherwise",
+    "because of",
+    "unless"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "overall",
+   "connector": "overall",
+   "funcio": "conclusio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "en general, globalment",
+   "exemple": "Overall, the results were very positive.",
+   "exempleMarcat": "**Overall**, the results were very positive.",
+   "forat": "___, the results were very positive.",
+   "iniciFrase": true,
+   "traduccio": "En general, els resultats van ser molt positius.",
+   "equivalents": [
+    "all in all",
+    "on the whole"
+   ],
+   "distractors": [
+    "for instance",
+    "otherwise",
+    "despite",
+    "unless"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "in-my-opinion",
+   "connector": "in my opinion",
+   "funcio": "opinio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 1,
+   "significat": "en la meva opinió",
+   "exemple": "In my opinion, school uniforms should be compulsory.",
+   "exempleMarcat": "**In my opinion**, school uniforms should be compulsory.",
+   "forat": "___, school uniforms should be compulsory.",
+   "iniciFrase": true,
+   "traduccio": "En la meva opinió, l'uniforme escolar hauria de ser obligatori.",
+   "equivalents": [
+    "from my point of view",
+    "as far as I am concerned"
+   ],
+   "distractors": [
+    "for example",
+    "otherwise",
+    "because of",
+    "so that"
+   ],
+   "nota": "⚠️ No diguis ~~In my opinion, I think~~: és redundant."
+  },
+  {
+   "id": "from-my-point-of-view",
+   "connector": "from my point of view",
+   "funcio": "opinio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "des del meu punt de vista",
+   "exemple": "From my point of view, young people spend too much time online.",
+   "exempleMarcat": "**From my point of view**, young people spend too much time online.",
+   "forat": "___, young people spend too much time online.",
+   "iniciFrase": true,
+   "traduccio": "Des del meu punt de vista, els joves passen massa temps connectats.",
+   "equivalents": [
+    "in my opinion",
+    "as far as I am concerned"
+   ],
+   "distractors": [
+    "for instance",
+    "otherwise",
+    "despite",
+    "unless"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "as-far-as-i-am-concerned",
+   "connector": "as far as I am concerned",
+   "funcio": "opinio",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "pel que fa a mi, per a mi",
+   "exemple": "As far as I am concerned, the new law is unfair.",
+   "exempleMarcat": "**As far as I am concerned**, the new law is unfair.",
+   "forat": "___, the new law is unfair.",
+   "iniciFrase": true,
+   "traduccio": "Per a mi, la nova llei és injusta.",
+   "equivalents": [
+    "in my opinion",
+    "from my point of view"
+   ],
+   "distractors": [
+    "for example",
+    "as long as",
+    "otherwise",
+    "because of"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "personally",
+   "connector": "personally",
+   "funcio": "opinio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "personalment",
+   "exemple": "Personally, I prefer reading books to watching films.",
+   "exempleMarcat": "**Personally**, I prefer reading books to watching films.",
+   "forat": "___, I prefer reading books to watching films.",
+   "iniciFrase": true,
+   "traduccio": "Personalment, prefereixo llegir llibres que mirar pel·lícules.",
+   "equivalents": [],
+   "distractors": [
+    "otherwise",
+    "because of",
+    "for instance",
+    "unless"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "in-fact",
+   "connector": "in fact",
+   "funcio": "emfasi",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "de fet",
+   "exemple": "Learning English isn't that hard. In fact, it can be really fun.",
+   "exempleMarcat": "Learning English isn't that hard. **In fact**, it can be really fun.",
+   "forat": "Learning English isn't that hard. ___, it can be really fun.",
+   "iniciFrase": true,
+   "traduccio": "Aprendre anglès no és tan difícil. De fet, pot ser molt divertit.",
+   "equivalents": [
+    "actually"
+   ],
+   "distractors": [
+    "otherwise",
+    "because of",
+    "unless",
+    "despite"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "actually",
+   "connector": "actually",
+   "funcio": "emfasi",
+   "estructura": "adverbi",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "en realitat, de fet",
+   "exemple": "Everyone thinks he's British, but he's actually Irish.",
+   "exempleMarcat": "Everyone thinks he's British, but he's **actually** Irish.",
+   "forat": "Everyone thinks he's British, but he's ___ Irish.",
+   "iniciFrase": false,
+   "traduccio": "Tothom es pensa que és britànic, però en realitat és irlandès.",
+   "equivalents": [
+    "in fact"
+   ],
+   "distractors": [
+    "eventually",
+    "otherwise",
+    "therefore",
+    "moreover"
+   ],
+   "nota": "⚠️ Fals amic! No vol dir \"actualment\" (*nowadays*, *currently*): vol dir \"en realitat\"."
+  },
+  {
+   "id": "indeed",
+   "connector": "indeed",
+   "funcio": "emfasi",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "de fet, efectivament",
+   "exemple": "The exam was hard. Indeed, it was the hardest one I've ever done.",
+   "exempleMarcat": "The exam was hard. **Indeed**, it was the hardest one I've ever done.",
+   "forat": "The exam was hard. ___, it was the hardest one I've ever done.",
+   "iniciFrase": true,
+   "traduccio": "L'examen va ser difícil. De fet, va ser el més difícil que he fet mai.",
+   "equivalents": [
+    "in fact"
+   ],
+   "distractors": [
+    "however",
+    "otherwise",
+    "for instance",
+    "unless"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "in-other-words",
+   "connector": "in other words",
+   "funcio": "reformulacio",
+   "estructura": "enllac",
+   "registre": "neutre",
+   "nivell": 2,
+   "significat": "és a dir, en altres paraules",
+   "exemple": "He never spends any money. In other words, he's mean.",
+   "exempleMarcat": "He never spends any money. **In other words**, he's mean.",
+   "forat": "He never spends any money. ___, he's mean.",
+   "iniciFrase": true,
+   "traduccio": "No gasta mai ni un euro. En altres paraules, és un garrepa.",
+   "equivalents": [
+    "that is to say"
+   ],
+   "distractors": [
+    "otherwise",
+    "because of",
+    "as long as",
+    "despite"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "that-is-to-say",
+   "connector": "that is to say",
+   "funcio": "reformulacio",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "és a dir",
+   "exemple": "The course is intensive, that is to say, there are classes every day.",
+   "exempleMarcat": "The course is intensive, **that is to say**, there are classes every day.",
+   "forat": "The course is intensive, ___, there are classes every day.",
+   "iniciFrase": false,
+   "traduccio": "El curs és intensiu, és a dir, hi ha classes cada dia.",
+   "equivalents": [
+    "in other words"
+   ],
+   "distractors": [
+    "otherwise",
+    "unless",
+    "despite",
+    "because of"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "similarly",
+   "connector": "similarly",
+   "funcio": "comparacio",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 2,
+   "significat": "de la mateixa manera, igualment",
+   "exemple": "Smoking is bad for your health. Similarly, drinking too much alcohol can cause serious problems.",
+   "exempleMarcat": "Smoking is bad for your health. **Similarly**, drinking too much alcohol can cause serious problems.",
+   "forat": "Smoking is bad for your health. ___, drinking too much alcohol can cause serious problems.",
+   "iniciFrase": true,
+   "traduccio": "Fumar és dolent per a la salut. De la mateixa manera, beure massa alcohol pot causar problemes greus.",
+   "equivalents": [
+    "likewise",
+    "in the same way"
+   ],
+   "distractors": [
+    "however",
+    "on the contrary",
+    "otherwise",
+    "instead"
+   ],
+   "nota": ""
+  },
+  {
+   "id": "likewise",
+   "connector": "likewise",
+   "funcio": "comparacio",
+   "estructura": "enllac",
+   "registre": "formal",
+   "nivell": 3,
+   "significat": "igualment, així mateix",
+   "exemple": "My father is very organised. Likewise, my mother plans everything carefully.",
+   "exempleMarcat": "My father is very organised. **Likewise**, my mother plans everything carefully.",
+   "forat": "My father is very organised. ___, my mother plans everything carefully.",
+   "iniciFrase": true,
+   "traduccio": "El meu pare és molt organitzat. Així mateix, la meva mare ho planifica tot amb cura.",
+   "equivalents": [
+    "similarly",
+    "in the same way"
+   ],
+   "distractors": [
+    "however",
+    "otherwise",
+    "on the contrary",
+    "instead"
+   ],
+   "nota": ""
+  }
+ ]
+}
