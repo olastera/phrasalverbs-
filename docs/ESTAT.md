@@ -1,8 +1,9 @@
-# Estat: Fase 1 + 2A-2D + 3A-3B + 4A-4B + 5 (PWA)
+# Estat: Fase 1 + 2A-2D + 3A-3B + 4A-4B + 5 (PWA) + 6 (desplegament)
 
-Estat: fases 1-4B acabades; Fase 5 (PWA) implementada i provada. No s'han fet commits ni
-desplegaments. `contingut/phrasals.json` i `contingut/connectors.json` no s'han tocat. Tampoc no
-s'han tocat `api/ranking.php`, `js/paraulotes.js`, `js/ranking.js` ni cap regla de joc.
+Estat: fases 1-5 acabades i Fase 6 (script de desplegament) implementada i provada en mode
+`--prova`. No s'han fet commits ni desplegaments. `contingut/phrasals.json` i
+`contingut/connectors.json` no s'han tocat. Tampoc no s'han tocat `api/ranking.php`,
+`js/paraulotes.js`, `js/ranking.js` ni cap regla de joc.
 
 ## Versions
 
@@ -437,8 +438,48 @@ Per al desplegament (Fase 6): a Aruba, `api/dades/` ha de tenir permís d'escrip
 - Comprovació manual de fitxers: manifest JSON vàlid, icones PNG amb mides 192/512/180, SW amb
   versió coherent, comprovació `/api/` abans de `respondWith`, sense rutes absolutes a SHELL.
 
+## Fase 6: script de desplegament 🚀
+
+- Creat `/mnt/disco/Iespai/deploy-phrasalverbs.sh` copiant `deploy-volei.sh`, amb `chmod +x`.
+  `LOCAL_DIR="$ROOT/www/phrasalverbs"`, `REMOTE_DIR="/www.iespai.com/phrasalverbs"` i
+  `LOG="$ROOT/deploy-phrasalverbs.log"`.
+- Credencials llegides de `$ROOT/.env` amb el mateix `grep`/`awk` que `deploy-volei.sh`; cap
+  contrasenya escrita a l'script. La sortida de lftp s'emmascara (`ftp://***@`) abans d'escriure's
+  al log i a la pantalla.
+- Mantinguts `set ftp:ssl-allow no;`, `set ftp:passive-mode yes;`, `set net:timeout 30;` i
+  `set net:max-retries 3;`. El mirror no porta `--delete`, per tant no esborra res del servidor.
+- Abans de qualsevol mirror s'executen els tests des de `LOCAL_DIR`
+  (`node --experimental-default-type=module --test tests/*.test.mjs`). Si en falla algun, s'escriu
+  l'error al log i a la pantalla i s'exita amb codi 1 sense pujar res.
+- Exclusions del mirror: `-x '^\.git' -x '^docs/' -x '^tools/' -x '^tests/' -x '^AGENTS\.md$'
+  -x '\.db$' -x '\.db-journal$' -x '\.db-wal$' -x '\.db-shm$' -x '__pycache__'`.
+  `api/dades/ranking.db` no es puja ni se sobreescriu; `api/dades/.htaccess` sí que es puja.
+- Amb `--prova`, el mirror es fa amb `--dry-run` i la llista es mostra per pantalla. Sense
+  paràmetres, fa la pujada real i després comprova amb curl (`-L` només a les URLs que han de
+  donar 200): `/` → 200, `/sw.js` → 200, `/api/ranking.php?accio=top` → 200 i JSON amb `ok`,
+  `/api/dades/ranking.db`, `/docs/SEGUIMENT.md` i `/AGENTS.md` → NO 200. Cada resultat s'escriu
+  com a `OK`/`ERROR` al log i a la pantalla; qualsevol fallada fa sortir amb codi 1.
+
+### Proves Fase 6 (2026-11-25)
+
+- `bash -n deploy-phrasalverbs.sh`: sintaxi correcta; `chmod +x` aplicat (`-rwxrwxrwx`).
+- `./deploy-phrasalverbs.sh --prova`: 158/158 tests passats abans del mirror; `--dry-run` sense
+  cap pujada. Fitxers que pujaria (25):
+  `LICENSE`, `README.md`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `index.html`,
+  `manifest.webmanifest`, `sw.js`, `api/ranking.php`, `api/dades/.htaccess`,
+  `contingut/connectors.json`, `contingut/phrasals.json`, `css/estils.css`,
+  `fonts/nunito-latin.woff2`, `fonts/press-start-2p-400-latin.woff2`, `js/app.js`,
+  `js/dades.js`, `js/frases.js`, `js/joc.js`, `js/paraulotes.js`, `js/preguntes.js`,
+  `js/progres.js`, `js/ranking.js`, `js/repas.js`, `js/so.js`.
+- Comprovació de la llista del `--dry-run`: NO hi surten `docs/`, `tools/`, `tests/`,
+  `AGENTS.md`, cap `.db`/`.db-journal`/`.db-wal`/`.db-shm` ni `__pycache__`; SÍ hi surt
+  `api/dades/.htaccess`. Cap exclusió se l'emporta. El log no conté credencials.
+- `node --experimental-default-type=module --test tests/*.test.mjs` des de `www/phrasalverbs`:
+  **158 tests, 158 passats, 0 fallats**.
+- No s'ha executat l'script sense `--prova`; no s'ha fet cap desplegament ni commit.
+
 ## Pendent
 
-- Fase 6: script de desplegament (sense executar-lo).
-- Verificació manual opcional en navegador real/PWA i a Aruba.
+- Desplegament real per part d'en Oscar (`./deploy-phrasalverbs.sh`, sense `--prova`).
+- Verificació manual opcional en navegador real/PWA i de les comprovacions HTTP a Aruba.
 

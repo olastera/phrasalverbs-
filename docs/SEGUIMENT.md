@@ -63,7 +63,7 @@
 | 4A | Ronda bonus ⚡ Parelles (minijoc D) | ✅ Feta, corregida, revisada i provada al mòbil (commit `b285e87`) |
 | **4B** | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ✅ Feta, revisada i provada al mòbil (commit `103eed4`) |
 | **5** | PWA (manifest, service worker, icones) | ✅ Feta, revisada i provada al mòbil (commit `e12e6ff`) |
-| **6** | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ⏭️ **Següent** |
+| **6** | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ✅ Feta i revisada (`--prova`: 26 fitxers); ⏳ **pendent: primer desplegament** |
 | Futur | Connectors, codi de classe al rànquing, mode examen | ⬜ |
 
 ## 🔍 Errors trobats a les revisions (perquè no tornin)
@@ -115,58 +115,27 @@
   no s'han de pujar a producció.
 - Opencode no pot fer proves de navegador al Pi. **Les proves visuals les fa l'Oscar.**
 
-## ⏭️ Pas següent: encàrrec per a opencode (fase 6: script de desplegament)
+## ⏭️ Pas següent: primer desplegament (el fa l'Oscar)
 
-Revisat a 2026-11-25 (5 tancada i provada al mòbil, commit `e12e6ff`). Des d'aquest dia el projecte té
-**repo git propi** (`www/phrasalverbs/.git`, branca `main`) i el repo d'Iespai l'ignora. L'script
-de desplegament va **fora** del repo del joc, a l'arrel d'Iespai, al costat dels altres
-`deploy-*.sh`, perquè llegeix el `.env` amb la contrasenya FTP i el joc serà públic.
-Model: `/mnt/disco/Iespai/deploy-volei.sh`.
+Revisat a 2026-11-25. La fase 6 està feta: `/mnt/disco/Iespai/deploy-phrasalverbs.sh` (queda fora
+del repo del joc perquè llegeix el `.env`). Abans de pujar res, passa els tests. Puja amb `mirror`
+sense `--delete`, exclou `docs/`, `tools/`, `tests/`, `AGENTS.md` i els `.db*` (sí que puja
+`api/dades/.htaccess`). En acabar, comprova amb `curl` que l'app, el `sw.js` i l'API responen i que
+la BD, `docs/` i `AGENTS.md` no es poden obrir. Si alguna cosa falla, surt amb codi 1. El registre
+queda a `deploy-phrasalverbs.log`.
 
 ```
-Projecte: www/phrasalverbs/. Llegeix AGENTS.md, docs/PLA.md (§10 Fase 6) i docs/ESTAT.md.
-NO toquis cap fitxer de l'app (index.html, css/, js/, api/, contingut/, sw.js...).
-No facis commits ni desplegaments: NO executis l'script sense --prova.
-
-Fes la fase 6: crea /mnt/disco/Iespai/deploy-phrasalverbs.sh copiant deploy-volei.sh.
-
-1. LOCAL_DIR="$ROOT/www/phrasalverbs", REMOTE_DIR="/www.iespai.com/phrasalverbs",
-   LOG="$ROOT/deploy-phrasalverbs.log". Mantén "set ftp:ssl-allow no;" i la resta de "set".
-2. Abans de pujar res, executa els tests des de LOCAL_DIR
-   (node --experimental-default-type=module --test tests/*.test.mjs). Si en falla algun,
-   escriu-ho al log i a la pantalla i surt amb codi 1 sense pujar res.
-3. Exclusions del mirror (expressions regulars de lftp):
-   -x '^\.git' -x '^docs/' -x '^tools/' -x '^tests/' -x '^AGENTS\.md$'
-   -x '\.db$' -x '\.db-journal$' -x '\.db-wal$' -x '\.db-shm$' -x '__pycache__'
-   ⚠️ MAI no es pot pujar ni sobreescriure api/dades/ranking.db (es perdria el rànquing).
-   ⚠️ Sí que s'ha de pujar api/dades/.htaccess (protegeix la base de dades): comprova que cap
-      exclusió se l'emporta.
-   ⚠️ Sense --delete: el mirror no ha d'esborrar res del servidor.
-4. Opció --prova: fa el mateix mirror amb --dry-run (no puja res) i mostra per pantalla
-   què pujaria. Sense paràmetres, puja de debò.
-5. En acabar una pujada de debò, comprovacions amb curl (codi HTTP, seguint redireccions
-   només on calgui) i resultat OK/ERROR al log i a la pantalla:
-   - https://www.iespai.com/phrasalverbs/            → 200
-   - https://www.iespai.com/phrasalverbs/sw.js       → 200
-   - https://www.iespai.com/phrasalverbs/api/ranking.php?accio=top → 200 i JSON
-   - https://www.iespai.com/phrasalverbs/api/dades/ranking.db → NO 200
-   - https://www.iespai.com/phrasalverbs/docs/SEGUIMENT.md   → NO 200
-   - https://www.iespai.com/phrasalverbs/AGENTS.md           → NO 200
-   Si alguna comprovació falla, surt amb codi 1.
-6. chmod +x a l'script. Sense contrasenyes escrites a l'script (les llegeix del .env com
-   deploy-volei.sh).
-
-Proves que has de fer (i deixar escrites a docs/ESTAT.md):
-- bash -n deploy-phrasalverbs.sh (sintaxi);
-- ./deploy-phrasalverbs.sh --prova: copia al ESTAT.md la llista del que pujaria i comprova
-  que NO hi surten docs/, tools/, tests/, AGENTS.md ni cap .db, i que SÍ hi surt
-  api/dades/.htaccess.
-Executa tots els tests (els 158 han de passar), actualitza docs/ESTAT.md i atura't.
+cd /mnt/disco/Iespai
+./deploy-phrasalverbs.sh --prova   # opcional: llista el que pujaria (26 fitxers)
+./deploy-phrasalverbs.sh           # pujada de debò + comprovacions
 ```
 
-Després de la 6 (ho fa l'Oscar): `./deploy-phrasalverbs.sh` i provar
-https://www.iespai.com/phrasalverbs/ (amb la barra final: sense barra, Aruba redirigeix a http://).
-Al mòbil: instal·lar la PWA des de la URL de producció i fer una partida que entri al rànquing.
+Després, al mòbil: obrir https://www.iespai.com/phrasalverbs/ (amb la barra final: sense barra,
+Aruba redirigeix a http://), instal·lar la PWA des de producció i fer una partida que entri al
+rànquing. La BD de producció comença buida (la del Pi no es puja mai).
+
+Cada canvi futur: pujar `?v=N` (index.html, imports, nom de la memòria cau de `sw.js`) → tests →
+`./deploy-phrasalverbs.sh` → `git push` al GitHub.
 
 ## 📌 Pendents fora del codi
 
