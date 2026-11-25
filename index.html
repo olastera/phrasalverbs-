@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#120a2e">
   <title>🦸 Phrasal Hero</title>
-  <link rel="stylesheet" href="css/estils.css?v=8">
+  <link rel="stylesheet" href="css/estils.css?v=11">
 </head>
 <body>
   <div class="fons" aria-hidden="true">
@@ -29,7 +29,7 @@
       <div class="menu-principal">
         <button type="button" class="boto boto-repassar" data-ruta="#repas">📚 <span>Repassar</span></button>
         <button type="button" class="boto boto-jugar" data-ruta="#joc">🎮 <span>Jugar</span></button>
-        <button type="button" class="boto boto-ranking" data-fase="ranking">🏆 <span>Rànquing</span></button>
+        <button type="button" class="boto boto-ranking" data-ruta="#ranking">🏆 <span>Rànquing</span></button>
       </div>
 
       <button type="button" id="resum-inici" class="resum-inici">
@@ -152,10 +152,41 @@
         <ul id="gameover-fallats" class="gameover-fallats"></ul>
         <p id="gameover-sense-fallats" class="gameover-sense" hidden></p>
       </div>
+      <p id="gameover-ranking-avis" class="ranking-avis" aria-live="polite" hidden></p>
       <button type="button" id="gameover-ranking" class="boto boto-principal">🏆 Guardar al rànquing</button>
       <button type="button" id="gameover-rejuga" class="boto boto-principal">🔁 Tornar a jugar</button>
       <button type="button" id="gameover-repassa" class="boto boto-vermell" hidden>📚 Repassar els fallats</button>
       <a class="boto boto-fantasma" href="#inici">🏠 Torna a l'inici</a>
+    </section>
+
+    <section id="inicials" class="pantalla" hidden aria-labelledby="titul-inicials">
+      <div class="capcapantalla">
+        <h2 id="titul-inicials">🕹️ ENTER YOUR NAME</h2>
+        <a class="boto-tornar" href="#gameover">← Game over</a>
+      </div>
+      <p class="pista">Posa les teves inicials (1–5 lletres) 💪</p>
+      <div id="inicials-caselles" class="inicials-caselles"></div>
+      <input id="inicials-input" class="inicials-input" type="text" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Escriu les teves inicials">
+      <p id="inicials-resultat" class="resultat" aria-live="polite"></p>
+      <button type="button" id="inicials-ok" class="boto boto-principal">✅ OK</button>
+    </section>
+
+    <section id="ranking" class="pantalla" hidden aria-labelledby="titul-ranking">
+      <div class="capcapantalla">
+        <h2 id="titul-ranking">🏆 Rànquing</h2>
+        <a class="boto-tornar" href="#inici">← Inici</a>
+      </div>
+      <div class="ranking-pestanyes" role="tablist" aria-label="Període del rànquing">
+        <button type="button" id="ranking-tab-setmana" class="boto boto-petit" role="tab" aria-selected="true">📅 Aquesta setmana</button>
+        <button type="button" id="ranking-tab-sempre" class="boto boto-petit" role="tab" aria-selected="false">👑 De sempre</button>
+      </div>
+      <p id="ranking-missatge" class="ranking-missatge" aria-live="polite"></p>
+      <p id="ranking-sense-connexio" class="ranking-avis" aria-live="polite" hidden>📡 Sense connexió. Mostrem només els teus rècords</p>
+      <div class="ranking-arcade">
+        <ol id="ranking-llista" class="ranking-llista"></ol>
+      </div>
+      <h3 class="subtitul-seccio">👤 Els teus rècords</h3>
+      <div id="ranking-records" class="ranking-records"></div>
     </section>
 
     <section id="progres" class="pantalla" hidden aria-labelledby="titul-progres">
@@ -187,6 +218,6 @@
 
   <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
 
-  <script type="module" src="js/app.js?v=8"></script>
+  <script type="module" src="js/app.js?v=11"></script>
 </body>
 </html>

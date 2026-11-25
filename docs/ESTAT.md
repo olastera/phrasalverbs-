@@ -1,22 +1,25 @@
-# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D + Fase 3A
+# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D + Fase 3A + Fase 3B
 
 Estat: Fase 1 acabada; Fase 2A corregida; Fase 2B ajustada amb `particulesProhibides`;
 subfase 2C (minijoc C, "Substitueix", dificultat, no repetició i caixa 1) implementada i provada;
 subfase 2D (Game Over complet, efectes al progrés i so) implementada i provada; Fase 3A (servidor
-del rànquing i filtre de paraulotes) implementada i provada. No s'han fet commits ni desplegaments.
+del rànquing i filtre de paraulotes) implementada i provada; Fase 3B (client del rànquing:
+API, token per partida, inicials i taula) implementada, provada i corregida. No s'han fet commits ni
+desplegaments.
 `contingut/phrasals.json` no s'ha tocat; el camp `particulesProhibides` ja era a les dades revisades.
 
 ## Correcció de versions (importants)
 
-- Tots els imports interns de JS porten versió. S'han posat a `?v=8`, inclòs `index.html` i
+- Tots els imports interns de JS porten versió. Ara són `?v=10`, inclòs `index.html` i
   `css/estils.css` (fonts incloses), i s'ha mantingut la norma a `AGENTS.md`: pujar `?v=N` a
-  `index.html` i a tots els imports quan canviï qualsevol fitxer JS o CSS.
+  `index.html` i a tot arreu quan canviï qualsevol fitxer JS o CSS.
 - Versions successives: `?v=3` (imports interns), `?v=4` (2A), `?v=5` (correccions 2A),
-  `?v=6` (2B), `?v=7` (ajust 2B i 2C) i **`?v=8` ara** (2D). `js/dades.js`, `js/preguntes.js`,
-  `js/progres.js`, `js/joc.js`, `js/repas.js`, `js/app.js` i el nou `js/so.js` s'importen amb
-  `?v=8`.
-- La 3A manté `?v=8`: no s'ha tocat `index.html` ni cap JS/CSS existent. El nou
-  `js/paraulotes.js` encara no s'importa; s'importarà a la 3B amb la pujada de versió que toqui.
+  `?v=6` (2B), `?v=7` (ajust 2B i 2C), `?v=8` (2D i 3A), `?v=9` (3B) i **`?v=10` ara**
+  (correccions de la 3B).
+- La 3A va mantenir `?v=8` perquè no va tocar `index.html` ni cap JS/CSS existent. A la 3B es va
+  pujar a `?v=9`; amb les correccions s'ha pujat tot a `?v=10`: `index.html`, `css/estils.css`,
+  tots els imports de JS i les URLs dels tests. `js/ranking.js` importa `js/paraulotes.js?v=10` i
+  `js/app.js` importa `js/ranking.js?v=10`.
 - **`VERSIO_DADES` és 3** perquè les dades han canviat (`contingut/phrasals.json?v=3`).
 - A `AGENTS.md` hi ha la norma: si `contingut/*.json` canvia, puja `VERSIO_DADES`.
 - A `AGENTS.md` hi ha la comanda de tests:
@@ -144,18 +147,53 @@ del rànquing i filtre de paraulotes) implementada i provada. No s'han fet commi
   i `teParaulota(inicials)`. La llista és idèntica a la del PHP i un test ho comprova llegint
   els dos fitxers.
 - `.gitignore`: afegits `api/dades/*.db` i `tests/tmp/`.
-- No s'han tocat `index.html`, les pantalles ni la versió `?v=8`.
+- A la 3A no es van tocar `index.html`, les pantalles ni la versió `?v=8` (aquest canvi és de la 3B).
 - 23/23 tests de 3A passen.
+
+## Subfase 3B (client del rànquing)
+
+- `js/ranking.js` (nou): `creaClientRanking({ fetchFn, url, timeoutMs, ara })` amb `demanaToken()`,
+  `guarda({ token, inicials, punts, encerts })`, `top(periode)`, `iniciaInicials()` i
+  `iniciaRanking()`. URL relativa `api/ranking.php`; `fetch` injectable i, per defecte,
+  `globalThis.fetch` resolt en el moment de la crida; `AbortController` de 5 s; errors de xarxa,
+  timeout i respostes no JSON → `{ ok: false, error: 'sense_connexio' }` sense llançar.
+- `top()` afegeix `&t=${Date.now()}` a les dues pestanyes (`setmana` i `sempre`) per evitar la cau
+  d'Aruba. `guarda()` envia `POST` amb `Content-Type: application/json` i cos
+  `{ token, inicials, punts, encerts }` a `api/ranking.php?accio=guardar`; `demanaToken()` també
+  és `POST`. Això coincideix amb la 3A i amb el test `guarda envia token, inicials, punts i encerts
+  per POST`.
+- Token sol·licitat en començar cada partida des de `js/joc.js`, sense esperar la resposta. Si no
+  arriba a temps, la partida continua i es desa a `progres.js` com sempre; en acabar, el botó del
+  Game Over mostra l'avís de sense connexió en lloc d'anar a `#inicials`.
+- `js/joc.js`: nou paràmetre `demanaToken`, estat de la partida amb `token`, `guardat` i
+  `generacio`, mètodes `resultat()` i `marcaGuardat()`, i reinici del token a `reinicia()`.
+- `js/app.js`: `PANTALLES` inclou `inicials` i `ranking`; connecta `iniciaInicials()` i
+  `iniciaRanking()`, precarrega l'estat amb el token i els rècords locals, rep `enDesat`,
+  mostra `📡` i marca la partida com a desada. El botó d'Inici "🥇 Rànquing" obre `#ranking`.
+- `index.html`: botó `#gameover-ranking` canviat a `data-ruta="#inicials"`, afegit
+  `#gameover-ranking-avis` i seccions `#inicials` (5 caselles amb fletxes, input amagat, botó OK)
+  i `#ranking` (pestanyes setmana/sempre, llista i rècords).
+- `css/estils.css`: estils arcade de neó, caselles amb fletxes, casella activa parpellejant,
+  pestanyes, llista top 10 amb posats 🥇🥈🥉, efecte scanlines amb `repeating-linear-gradient` i
+  respecte de `prefers-reduced-motion`.
+- Inicials: 1–5 lletres, sense buits al mig, `A→Z` i `_`, normals amb `normalitzaInicials()` de
+  `js/paraulotes.js`; precàrrega de `estat.ultimesInicials`. `A_B` no és vàlid; `AB___` desa `AB`.
+- Errors del servidor confirmats en pantalla: `😇 Ups! Prova unes altres inicials`, `⏱️ Aquesta partida
+  ja no es pot guardar`, `✅ Aquesta partida ja estava guardada` i l'avís `📡` de connexió. Les dades
+  del servidor i les inicials s'escapen amb `textContent`.
+- No s'han modificat `api/ranking.php` ni `js/paraulotes.js`.
 
 ## Proves executades
 
 - TDD en vermell: històricament 12 fallades esperades a 2C; a 2D el test nou fallava amb
   `progres.registraPartida is not a function` i amb `js/so.js` absent; a 3A fallava per
-  `api/ranking.php` absent, taules inexistents i `js/paraulotes.js` inexistent.
-- `php -l api/ranking.php`: sintaxi correcta. `node --check` sobre tots els fitxers `js/*.js`:
-  sintaxi correcta.
-- `node --experimental-default-type=module --test tests/*.test.mjs`: **92 tests, 92 passats,
-  0 fallats** (69 d'abans + 23 de 3A).
+  `api/ranking.php` absent, taules inexistents i `js/paraulotes.js` inexistent; la 3B inicial
+  fallava amb `Cannot find module .../js/ranking.js`; les correccions han fallat primer amb 7 tests
+  nous (avís 📡, ressaltat per posició, missatge persistent, cursa de pestanyes i versió).
+- `php -l api/ranking.php`: sintaxi correcta. `node --check` sobre tots els fitxers `js/*.js` i
+  `tests/*.mjs`: sintaxi correcta.
+- `node --experimental-default-type=module --test tests/*.test.mjs`: **123 tests, 123 passats,
+  0 fallats** (93 d'abans + 30 de 3B).
 - El test de 3A arrenca `php -S 127.0.0.1:8082 -t www/phrasalverbs` amb `PHRASAL_DB` dins
   `tests/tmp/`, simula el temps modificant `partides.inici` amb `php -r` i PDO, atura el servidor
   i esborra la base en acabar.
@@ -212,6 +250,44 @@ del rànquing i filtre de paraulotes) implementada i provada. No s'han fet commi
 - [x] Test: `posicioSetmana` i `posicioSempre` amb el mateix criteri d'empat.
 - [x] Test: llista de paraulotes idèntica a `js/paraulotes.js` i `api/ranking.php`.
 
+## Criteris d'acceptació 3B (petició actual)
+
+- [x] Test: URL relativa `api/ranking.php`, sense `/phrasalverbs` ni domini.
+- [x] Test: `fetch` injectable, amb `globalThis.fetch` per defecte.
+- [x] Test: timeout de 5 s amb `AbortController`; errors de xarxa i respostes no JSON →
+      `{ ok: false, error: 'sense_connexio' }` sense llançar.
+- [x] Test: `top('setmana')` afegeix `&t=${Date.now()}` i `top('sempre')` no afegeix cap `t`.
+- [x] Test: token demanat en començar partida; sense token, Game Over mostra l'avís `📡`.
+- [x] Test: `joc.resultat()` i `joc.marcaGuardat()`; doble clic a OK no envia dues vegades.
+- [x] Test: inicials precarregades, `A_B` invàlid, `AB___` desa `AB` i `PUTO` mostra
+      `😇 Ups! Prova unes altres inicials`.
+- [x] Test: errors `inicials_invalides`, `temps_invalid`, `token_invalid` i `sense_connexio` amb
+      els missatges exactes.
+- [x] Test: llista top 10 amb posats, punts i data; fila pròpia ressaltada; pestanya setmana/sempre.
+- [x] Test: sense connexió mostra `📡 Sense connexió. Mostrem només els teus rècords`.
+- [x] Test: rècords locals top 5 i `#ranking` buit mostra el missatge d'estat buit.
+- [x] Test: `<img src=x onerror=alert(1)>` no injecta HTML ni esdeveniments.
+- [x] Test: HTML amb `#inicials`, `#ranking`, IDs i `data-ruta="#ranking"`, app amb
+      `PANTALLES` i rànquing, CSS amb `scanlines` i `repeating-linear-gradient`.
+- [x] Test: cap `?v=8` ni `?v=9` a `index.html`, CSS ni app; imports a `?v=10`.
+- [x] Test: `top()` porta `&t=` tant a `setmana` com a `sempre`.
+- [x] Test: `guarda()` fa `POST` amb JSON (no `GET`/query).
+
+## Correcció de la 3B (2026-11-25)
+
+- Ressaltat per posició: `enDesat` passa `posicioSetmana` i `posicioSempre` a `ranking.prepara()`;
+  `creaFila()` només afegeix `ressaltada` a la fila `index + 1 === posició` del període mostrat i
+  només si la posició és entre 1 i 10. Dues files amb les mateixes inicials ja no parpellegen totes.
+- El ressaltat s'esborra en entrar a `#ranking` des de l'Inici; es manté mentre es canvia de
+  pestanya dins d'aquesta visita, perquè les dues posicions són desades i s'usen segons el període.
+- `🏆 Ets el número N de la setmana!` es mostra a la primera entrada després de guardar i es buida
+  en qualsevol altra entrada a `#ranking`.
+- `configuraBotoGuardar()` de `js/joc.js` buida i amaga `#gameover-ranking-avis`; com es crida a
+  `reinicia()`, qualsevol partida nova esborra l'avís `📡`.
+- `iniciaRanking.mostra()` té un comptador de seqüència: les respostes que arriben després d'una
+  crida més recent es descarten, així clicar setmana i sempre ràpidament no sobreescriu la llista.
+- Versions pujades a `?v=10` arreu. No s'han tocat `api/ranking.php` ni `js/paraulotes.js`.
+
 ## Revisió de Claude de la 2C (2026-11-25)
 
 - `js/app.js` passa `leitner: () => estat.leitner` i `js/joc.js` accepta un objecte o una funció.
@@ -222,10 +298,8 @@ del rànquing i filtre de paraulotes) implementada i provada. No s'han fet commi
 
 ## Pendent (no fet ara)
 
-- Fase 3B: pantalles `#inicials` i `#ranking`, `js/ranking.js`, connexió del botó
-  "🏆 Guardar al rànquing" i pujada de versió a `index.html`. De moment aquell botó només mostra
-  l'avís "Properament", tal com demana la 2D.
 - Fase 4: ronda bonus i poliment.
+- Verificació opcional en navegador real i a Aruba (ara només s'han provat tests, sintaxi i HTTP).
 - Fase 5: PWA.
 - Fase 6: script de desplegament (sense executar-lo).
 - No s'han fet commits ni desplegaments.

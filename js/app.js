@@ -1,10 +1,11 @@
-import { carregaConjunt, comptaPerVerb } from './dades.js?v=8';
-import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=8';
-import { iniciaRepas } from './repas.js?v=8';
-import { iniciaJoc } from './joc.js?v=8';
-import { creaSo } from './so.js?v=8';
+import { carregaConjunt, comptaPerVerb } from './dades.js?v=11';
+import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=11';
+import { iniciaRepas } from './repas.js?v=11';
+import { iniciaJoc } from './joc.js?v=11';
+import { creaSo } from './so.js?v=11';
+import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=11';
 
-const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'progres'];
+const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'inicials', 'ranking', 'progres'];
 const NOMBRE = new Intl.NumberFormat('ca-ES');
 const estat = carregaEstat();
 const so = creaSo({ activat: () => estat.so });
@@ -12,6 +13,22 @@ let conjunt = null;
 let repas = null;
 let joc = null;
 let modalAccio = null;
+const clientRanking = creaClientRanking();
+const ranking = iniciaRanking({ estat, client: clientRanking });
+const inicials = iniciaInicials({
+  estat,
+  client: clientRanking,
+  desa,
+  partida: () => joc?.resultat() ?? null,
+  navega: (hash) => { location.hash = hash; },
+  enDesat: ({ posicioSetmana, posicioSempre }) => ranking.prepara({
+    periode: 'setmana',
+    posicioSetmana,
+    posicioSempre
+  }),
+  marcaGuardat: () => joc?.marcaGuardat(),
+  avisa
+});
 let ultimFocus = null;
 let tempsAvis;
 
@@ -134,6 +151,8 @@ function mostraPantalla() {
   if (activa === 'joc') joc?.mostra();
   if (activa === 'progres') renderProgres();
   if (activa === 'repas') repas?.mostra();
+  if (activa === 'inicials') inicials.mostra();
+  if (activa === 'ranking') ranking.mostra();
   if (activa === 'inici') renderResum();
 }
 
@@ -152,6 +171,7 @@ async function carregaDades() {
       estat: () => estat,
       desa,
       so,
+      demanaToken: () => clientRanking.demanaToken(),
       navega: (hash) => { location.hash = hash; }
     });
     renderResum();
@@ -204,7 +224,23 @@ node('gameover-repassa').addEventListener('click', () => {
 });
 
 node('gameover-ranking').addEventListener('click', () => {
-  avisProperament('rànquing');
+  const partida = joc?.resultat();
+  if (!partida) {
+    avisProperament('rànquing');
+    return;
+  }
+  if (partida.guardat) return;
+  const avis = node('gameover-ranking-avis');
+  if (!partida.token) {
+    const text = '📡 Sense connexió: la puntuació només s’ha guardat al teu dispositiu';
+    avis.textContent = text;
+    avis.hidden = false;
+    avisa(text);
+    return;
+  }
+  avis.textContent = '';
+  avis.hidden = true;
+  location.hash = '#inicials';
 });
 
 node('boto-esborra').addEventListener('click', () => {

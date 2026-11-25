@@ -6,9 +6,9 @@ import {
   generaPreguntaC,
   multiplicador,
   puntsEncert
-} from './preguntes.js?v=8';
-import { estatPerDefecte, registraPartida } from './progres.js?v=8';
-import { creaSo } from './so.js?v=8';
+} from './preguntes.js?v=11';
+import { estatPerDefecte, registraPartida } from './progres.js?v=11';
+import { creaSo } from './so.js?v=11';
 
 const DURADA_MS = DURADA_SEGONS * 1000;
 const PAUSA_ENCERT_MS = 400;
@@ -50,6 +50,7 @@ export function iniciaJoc({
   estat = null,
   desa = () => {},
   so = null,
+  demanaToken = null,
   redueixMoviment = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 } = {}) {
   const node = (id) => dom.getElementById(id);
@@ -71,6 +72,9 @@ export function iniciaJoc({
   let millorRatxa = 0;
   let preguntesFetes = 0;
   let pregunta = null;
+  let token = null;
+  let guardat = false;
+  let generacio = 0;
   const usats = new Set();
   const fallats = new Set();
   const comptadorIds = [];
@@ -81,6 +85,27 @@ export function iniciaJoc({
 
   function cancelaComptador() {
     while (comptadorIds.length > 0) rellotge.cancela(comptadorIds.pop());
+  }
+
+  function configuraBotoGuardar() {
+    const boto = node('gameover-ranking');
+    if (!boto) return;
+    boto.disabled = guardat;
+    boto.textContent = guardat ? '✅ Guardat al rànquing' : '🏆 Guardar al rànquing';
+    const avis = node('gameover-ranking-avis');
+    if (avis) {
+      avis.textContent = '';
+      avis.hidden = true;
+    }
+  }
+
+  function resultat() {
+    return { punts, encerts, token, guardat };
+  }
+
+  function marcaGuardat() {
+    guardat = true;
+    configuraBotoGuardar();
   }
 
   function comptaPunts(total) {
@@ -342,6 +367,20 @@ export function iniciaJoc({
     preguntesFetes = 0;
     usats.clear();
     pregunta = null;
+    token = null;
+    guardat = false;
+    const meva = ++generacio;
+    configuraBotoGuardar();
+    if (typeof demanaToken === 'function') {
+      try {
+        Promise.resolve(demanaToken()).then((resposta) => {
+          if (generacio !== meva || acabat || !resposta?.ok || typeof resposta.token !== 'string') return;
+          token = resposta.token;
+        }).catch(() => {});
+      } catch {
+        token = null;
+      }
+    }
     actiu = true;
     acabat = false;
     bloquejat = false;
@@ -368,5 +407,5 @@ export function iniciaJoc({
     navega('#joc');
   });
 
-  return { mostra, atura, fallats: () => [...fallats] };
+  return { mostra, atura, fallats: () => [...fallats], resultat, marcaGuardat };
 }
