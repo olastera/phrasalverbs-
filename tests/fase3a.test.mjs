@@ -176,19 +176,19 @@ test('XFUCK és rebutjat amb inicials_invalides al servidor', async () => {
 });
 
 test('teParaulota detecta PUTO i XFUCK', async () => {
-  const { teParaulota } = await import('../js/paraulotes.js?v=15');
+  const { teParaulota } = await import('../js/paraulotes.js?v=16');
   assert.equal(teParaulota('PUTO'), true);
   assert.equal(teParaulota('XFUCK'), true);
   assert.equal(teParaulota('OSCAR'), false);
 });
 
 test('normalitzaInicials treu els accents', async () => {
-  const { normalitzaInicials } = await import('../js/paraulotes.js?v=15');
+  const { normalitzaInicials } = await import('../js/paraulotes.js?v=16');
   assert.equal(normalitzaInicials('òscar'), 'OSCAR');
 });
 
 test('normalitzaInicials deixa només lletres i màxim cinc', async () => {
-  const { normalitzaInicials } = await import('../js/paraulotes.js?v=15');
+  const { normalitzaInicials } = await import('../js/paraulotes.js?v=16');
   assert.equal(normalitzaInicials('a1b-c'), 'ABC');
   assert.equal(normalitzaInicials('abcdefg'), 'ABCDE');
 });

@@ -9,7 +9,7 @@
   <title>🦸 Phrasal Hero</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="css/estils.css?v=15">
+  <link rel="stylesheet" href="css/estils.css?v=16">
 </head>
 <body>
   <div class="fons" aria-hidden="true">
@@ -34,6 +34,7 @@
         <button type="button" class="boto boto-repassar" data-ruta="#repas">📚 <span>Repassar</span></button>
         <button type="button" class="boto boto-jugar" data-ruta="#joc">🎮 <span>Jugar</span></button>
         <button type="button" class="boto boto-ranking" data-ruta="#ranking">🏆 <span>Rànquing</span></button>
+        <button type="button" class="boto boto-diccionari" data-ruta="#diccionari">📖 <span>Diccionari</span></button>
       </div>
 
       <button type="button" id="resum-inici" class="resum-inici">
@@ -47,6 +48,10 @@
         📡 No s'han pogut carregar les targetes. Comprova la connexió i torna-ho a provar.
       </p>
       <button type="button" id="boto-retry" class="boto boto-petit" hidden>🔁 Torna-ho a provar</button>
+
+      <footer class="peu">
+        © 2026 <a href="https://www.iespai.com/" target="_blank" rel="noopener">Iespai</a>
+      </footer>
     </section>
 
     <section id="repas" class="pantalla" hidden aria-labelledby="titul-repas">
@@ -212,6 +217,23 @@
       <div id="ranking-records" class="ranking-records"></div>
     </section>
 
+    <section id="diccionari" class="pantalla" hidden aria-labelledby="titul-diccionari">
+      <div class="capcapantalla">
+        <h2 id="titul-diccionari">📖 Diccionari</h2>
+        <a class="boto-tornar" href="#inici">← Inici</a>
+      </div>
+      <p class="pista">Cerca per anglès, català o sinònim. Tots els <strong>161 phrasals</strong> al teu abast. 🔍</p>
+      <input id="diccionari-cerca" class="diccionari-cerca" type="search" placeholder="Busca en anglès o en català…" autocomplete="off" enterkeyhint="search" aria-label="Cerca phrasals">
+      <button type="button" id="diccionari-filtres-boto" class="boto boto-petit boto-filtres" aria-controls="diccionari-filtres" aria-expanded="false">🎛️ Filtres</button>
+      <div id="diccionari-filtres" class="filtres" hidden></div>
+      <div class="diccionari-accions">
+        <span id="diccionari-compta" class="diccionari-compta" aria-live="polite"></span>
+        <button type="button" id="diccionari-repassa" class="boto boto-principal">📚 Repassa aquests</button>
+      </div>
+      <div id="diccionari-llista" class="diccionari-llista"></div>
+      <p id="diccionari-buit" class="diccionari-buit" hidden><span id="diccionari-buit-query"></span></p>
+    </section>
+
     <section id="progres" class="pantalla" hidden aria-labelledby="titul-progres">
       <div class="capcapantalla">
         <h2 id="titul-progres">📊 Progrés</h2>
@@ -241,6 +263,6 @@
 
   <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
 
-  <script type="module" src="js/app.js?v=15"></script>
+  <script type="module" src="js/app.js?v=16"></script>
 </body>
 </html>

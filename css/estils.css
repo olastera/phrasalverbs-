@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../fonts/press-start-2p-400-latin.woff2?v=15') format('woff2');
+  src: url('../fonts/press-start-2p-400-latin.woff2?v=16') format('woff2');
 }
 
 @font-face {
@@ -11,7 +11,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=15') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=16') format('woff2');
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=15') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=16') format('woff2');
 }
 
 @font-face {
@@ -27,7 +27,7 @@
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=15') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=16') format('woff2');
 }
 
 :root {
@@ -185,7 +185,8 @@ a { color: var(--cian); }
 
 .menu-principal {
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .boto {
@@ -555,6 +556,23 @@ kbd {
 .resum-text { font-size: clamp(18px, 5vw, 24px); }
 
 .resum-accions { display: grid; gap: 10px; margin-top: 20px; }
+
+.peu {
+  margin-top: 28px;
+  color: var(--text-suau);
+  text-align: center;
+  font-size: 12px;
+  opacity: .75;
+}
+
+.peu a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.peu a:hover,
+.peu a:focus-visible { color: var(--cian); }
 
 .subtitul-seccio {
   margin: 24px 0 12px;
@@ -1114,8 +1132,101 @@ kbd {
   text-align: center;
 }
 
+.boto-diccionari { border-color: #b98cff; color: #d9b8ff; box-shadow: 0 6px 0 #3a1a66, 0 0 18px rgba(185, 140, 255, .25); }
+.boto-filtres { width: 100%; margin-bottom: 10px; }
+.diccionari-cerca {
+  width: 100%;
+  min-height: 48px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border: 2px solid rgba(0, 229, 255, .5);
+  border-radius: var(--radi);
+  background: rgba(5, 1, 15, .7);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+}
+.diccionari-cerca::placeholder { color: var(--text-suau); }
+.diccionari-accions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.diccionari-compta { color: var(--cian); font-size: 13px; font-weight: 900; }
+.diccionari-accions .boto { flex: 0 1 auto; padding-inline: 12px; font-size: 14px; }
+.diccionari-llista { display: grid; gap: 8px; }
+.diccionari-entrada {
+  min-width: 0;
+  border: 1px solid rgba(0, 229, 255, .22);
+  border-radius: 14px;
+  background: rgba(29, 17, 71, .78);
+}
+.diccionari-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 0;
+  border-radius: 14px 14px 0 0;
+  background: transparent;
+  text-align: left;
+}
+.diccionari-fila-cap { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.diccionari-phrasal {
+  min-width: 0;
+  color: var(--groc);
+  font-size: 16px;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+.diccionari-caixa { flex: 0 0 auto; font-size: 18px; }
+.diccionari-significat {
+  grid-column: 1 / -1;
+  min-width: 0;
+  color: var(--text-suau);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.diccionari-fitxa {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px 14px;
+  border-top: 1px dashed rgba(0, 229, 255, .25);
+}
+.diccionari-fitxa-cap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.diccionari-fitxa p { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.diccionari-exemple { color: var(--text); font-size: 14px; }
+.diccionari-exemple strong { color: var(--groc); }
+.boto-veu {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 4px 8px;
+  border: 1px solid rgba(0, 229, 255, .45);
+  border-radius: 999px;
+  background: rgba(0, 229, 255, .1);
+}
+.diccionari-etiquetes { display: flex; flex-wrap: wrap; gap: 6px; }
+.diccionari-etiquetes .etiqueta {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(185, 140, 255, .16);
+  color: var(--text);
+  font-size: 12px;
+}
+.diccionari-estrella { justify-self: start; min-width: 46px; min-height: 46px; }
+.diccionari-semblants { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.diccionari-semblants p { width: 100%; color: var(--rosa); font-size: 12px; font-weight: 900; }
+.diccionari-buit { padding: 24px 12px; color: var(--text-suau); text-align: center; }
+
 @media (min-width: 600px) {
-  .menu-principal { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .menu-principal { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
   .boto-jugar { font-size: 15px; }
   .accions-targeta { max-width: 560px; margin-inline: auto; }
   .joc-opcions { max-width: 560px; margin-inline: auto; }
@@ -1125,6 +1236,10 @@ kbd {
 @media (max-width: 360px) {
   .boto { padding-inline: 10px; }
   .cara { padding-inline: 12px; }
+  .menu-principal { gap: 8px; }
+  .diccionari-accions { flex-wrap: wrap; }
+  .diccionari-accions .boto { width: 100%; }
+  .diccionari-fila { padding: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

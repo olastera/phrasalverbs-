@@ -64,7 +64,7 @@
 | **4B** | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ✅ Feta, revisada i provada al mòbil (commit `103eed4`) |
 | **5** | PWA (manifest, service worker, icones) | ✅ Feta, revisada i provada al mòbil (commit `e12e6ff`) |
 | **6** | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ✅ Feta i **desplegada** el 2026-11-25 (26 fitxers, 6/6 comprovacions HTTP OK); provada al mòbil a producció |
-| **7** | Diccionari 📖: cerca ca/en, filtres, fitxa, ⭐, 🔊 pronunciació, 🔗 semblants, "Repassa aquests" | ⏭️ **Encàrrec preparat** (vegeu a sota) |
+| **7** | Diccionari 📖: cerca ca/en, filtres, fitxa, ⭐, 🔊 pronunciació, 🔗 semblants, "Repassa aquests" | ✅ Feta, revisada, provada al mòbil i desplegada (2026-11-25) |
 | Futur | Connectors, codi de classe al rànquing, mode examen | ⬜ |
 
 ## 🔍 Errors trobats a les revisions (perquè no tornin)
@@ -104,6 +104,11 @@
 
 - Icones (5): Pillow no llegeix `.woff2` i va caure a la font per defecte → "P" blanca i deformada.
   **Solució (Claude):** la "P" es dibuixa en pixel-art amb rectangles a `tools/gen_icones.py`.
+
+- Diccionari (7): el menú de l'Inici amb 4 botons es va posar en 4 columnes també al mòbil (no hi
+  cabien). **Correcció (Claude):** 2×2 al mòbil i 4 en fila a partir de 600 px. També: un
+  `return` dins d'un `catch` podia deixar el diccionari sense iniciar; la veu ara tria `en-GB` i,
+  si no n'hi ha, qualsevol `en-*`; el missatge de "cap resultat" ja diu "Prova-ho en anglès o en català".
 
 ## 🧪 Com provar
 

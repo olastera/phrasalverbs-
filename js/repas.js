@@ -1,12 +1,10 @@
-import {
-  TEMES, NIVELLS, comptaPerTema, comptaPerVerb,
-  filtraConjunt, ordenaPerLeitner
-} from './dades.js?v=15';
+import { TEMES, filtraConjunt, ordenaPerLeitner } from './dades.js?v=16';
 import {
   actualitzaLeitner, alternaPreferit, desaRepasEnCurs,
   llegeixRepasEnCurs, registraActivitat
-} from './progres.js?v=15';
-import { fraseEncert, fraseError } from './frases.js?v=15';
+} from './progres.js?v=16';
+import { fraseEncert, fraseError } from './frases.js?v=16';
+import { pintaExempleMarcat, renderFiltres } from './filtres.js?v=16';
 
 const LIMIT = 20;
 
@@ -65,58 +63,17 @@ export function iniciaRepas({ estat, phrasals, desa, avisa, aleatori = Math.rand
     desa();
   }
 
-  function creaXip(valor, etiqueta, comptatge) {
-    const boto = document.createElement('button');
-    boto.type = 'button';
-    boto.className = 'xip';
-    boto.dataset.filtre = valor;
-    boto.setAttribute('aria-pressed', String(valor === filtre));
-    boto.append(document.createTextNode(etiqueta));
-    if (comptatge !== undefined) {
-      const compte = document.createElement('span');
-      compte.className = 'xip-compta';
-      compte.textContent = ` ${comptatge}`;
-      boto.append(compte);
-    }
-    boto.addEventListener('click', () => {
-      filtre = valor;
-      elements.filtres.querySelectorAll('.xip').forEach((xip) => {
-        xip.setAttribute('aria-pressed', String(xip.dataset.filtre === filtre));
-      });
-      actualitzaComptador();
+  function actualitzaFiltres() {
+    renderFiltres({
+      contenidor: elements.filtres,
+      phrasals,
+      estat,
+      filtre,
+      enCanvi: (valor) => {
+        filtre = valor;
+        actualitzaComptador();
+      }
     });
-    return boto;
-  }
-
-  function creaGrup(titol, opcions) {
-    const grup = document.createElement('div');
-    grup.className = 'grup-filtres';
-    const etiqueta = document.createElement('p');
-    etiqueta.className = 'grup-titol';
-    etiqueta.textContent = titol;
-    grup.append(etiqueta, ...opcions.map((opcio) => creaXip(...opcio)));
-    return grup;
-  }
-
-  function renderFiltres() {
-    const fallatsCount = filtraConjunt(phrasals, 'fallats', estat).length;
-    const preferitsCount = filtraConjunt(phrasals, 'favorits', estat).length;
-    elements.filtres.replaceChildren(
-      creaGrup('🎯 Resultats', [
-        ['tots', '🌐 Tots', phrasals.length],
-        ['favorits', '⭐ Els meus', preferitsCount],
-        ['fallats', '😵 Els que fallo', fallatsCount]
-      ]),
-      creaGrup('🔤 Per verb base', comptaPerVerb(phrasals).map((v) => [
-        `verb:${v.valor}`, v.valor, v.quantitat
-      ])),
-      creaGrup('🏷️ Per tema', comptaPerTema(phrasals).map((t) => [
-        `tema:${t.valor}`, t.etiqueta, t.quantitat
-      ])),
-      creaGrup('📈 Per nivell', [1, 2, 3].map((n) => [
-        `nivell:${n}`, NIVELLS[n], filtraConjunt(phrasals, `nivell:${n}`, estat).length
-      ]))
-    );
     actualitzaComptador();
   }
 
@@ -131,7 +88,7 @@ export function iniciaRepas({ estat, phrasals, desa, avisa, aleatori = Math.rand
     elements.sessio.hidden = true;
     elements.resum.hidden = true;
     elements.continua.hidden = true;
-    renderFiltres();
+    actualitzaFiltres();
   }
 
   function mostraBanner(sessioDesada) {
@@ -165,13 +122,7 @@ export function iniciaRepas({ estat, phrasals, desa, avisa, aleatori = Math.rand
     elements.tema.textContent = TEMES[actual.tema] ?? actual.tema;
     elements.traduccio.textContent = actual.traduccio;
 
-    const trossos = actual.exempleMarcat.split('**');
-    elements.exemple.replaceChildren(...trossos.map((tros, index) => {
-      if (index % 2 === 0) return document.createTextNode(tros);
-      const fort = document.createElement('strong');
-      fort.textContent = tros;
-      return fort;
-    }));
+    pintaExempleMarcat(elements.exemple, actual.exempleMarcat);
 
     const preferit = estat.preferits.includes(actual.id);
     elements.estrella.textContent = preferit ? '🌟' : '⭐';

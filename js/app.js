@@ -1,16 +1,18 @@
-import { carregaConjunt, comptaPerVerb } from './dades.js?v=15';
-import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=15';
-import { iniciaRepas } from './repas.js?v=15';
-import { iniciaJoc } from './joc.js?v=15';
-import { creaSo } from './so.js?v=15';
-import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=15';
+import { carregaConjunt, comptaPerVerb } from './dades.js?v=16';
+import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=16';
+import { iniciaRepas } from './repas.js?v=16';
+import { iniciaDiccionari } from './diccionari.js?v=16';
+import { iniciaJoc } from './joc.js?v=16';
+import { creaSo } from './so.js?v=16';
+import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=16';
 
-const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'inicials', 'ranking', 'progres'];
+const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'inicials', 'ranking', 'diccionari', 'progres'];
 const NOMBRE = new Intl.NumberFormat('ca-ES');
 const estat = carregaEstat();
 const so = creaSo({ activat: () => estat.so });
 let conjunt = null;
 let repas = null;
+let diccionari = null;
 let joc = null;
 let modalAccio = null;
 const clientRanking = creaClientRanking();
@@ -151,6 +153,7 @@ function mostraPantalla() {
   if (activa === 'joc') joc?.mostra();
   if (activa === 'progres') renderProgres();
   if (activa === 'repas') repas?.mostra();
+  if (activa === 'diccionari') diccionari?.mostra();
   if (activa === 'inicials') inicials.mostra();
   if (activa === 'ranking') ranking.mostra();
   if (activa === 'inici') renderResum();
@@ -165,6 +168,15 @@ async function carregaDades() {
     node('error-dades').hidden = true;
     node('boto-retry').hidden = true;
     repas = iniciaRepas({ estat, phrasals: conjunt.phrasals, desa, avisa });
+    diccionari = iniciaDiccionari({
+      estat,
+      phrasals: conjunt.phrasals,
+      desa,
+      avisa,
+      navega: (hash) => { location.hash = hash; },
+      repas,
+      aleatori: Math.random
+    });
     joc = iniciaJoc({
       phrasals: conjunt.phrasals,
       leitner: () => estat.leitner,
@@ -280,7 +292,7 @@ window.addEventListener('hashchange', mostraPantalla);
 function registraServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   try {
-    const registre = navigator.serviceWorker.register('sw.js?v=15');
+    const registre = navigator.serviceWorker.register('sw.js?v=16');
     registre.catch((error) => console.warn('SW no registrat', error));
   } catch (error) {
     console.warn('SW no registrat', error);

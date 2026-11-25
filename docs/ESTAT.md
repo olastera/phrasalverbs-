@@ -1,20 +1,22 @@
-# Estat: Fase 1 + 2A-2D + 3A-3B + 4A-4B + 5 (PWA) + 6 (desplegament)
+# Estat: Fase 1 + 2A-2D + 3A-3B + 4A-4B + 5 (PWA) + 6 (script de desplegament) + 7 (diccionari)
 
-Estat: fases 1-5 acabades i Fase 6 (script de desplegament) implementada i provada en mode
-`--prova`. No s'han fet commits ni desplegaments. `contingut/phrasals.json` i
-`contingut/connectors.json` no s'han tocat. Tampoc no s'han tocat `api/ranking.php`,
-`js/paraulotes.js`, `js/ranking.js` ni cap regla de joc.
+Estat: fases 1-7 acabades. Fase 6 (script de desplegament) implementada i provada en mode
+`--prova`; Fase 7 (diccionari) implementada i provada amb tests. No s'han fet commits ni
+desplegaments. `contingut/phrasals.json` i `contingut/connectors.json` no s'han tocat. Tampoc no
+s'han tocat `api/ranking.php`, `js/paraulotes.js`, `js/ranking.js` ni cap regla de joc.
 
 ## Versions
 
-- Versió estàtica actual: **`?v=15`** a `index.html`, `css/estils.css` (fonts incloses), tots els
-  imports JS i les URLs dels tests. `js/app.js` importa `js/ranking.js?v=15`; `js/ranking.js` no
+- Versió estàtica actual: **`?v=16`** a `index.html`, `css/estils.css` (fonts incloses), tots els
+  imports JS i les URLs dels tests. `js/app.js` importa `js/ranking.js?v=16`; `js/ranking.js` no
   s'ha tocat per restricció explícita i conserva `js/paraulotes.js?v=12`.
-- Service worker: memòria cau **`phrasalhero-v15`**, fitxer `sw.js?v=15`, registrat després de
-  `load` només si `navigator.serviceWorker` existeix, dins `try/catch`.
+- Service worker: memòria cau **`phrasalhero-v16`**, fitxer `sw.js?v=16`, registrat després de
+  `load` només si `navigator.serviceWorker` existeix, dins `try/catch`. El shell inclou
+  `js/diccionari.js?v=16` i `js/filtres.js?v=16`.
 - **`VERSIO_DADES` és 3** (`contingut/phrasals.json?v=3`). Si canvien `contingut/*.json`, cal
   pujar `VERSIO_DADES` i la referència corresponent a `sw.js`.
 - Comanda de tests: `node --experimental-default-type=module --test tests/*.test.mjs`.
+  Resultat final: **184 tests, 184 passats, 0 fallats** (158 anteriors + 26 de Fase 7).
 
 ## Fase 1 (recordatori)
 
@@ -380,13 +382,6 @@ Estat: fases 1-5 acabades i Fase 6 (script de desplegament) implementada i prova
 - No s'han tocat regles ni puntuació, ni `api/ranking.php`, `js/paraulotes.js`, `js/ranking.js` ni
   `contingut/*.json`. No s'han fet commits ni desplegaments.
 
-## Pendent (no fet ara)
-
-- Verificació opcional en navegador real i a Aruba (ara només s'han provat tests, sintaxi i HTTP).
-- Fase 5: PWA.
-- Fase 6: script de desplegament (sense executar-lo).
-- No s'han fet commits ni desplegaments.
-
 ## Revisió de Claude de la 2D (2026-11-25)
 
 - `js/app.js`: el so es desperta amb `pointerup`, `touchend`, `click` i `keydown` (abans només
@@ -478,8 +473,60 @@ Per al desplegament (Fase 6): a Aruba, `api/dades/` ha de tenir permís d'escrip
   **158 tests, 158 passats, 0 fallats**.
 - No s'ha executat l'script sense `--prova`; no s'ha fet cap desplegament ni commit.
 
+## Fase 7: Diccionari 📖 (2026-11-25)
+
+- `js/diccionari.js` (nou): funcions pures `normalitza()`, `cercaPhrasals()` i `semblants()`, i
+  `iniciaDiccionari()` per al DOM.
+  - `normalitza()` passa a minúscules, treu diacrítics amb NFD, converteix `l·l` en `ll` i
+    transforma guions, apòstrofs i puntuació en espais.
+  - `cercaPhrasals()` retorna tots els phrasals en ordre alfabètic si la consulta és buida; si no,
+    ordena per rellevància: prefix de `phrasal`, `phrasal` conté, `sinonim`, `significat`,
+    `exemple` i `traduccio`.
+  - `semblants()` uneix `similars` en els dos sentits, sense repetits, sense ell mateix i ignorant
+    ids inexistents.
+- `js/filtres.js` (nou): `pintaExempleMarcat()` i `renderFiltres()` extrets de `js/repas.js`;
+  Repassar conserva el mateix aspecte i comportament i ja no duplica els xips.
+- `index.html`: quart botó `📖 Diccionari` a `.menu-principal` i secció `#diccionari` amb camp de
+  cerca, xips plegats sota `🎛️ Filtres`, comptador, botó `📚 Repassa aquests` i llista.
+- `js/app.js`: `PANTALLES` inclou `diccionari`, crida `diccionari?.mostra()` en entrar-hi i
+  inicialitza el mòdul amb `estat`, `phrasals`, `desa`, `avisa`, `navega`, `repas` i `Math.random`.
+- `css/estils.css`: estils del diccionari, fitxa desplegable i botons de veu; `.menu-principal`
+  passa a 4 columnes i a 360 px manté els botons còmodes sense scroll horitzontal.
+- `sw.js`: memòria cau `phrasalhero-v16`, referències `?v=16` i nous mòduls al shell. Tot el
+  projecte està a `?v=16`; `VERSIO_DADES` segueix sent `3`.
+- Cerca i filtre es combinen (primer filtre, després cerca); `Esc` buida la cerca. Cada fila és un
+  `button[aria-expanded]` amb emoji de Leitner; només una fitxa oberta alhora.
+- La fitxa mostra significat, sinònim, exemple amb negreta, traducció, etiquetes de tema/nivell i
+  caixa Leitner. ⭐ crida `alternaPreferit()` i desa; la fila i el filtre s'actualitzen.
+- 🔊 pronunciació amb `speechSynthesis`, `lang="en-GB"` i `rate=0.9`, amb `cancel()` previ; els
+  botons només apareixen si hi ha síntesi i alguna veu anglesa, inclosa l'arribada tardana de
+  `voiceschanged`. No depèn del so del joc i tot és dins `try/catch`.
+- 🔗 "Es confon amb:" obre la fitxa del semblant, buida cerca i filtre si cal i fa
+  `scrollIntoView({ block: 'nearest' })`.
+- `📚 Repassa aquests` fa `ordenaPerLeitner(resultats, estat.leitner, 20)`, obre `#repas` i crida
+  `repas.comenca(ids, 'diccionari')`; sense resultats resta desactivat.
+- La consulta i el filtre no es desen. Consultar no toca la caixa Leitner ni desa res; només els
+  preferits passen per `js/progres.js`. Cap `innerHTML` ni `localStorage` al codi nou.
+
+### Proves Fase 7
+
+- `node --check` sobre `js/*.js` i `tests/*.mjs`: sintaxi correcta.
+- `node --experimental-default-type=module --test tests/fase7.test.mjs`: **26 tests, 26 passats,
+  0 fallats**.
+- `node --experimental-default-type=module --test tests/*.test.mjs`: **184 tests, 184 passats,
+  0 fallats**, codi de sortida `0` (158 anteriors + 26 nous).
+- Els tests nous cobreixen `normalitza`, rellevància de cerca, consulta buida (161; primer
+  `back up`, perquè `add up` no existeix a les dades), `semblants` simètric, HTML, CSS a 360 px,
+  `sw.js`, xips, fitxa, ⭐, veu, 🔗, `Repassa aquests`, `textContent` i no desar en consultar.
+- RED inicial verificat abans de la implementació amb els 26 tests nous fallants. Correccions de
+  dades de test: `normalitza('ÀÉÍÓÚÇÑ') === 'aeioucn'`, prioritat d'`exemple` sobre `traduccio` i
+  `semblants(phrasals, 'b') === ['a']` amb les dades sintètiques del test.
+- No s'ha provat en navegador real: la verificació és de tests, sintaxi i lectura de fitxers.
+
 ## Pendent
 
 - Desplegament real per part d'en Oscar (`./deploy-phrasalverbs.sh`, sense `--prova`).
-- Verificació manual opcional en navegador real/PWA i de les comprovacions HTTP a Aruba.
+- Proves manuals opcionals al navegador real/PWA i de les comprovacions HTTP a Aruba. A la Fase 7:
+  cerca, filtres, fitxa, ⭐, 🔊, 🔗, "Repassa aquests", 360 px i mode avió.
+- No s'han fet commits ni desplegaments.
 

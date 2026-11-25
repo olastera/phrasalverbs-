@@ -1,5 +1,5 @@
 /* Phrasal Hero — service worker (fase 5) */
-const CACHE = 'phrasalhero-v15';
+const CACHE = 'phrasalhero-v16';
 const SHELL = [
   './',
   'index.html',
@@ -7,19 +7,21 @@ const SHELL = [
   'icon-192.png',
   'icon-512.png',
   'apple-touch-icon.png',
-  'css/estils.css?v=15',
-  'js/app.js?v=15',
-  'js/dades.js?v=15',
-  'js/frases.js?v=15',
-  'js/joc.js?v=15',
-  'js/paraulotes.js?v=15',
-  'js/preguntes.js?v=15',
-  'js/progres.js?v=15',
-  'js/ranking.js?v=15',
-  'js/repas.js?v=15',
-  'js/so.js?v=15',
-  'fonts/nunito-latin.woff2?v=15',
-  'fonts/press-start-2p-400-latin.woff2?v=15',
+  'css/estils.css?v=16',
+  'js/app.js?v=16',
+  'js/dades.js?v=16',
+  'js/filtres.js?v=16',
+  'js/diccionari.js?v=16',
+  'js/frases.js?v=16',
+  'js/joc.js?v=16',
+  'js/paraulotes.js?v=16',
+  'js/preguntes.js?v=16',
+  'js/progres.js?v=16',
+  'js/ranking.js?v=16',
+  'js/repas.js?v=16',
+  'js/so.js?v=16',
+  'fonts/nunito-latin.woff2?v=16',
+  'fonts/press-start-2p-400-latin.woff2?v=16',
   'contingut/phrasals.json?v=3'
 ];
 

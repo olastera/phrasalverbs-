@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const base = new URL('../js/', import.meta.url).href;
-const carrega = (nom) => import(`${base}${nom}.js?v=15`);
+const carrega = (nom) => import(`${base}${nom}.js?v=16`);
 const carregaFrases = () => carrega('frases');
 const dadesReals = JSON.parse(readFileSync(new URL('../contingut/phrasals.json', import.meta.url), 'utf8'));
 
@@ -305,7 +305,7 @@ test('Game Over mostra una frase de la llista sota el títol', async () => {
 
 test('repas.js fa servir frases.js i ja no defineix les llistes velles', () => {
   const codi = readFileSync(new URL('../js/repas.js', import.meta.url), 'utf8');
-  assert.match(codi, /frases\.js\?v=15/);
+  assert.match(codi, /frases\.js\?v=16/);
   assert.doesNotMatch(codi, /MISSATGES_OK|MISSATGES_KO/);
 });
 

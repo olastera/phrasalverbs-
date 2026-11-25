@@ -7,10 +7,10 @@ import {
   generaPreguntaC,
   multiplicador,
   puntsEncert
-} from './preguntes.js?v=15';
-import { estatPerDefecte, registraPartida } from './progres.js?v=15';
-import { creaSo } from './so.js?v=15';
-import { fraseEncert, fraseError, fraseGameOver } from './frases.js?v=15';
+} from './preguntes.js?v=16';
+import { estatPerDefecte, registraPartida } from './progres.js?v=16';
+import { creaSo } from './so.js?v=16';
+import { fraseEncert, fraseError, fraseGameOver } from './frases.js?v=16';
 
 const DURADA_MS = DURADA_SEGONS * 1000;
 const PAUSA_ENCERT_MS = 400;
