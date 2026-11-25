@@ -115,54 +115,58 @@
   no s'han de pujar a producció.
 - Opencode no pot fer proves de navegador al Pi. **Les proves visuals les fa l'Oscar.**
 
-## ⏭️ Pas següent: encàrrec per a opencode (fase 5: PWA)
+## ⏭️ Pas següent: encàrrec per a opencode (fase 6: script de desplegament)
 
-Revisat a 2026-11-25 (4B tancada, commit `103eed4`). **Fase 5 feta per opencode i revisada:**
-SW correcte (xarxa primer, `api/` sense interceptar, memòria cau `phrasalhero-v15`); icones refetes per Claude. Model: `www/volei/sw.js` (xarxa primer).
-Pillow 11.1 és al Pi, per generar les icones amb un script a `tools/`.
+Revisat a 2026-11-25 (5 tancada i provada al mòbil, commit `e12e6ff`). Des d'aquest dia el projecte té
+**repo git propi** (`www/phrasalverbs/.git`, branca `main`) i el repo d'Iespai l'ignora. L'script
+de desplegament va **fora** del repo del joc, a l'arrel d'Iespai, al costat dels altres
+`deploy-*.sh`, perquè llegeix el `.env` amb la contrasenya FTP i el joc serà públic.
+Model: `/mnt/disco/Iespai/deploy-volei.sh`.
 
 ```
-Projecte: www/phrasalverbs/. Llegeix AGENTS.md, docs/PLA.md (§1, §2, §9 i §10 Fase 5) i docs/ESTAT.md.
-NO toquis api/ranking.php, js/paraulotes.js, js/ranking.js ni contingut/*.json.
-No canviïs cap regla de joc. No facis commits ni desplegaments.
+Projecte: www/phrasalverbs/. Llegeix AGENTS.md, docs/PLA.md (§10 Fase 6) i docs/ESTAT.md.
+NO toquis cap fitxer de l'app (index.html, css/, js/, api/, contingut/, sw.js...).
+No facis commits ni desplegaments: NO executis l'script sense --prova.
 
-Fes la fase 5: PWA.
+Fes la fase 6: crea /mnt/disco/Iespai/deploy-phrasalverbs.sh copiant deploy-volei.sh.
 
-1. manifest.webmanifest (arrel): name "Phrasal Hero", short_name "Phrasal Hero",
-   display "standalone", start_url "./", scope "./", lang "ca", background_color i theme_color
-   "#120a2e", icones icon-192.png i icon-512.png (purpose "any maskable"; deixa marge segur).
-2. Icones (arrel): icon-192.png, icon-512.png i apple-touch-icon.png (180 px), generades amb un
-   script nou tools/gen_icones.py (Python + Pillow, ja instal·lat). Fons lila #120a2e amb una "P"
-   gran de neó (cian o rosa, amb resplendor) centrada dins el 60 % central. Sense emojis (Pillow
-   no els pinta bé).
-3. sw.js (arrel), basat en www/volei/sw.js:
-   - nom de la memòria cau lligat a la versió: 'phrasalhero-v14';
-   - en instal·lar, desa: './', index.html, manifest, icones, css/estils.css?v=14, tots els
-     js/*.js?v=14, les dues fonts ?v=14 i contingut/phrasals.json?v=<VERSIO_DADES>
-     (i connectors.json només si l'app ja el carrega);
-   - xarxa primer i, sense xarxa, la memòria cau (ignoreSearch) i, per a navegacions, index.html;
-   - MAI no intercepta ni desa res que passi per api/ (ni GET ni POST): fes `return` abans de
-     respondWith. Només GET del mateix origen.
-   - en activar, esborra les memòries cau velles.
-4. index.html: <link rel="manifest">, <link rel="apple-touch-icon">, meta
-   apple-mobile-web-app-capable i apple-mobile-web-app-title. Puja tot a ?v=15.
-5. app.js: registra 'sw.js?v=15' només si 'serviceWorker' in navigator, dins try/catch, després
-   del load, i sense trencar els tests (que no tenen navigator).
-   Recorda: quan canviï ?v=N, també s'ha de canviar el nom de la memòria cau i la llista de sw.js.
+1. LOCAL_DIR="$ROOT/www/phrasalverbs", REMOTE_DIR="/www.iespai.com/phrasalverbs",
+   LOG="$ROOT/deploy-phrasalverbs.log". Mantén "set ftp:ssl-allow no;" i la resta de "set".
+2. Abans de pujar res, executa els tests des de LOCAL_DIR
+   (node --experimental-default-type=module --test tests/*.test.mjs). Si en falla algun,
+   escriu-ho al log i a la pantalla i surt amb codi 1 sense pujar res.
+3. Exclusions del mirror (expressions regulars de lftp):
+   -x '^\.git' -x '^docs/' -x '^tools/' -x '^tests/' -x '^AGENTS\.md$'
+   -x '\.db$' -x '\.db-journal$' -x '\.db-wal$' -x '\.db-shm$' -x '__pycache__'
+   ⚠️ MAI no es pot pujar ni sobreescriure api/dades/ranking.db (es perdria el rànquing).
+   ⚠️ Sí que s'ha de pujar api/dades/.htaccess (protegeix la base de dades): comprova que cap
+      exclusió se l'emporta.
+   ⚠️ Sense --delete: el mirror no ha d'esborrar res del servidor.
+4. Opció --prova: fa el mateix mirror amb --dry-run (no puja res) i mostra per pantalla
+   què pujaria. Sense paràmetres, puja de debò.
+5. En acabar una pujada de debò, comprovacions amb curl (codi HTTP, seguint redireccions
+   només on calgui) i resultat OK/ERROR al log i a la pantalla:
+   - https://www.iespai.com/phrasalverbs/            → 200
+   - https://www.iespai.com/phrasalverbs/sw.js       → 200
+   - https://www.iespai.com/phrasalverbs/api/ranking.php?accio=top → 200 i JSON
+   - https://www.iespai.com/phrasalverbs/api/dades/ranking.db → NO 200
+   - https://www.iespai.com/phrasalverbs/docs/SEGUIMENT.md   → NO 200
+   - https://www.iespai.com/phrasalverbs/AGENTS.md           → NO 200
+   Si alguna comprovació falla, surt amb codi 1.
+6. chmod +x a l'script. Sense contrasenyes escrites a l'script (les llegeix del .env com
+   deploy-volei.sh).
 
-Tests obligatoris (tests/fase5.test.mjs):
-- el manifest és JSON vàlid amb els camps de l'apartat 1, i les icones existeixen amb la mida
-  correcta (llegeix l'amplada/alçada de la capçalera PNG);
-- sw.js: el nom de la memòria cau conté la mateixa versió que index.html; tots els fitxers de la
-  llista existeixen; conté una comprovació d'api/ abans de respondWith; no hi ha cap ruta absoluta
-  (cap "http" ni cap "/" al principi);
-- index.html enllaça el manifest i l'apple-touch-icon; app.js registra sw.js amb la versió actual.
-Executa tots els tests (els 152 d'abans també han de passar), actualitza docs/ESTAT.md i atura't.
+Proves que has de fer (i deixar escrites a docs/ESTAT.md):
+- bash -n deploy-phrasalverbs.sh (sintaxi);
+- ./deploy-phrasalverbs.sh --prova: copia al ESTAT.md la llista del que pujaria i comprova
+  que NO hi surten docs/, tools/, tests/, AGENTS.md ni cap .db, i que SÍ hi surt
+  api/dades/.htaccess.
+Executa tots els tests (els 158 han de passar), actualitza docs/ESTAT.md i atura't.
 ```
 
-Després de la 5: provar al mòbil (https://pi.iespai.com/phrasalverbs/): "Afegeix a la pantalla
-d'inici", s'obre sense barra del navegador, la icona es veu bé; en mode avió, l'app i el Repàs
-funcionen i el rànquing mostra l'avís 📡 (no dades velles).
+Després de la 6 (ho fa l'Oscar): `./deploy-phrasalverbs.sh` i provar
+https://www.iespai.com/phrasalverbs/ (amb la barra final: sense barra, Aruba redirigeix a http://).
+Al mòbil: instal·lar la PWA des de la URL de producció i fer una partida que entri al rànquing.
 
 ## 📌 Pendents fora del codi
 
