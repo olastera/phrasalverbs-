@@ -605,6 +605,83 @@ Crea `/mnt/disco/Iespai/deploy-phrasalverbs.sh`, copiant `deploy-volei.sh`, amb:
 
 **No despleguis tu.** Deixa l'script fet. El desplegarà l'Oscar.
 
+### Fase 7: Diccionari 📖
+Pantalla nova `#diccionari` per consultar els 161 phrasals. **Només phrasals** (els connectors
+arribaran amb la seva secció). Mòdul nou `js/diccionari.js`. No es toca `contingut/*.json`.
+
+**Accés:** quart botó "📖 Diccionari" a `.menu-principal` de l'Inici, després de Rànquing. Al mòbil
+el menú ha de quedar bé amb 4 botons (2×2 o en columna; a l'ordinador, 4 en fila o 2×2).
+
+**Capçalera:** "← Inici", títol "📖 Diccionari" i un camp de cerca `type="search"` amb el text
+"Busca en anglès o en català…" (`autocomplete="off"`, `enterkeyhint="search"`). `Esc` el buida.
+
+**Cerca** (funcions pures exportades, per poder-les provar):
+- `normalitza(text)`: minúscules, sense accents (NFD i fora els diacrítics; `l·l` → `ll`),
+  guions, apòstrofs i signes de puntuació → espai, espais repetits → un, i `trim`.
+  `"Rendir-SE!"` → `"rendir se"`.
+- `cercaPhrasals(phrasals, consulta)`: si la consulta normalitzada és buida, retorna tots per ordre
+  alfabètic de `phrasal`. Si no, busca la consulta dins de `phrasal`, `sinonim`, `significat`,
+  `exemple` i `traduccio` (tots normalitzats) i ordena per rellevància:
+  1. `phrasal` que **comença** per la consulta; 2. `phrasal` que la **conté**; 3. `sinonim`;
+  4. `significat`; 5. `exemple` o `traduccio`. Dins de cada grup, ordre alfabètic.
+- `semblants(phrasals, id)`: els phrasals relacionats amb `id` **en tots dos sentits** (els de
+  `entry.similars` més els que tenen `id` als seus `similars`), sense repetits, sense ell mateix i
+  ignorant ids que no existeixin. Ordre alfabètic.
+
+**Filtres:** els mateixos xips que a Repassar (Tots · ⭐ Els meus · 😵 Els que fallo · verb base ·
+tema · nivell), amb `filtraConjunt()` de `js/dades.js`. Reaprofita el codi dels xips de `repas.js`
+(treu-lo a una funció compartida si cal, sense canviar com es veuen ni com funcionen a Repassar).
+El filtre i la cerca es combinen (primer el filtre, després la cerca). En aquesta pantalla els xips
+van plegats sota un botó "🎛️ Filtres" perquè la llista es vegi de seguida al mòbil.
+
+**Llista:**
+- A sobre: "N phrasals" (o "N resultats" si hi ha cerca o filtre) i el botó **"📚 Repassa aquests"**.
+  Fa `ordenaPerLeitner(resultats, estat.leitner, 20)`, obre `#repas` i crida `repas.comenca(ids, 'diccionari')`,
+  com fa el botó "Repassar els fallats" del Game Over. Si n'hi ha més de 20, el text és
+  "📚 Repassa'n 20". Si no n'hi ha cap, està desactivat.
+- Cada fila és un `<button aria-expanded>`: el `phrasal` en gran (color neó), el `significat` en una
+  línia (amb `…` si no hi cap) i, a la dreta, l'emoji de la caixa Leitner: 🆕 nou · 😵 caixa 1 ·
+  🤔 caixa 2 · 🧠 caixa 3.
+- Sense resultats: "🤷 Cap phrasal amb «…». Prova-ho en anglès o en català." (la consulta es
+  posa amb `textContent`, **mai** amb `innerHTML`).
+- 161 files es pinten totes; no cal paginar. Cerca a cada `input`, sense esperes.
+
+**Fitxa** (s'obre sota la fila en tocar-la; només una d'oberta alhora; tornar a tocar la tanca):
+- Significat, "≈ sinònim", l'exemple amb el phrasal en **negreta** de color (la mateixa manera de
+  pintar `exempleMarcat` que a Repassar; reaprofita la funció) i la traducció.
+- Etiquetes: tema (`TEMES`) i nivell (`NIVELLS`), i la caixa amb text ("🆕 Encara no l'has
+  repassat", "😵 El falles", "🤔 Gairebé", "🧠 Dominat").
+- Botó ⭐ (preferit): `alternaPreferit()` + desar, com a Repassar. La fila i el filtre ⭐ s'han
+  d'actualitzar.
+- 🔊 **Pronunciació:** un botó al costat del phrasal i un altre al costat de l'exemple. Fan servir
+  `speechSynthesis` amb `lang` `en-GB` (si no n'hi ha, qualsevol `en-*`) i `rate` 0.9; abans de
+  parlar, `speechSynthesis.cancel()`. Els botons 🔊 **només surten** si el navegador té
+  `speechSynthesis` i alguna veu anglesa (les veus poden arribar tard: escolta `voiceschanged`).
+  No depèn del botó 🔊/🔇 del joc (que és per als efectes). Tot dins de `try/catch`.
+- 🔗 **"Es confon amb:"** botons amb els `semblants()`. En tocar-ne un: si no és a la llista
+  actual, es buiden la cerca i el filtre (Tots); s'obre la seva fitxa i s'hi fa scroll
+  (`scrollIntoView({ block: 'nearest' })`). Si no en té cap, no es mostra aquest apartat.
+
+**Estat:** la cerca i el filtre del diccionari no es desen (en tornar-hi, comencen buits). No es toca
+el progrés Leitner (consultar no és repassar), només els preferits.
+
+**Versions:** tot a `?v=16`, memòria cau `phrasalhero-v16` i `js/diccionari.js?v=16` a la llista
+de `sw.js`. El diccionari ha de funcionar sense connexió (la pronunciació, si la veu del mòbil ho
+permet).
+
+**Criteris d'acceptació (tests `tests/fase7.test.mjs`):**
+- `normalitza`: accents, majúscules, guions, apòstrofs, `l·l` i espais.
+- `cercaPhrasals`: "give up" i "GIVE UP" → `give-up` el primer; "rendir" troba `give-up`
+  (significat); "postpone" troba `put-off` (sinònim); "ajornar" troba `put-off`; consulta buida →
+  161 en ordre alfabètic; una consulta absurda → `[]`; l'ordre de rellevància (un phrasal que
+  comença per la consulta va abans que un que només la té al significat).
+- `semblants`: simètric (si A té B als `similars`, B retorna A), sense repetits ni ell mateix, i cap
+  id inexistent.
+- `index.html` té `#diccionari` i el botó a l'Inici; `sw.js` hi inclou `js/diccionari.js` amb la
+  versió actual; tots els tests d'abans continuen passant (amb `?v=16`).
+- Proves al navegador (les fa l'Oscar): cerca, filtres, fitxa, ⭐, 🔊, 🔗, "Repassa aquests",
+  360 px d'amplada i mode avió.
+
 ---
 
 ## 11. Normes per a l'agent (opencode)

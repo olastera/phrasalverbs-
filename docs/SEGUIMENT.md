@@ -64,6 +64,7 @@
 | **4B** | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ✅ Feta, revisada i provada al mòbil (commit `103eed4`) |
 | **5** | PWA (manifest, service worker, icones) | ✅ Feta, revisada i provada al mòbil (commit `e12e6ff`) |
 | **6** | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ✅ Feta i **desplegada** el 2026-11-25 (26 fitxers, 6/6 comprovacions HTTP OK); provada al mòbil a producció |
+| **7** | Diccionari 📖: cerca ca/en, filtres, fitxa, ⭐, 🔊 pronunciació, 🔗 semblants, "Repassa aquests" | ⏭️ **Encàrrec preparat** (vegeu a sota) |
 | Futur | Connectors, codi de classe al rànquing, mode examen | ⬜ |
 
 ## 🔍 Errors trobats a les revisions (perquè no tornin)
@@ -115,27 +116,36 @@
   no s'han de pujar a producció.
 - Opencode no pot fer proves de navegador al Pi. **Les proves visuals les fa l'Oscar.**
 
-## ⏭️ Pas següent: primer desplegament (el fa l'Oscar)
+## ⏭️ Pas següent: encàrrec per a opencode (fase 7: Diccionari)
 
-Revisat a 2026-11-25. La fase 6 està feta: `/mnt/disco/Iespai/deploy-phrasalverbs.sh` (queda fora
-del repo del joc perquè llegeix el `.env`). Abans de pujar res, passa els tests. Puja amb `mirror`
-sense `--delete`, exclou `docs/`, `tools/`, `tests/`, `AGENTS.md` i els `.db*` (sí que puja
-`api/dades/.htaccess`). En acabar, comprova amb `curl` que l'app, el `sw.js` i l'API responen i que
-la BD, `docs/` i `AGENTS.md` no es poden obrir. Si alguna cosa falla, surt amb codi 1. El registre
-queda a `deploy-phrasalverbs.log`.
+Decidit a 2026-11-25 (6 desplegada i provada al mòbil): diccionari **només de phrasals**, amb tots
+els extres (⭐ i caixa, "Repassa aquests", 🔗 semblants i 🔊 pronunciació). Disseny complet a
+`docs/PLA.md` §10 Fase 7.
 
 ```
-cd /mnt/disco/Iespai
-./deploy-phrasalverbs.sh --prova   # opcional: llista el que pujaria (26 fitxers)
-./deploy-phrasalverbs.sh           # pujada de debò + comprovacions
+Projecte: www/phrasalverbs/. Llegeix AGENTS.md, docs/PLA.md (§1, §2, §4.2, §6, §9 i §10 Fase 7)
+i docs/ESTAT.md.
+NO toquis api/, js/paraulotes.js, js/ranking.js ni contingut/*.json.
+No canviïs cap regla de joc ni com funciona Repassar. No facis commits ni desplegaments.
+
+Fes la fase 7: Diccionari, exactament com diu docs/PLA.md §10 Fase 7:
+- pantalla #diccionari i botó "📖 Diccionari" a l'Inici;
+- js/diccionari.js amb normalitza(), cercaPhrasals() i semblants() exportades (pures) i la part
+  de DOM;
+- xips de filtre reaprofitats de Repassar i plegats sota "🎛️ Filtres";
+- llista amb la caixa Leitner, fitxa desplegable amb ⭐, 🔊 (speechSynthesis), 🔗 semblants;
+- botó "📚 Repassa aquests" (màxim 20, ordenaPerLeitner) que obre Repassar amb aquests ids;
+- tot a ?v=16, memòria cau phrasalhero-v16 i js/diccionari.js a la llista de sw.js.
+Res de innerHTML amb text de l'usuari. Ha de quedar bé a 360 px.
+
+Tests obligatoris: tests/fase7.test.mjs amb tots els criteris d'acceptació de la Fase 7.
+Executa tots els tests (els 158 d'abans també han de passar, posant-los a ?v=16), actualitza
+docs/ESTAT.md i atura't.
 ```
 
-Després, al mòbil: obrir https://www.iespai.com/phrasalverbs/ (amb la barra final: sense barra,
-Aruba redirigeix a http://), instal·lar la PWA des de producció i fer una partida que entri al
-rànquing. La BD de producció comença buida (la del Pi no es puja mai).
-
-Cada canvi futur: pujar `?v=N` (index.html, imports, nom de la memòria cau de `sw.js`) → tests →
-`./deploy-phrasalverbs.sh` → `git push` al GitHub.
+Després de la 7: revisió de Claude → prova de l'Oscar a https://pi.iespai.com/phrasalverbs/
+(cerca, filtres, fitxa, ⭐, 🔊, 🔗, "Repassa aquests", 360 px, mode avió) → commit →
+`./deploy-phrasalverbs.sh` → `git push`.
 
 ## 📌 Pendents fora del codi
 
