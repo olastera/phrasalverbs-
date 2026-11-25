@@ -59,9 +59,9 @@
 | 2C | Minijoc C (Substitueix) + barreja + dificultat + 30 % caixa 1 | ✅ Feta, revisada i provada al mòbil (commit `9cc360e`) |
 | 2D | Game Over complet, progrés, so i vibració | ✅ Feta, revisada i provada al mòbil (commit `020c826`) |
 | 3A | API del rànquing (`api/ranking.php` + SQLite) i filtre de paraulotes | ✅ Feta i revisada, provada a Apache del Pi (commit `c4aa469`) |
-| 3B | Pantalles Inicials i Rànquing, token a cada partida, mode sense connexió | ✅ Feta, corregida i revisada (commit `5adca30`); falta provar-la al mòbil |
-| **4A** | Ronda bonus ⚡ Parelles (minijoc D) | ⏳ **Encàrrec preparat** (vegeu a sota) |
-| 4B | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ⬜ |
+| 3B | Pantalles Inicials i Rànquing, token a cada partida, mode sense connexió | ✅ Feta, corregida, revisada i provada al mòbil (commit `5adca30`) |
+| 4A | Ronda bonus ⚡ Parelles (minijoc D) | ✅ Feta, corregida, revisada i provada al mòbil (commit `b285e87`) |
+| **4B** | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ⏳ **Encàrrec preparat** (vegeu a sota) |
 | 5 | PWA (manifest, service worker, icones) | ⬜ |
 | 6 | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ⬜ |
 | Futur | Connectors, codi de classe al rànquing, mode examen | ⬜ |
@@ -95,6 +95,11 @@
   comença una partida nova.
 - Respostes de xarxa que arriben desordenades (pestanya setmana/sempre clicada ràpid).
   **Norma:** comptador de crida i descartar respostes velles, com ja fa el token del joc.
+- Parelles (4A): una parella errònia desactivava els dos botons → el significat bloquejat ja no
+  es podia fer servir i l'error en provocava d'altres. **Norma:** en un error només es desfà la
+  selecció; només les parelles correctes queden desactivades.
+- Camins duplicats (encert / error) que fan el mateix: el de l'error no comprovava la ronda bonus.
+  **Norma:** un sol punt de pas a la pregunta següent (`continuaDespresPregunta`).
 
 ## 🧪 Com provar
 
@@ -107,71 +112,55 @@
   no s'han de pujar a producció.
 - Opencode no pot fer proves de navegador al Pi. **Les proves visuals les fa l'Oscar.**
 
-## ⏭️ Pas següent: encàrrec per a opencode (subfase 4A: ronda bonus Parelles)
+## ⏭️ Pas següent: encàrrec per a opencode (subfase 4B: poliment)
 
-Abans o en paral·lel: **provar la 3B al mòbil** a https://pi.iespai.com/phrasalverbs/ (guardar una
-puntuació de debò, pestanyes setmana i de sempre, mode avió). La revisió de Claude ja hi va afegir
-una correcció: els rècords locals no es ressalten mai (test inclòs, `?v=11`).
-
-Decisions de Claude per a Parelles (el pla §5.2 D no les concretava):
-- Cada parella correcta = `10 × multiplicador(ratxa)`, sense bonus de velocitat, i compta com a
-  encert i com a ratxa. Així es compleix el màxim de 60 punts per encert que valida el servidor.
-- El rellotge principal s'atura durant la ronda: la partida pot durar més de 90 s, però el
-  servidor accepta fins a 900 s.
+Revisat a 2026-11-25: ja hi ha emojis flotants al fons, ratxa de dies, confeti de rècord i
+`prefers-reduced-motion` global. Falta el que demanen §4.3 i §9 durant la partida:
 
 ```
-Projecte: www/phrasalverbs/. Llegeix AGENTS.md, docs/PLA.md (§4.3, §5.1, §5.2 D, §5.3, §5.4, §9)
-i docs/ESTAT.md. NO toquis api/ranking.php, js/paraulotes.js, js/ranking.js ni contingut/*.json.
-No facis commits ni desplegaments.
+Projecte: www/phrasalverbs/. Llegeix AGENTS.md, docs/PLA.md (§4.3, §4.4 i §9) i docs/ESTAT.md.
+NO toquis api/ranking.php, js/paraulotes.js, js/ranking.js ni contingut/*.json.
+No canviïs cap regla de joc ni de puntuació. No facis commits ni desplegaments.
 
-Fes la subfase 4A: el minijoc D, la ronda bonus "⚡ Parelles".
+Fes la subfase 4B: poliment visual del joc.
 
-1. Quan surt: just després de respondre la pregunta normal número 8, 16, 24... (comptador
-   preguntesFetes de js/joc.js), si la partida no s'ha acabat. Si no hi ha prou phrasals vàlids
-   (vegeu el punt 2), se la salta i el joc continua normal.
-2. Generació (funció pura nova a js/preguntes.js, p. ex. generaParelles(phrasals, {aleatori,
-   nivells})): 5 phrasals dels nivells permesos en aquell moment, amb 5 significats diferents, i
-   cap dels 5 a la llista `similars` d'un altre dels 5. Retorna { esquerra: [phrasals barrejats],
-   dreta: [significats barrejats], solucio } o null si no n'hi ha 5. Les Parelles no consumeixen
-   els phrasals de la partida (no els afegeixis a `usats`).
-3. Pantalla dins de #joc (no una secció nova): títol "⚡ RONDA BONUS: Parelles", compte enrere
-   propi de 15 s (barra), 5 botons a l'esquerra (phrasal dins <span lang="en">) i 5 a la dreta
-   (significat). Botons de debò, mínim 48 px, dues columnes també al mòbil. Les preguntes normals
-   s'amaguen mentre dura.
-4. Interacció: toques un botó de l'esquerra (queda seleccionat; si en toques un altre de l'esquerra,
-   canvia la selecció) i després un de la dreta.
-   - Correcta: tots dos en verd i desactivats, punts += 10 × multiplicador(ratxa) (ratxa +1 abans
-     de calcular, com a les preguntes normals; sense bonus de velocitat), encerts += 1, so d'encert
-     i pujada si toca.
-   - Errònia: −1 vida, ratxa = 0, el phrasal seleccionat va a fallats (i a la caixa 1 com tots
-     els errors del joc), sacseig vermell curt, so d'error i vibració, i es deselecciona. Si era
-     l'última vida, Game Over (motiu 'vides') després de la pausa curta.
-   - Protecció contra dobles tocs mentre es resol una parella.
-   - Toques la dreta sense res seleccionat a l'esquerra: no passa res.
-5. Final de la ronda: les 5 fetes o els 15 s exhaurits. Missatge curt ("⚡ Perfecte! 5/5 🤩" o
-   "⚡ 3/5 parelles") ~1 s, i torna la pregunta normal amb el rellotge principal en marxa.
-   El rellotge principal NO baixa durant la ronda bonus ni durant aquest missatge.
-6. atura() (sortir de #joc) i reinicia() han de cancel·lar també el compte enrere de la ronda bonus.
-7. aria-live per a l'estat de la ronda, prefers-reduced-motion sense sacseig, colors del §9.
+1. js/frases.js (nou, funcions pures amb `aleatori` injectable): llistes i tria a l'atzar.
+   - ENCERT: "Brutal! 🔥", "Ets una màquina! 🤖", "Boom! 💥", "Imparable! 🚀", "Crack! 😎"
+   - ERROR (només l'emoji/ànim, la correcció es manté): "Uf, per poc! 🙈", "La pròxima és teva 💪",
+     "Apunta-te-la! 📝", "💔", "😵"
+   - GAME OVER: "Bona partida! 👏", "La PAU tremola 😤", "Torna-hi, que tu pots! 💪"
+   - No repeteixis la mateixa frase dues vegades seguides.
+   js/repas.js passa a fer servir aquestes llistes (treu MISSATGES_OK/KO de repas.js).
+2. Joc: en encertar, #joc-resultat mostra una frase d'ENCERT (ara sempre "🎉 Brutal!"). En fallar,
+   "<frase d'ERROR> La resposta era: X" (la resposta correcta és obligatòria, §4.3).
+3. "+N" volant: en cada encert (també a les Parelles), un element petit "+N" (els punts guanyats)
+   que surt del botó encertat i puja i s'esvaeix (~700 ms, CSS). aria-hidden="true", s'elimina del
+   DOM en acabar. Amb prefers-reduced-motion no es crea.
+4. Pujada de multiplicador: petit esclat de confeti a la zona del joc (reutilitza l'estil .confeti,
+   menys peces, ~10) i l'indicador "🔥 xN" fa un "pop" (escala) i canvia de color segons el
+   multiplicador: x1 text suau, x2 groc, x3 rosa, x4 cian amb ombra de neó. Sense moviment si
+   prefers-reduced-motion (el color sí que canvia).
+5. Game Over: una frase de GAME OVER a l'atzar sota el títol "💀 GAME OVER".
+6. Accessibilitat §9: el text en anglès dins lang="en" a les preguntes i opcions del joc
+   (phrasals, partícules i frases amb forat en anglès; els significats en català no).
 
-Tests obligatoris (tests/fase4a.test.mjs, amb rellotge i aleatori simulats):
-- generaParelles: 5 phrasals, 5 significats diferents, cap parell dins de `similars`, null si
-  no n'hi ha prou; respecta els nivells.
-- la ronda surt després de la pregunta 8 i de la 16, i no abans;
-- durant la ronda (i el missatge final) el temps principal no baixa; després continua;
-- als 15 s la ronda s'acaba sola i torna el joc;
-- parella correcta: punts = 10 × multiplicador, sense bonus encara que sigui ràpida; encerts +1;
-- parella errònia: −1 vida, ratxa 0, phrasal a fallats; última vida → Game Over;
-- doble toc a la mateixa parella només puntua un cop; tocar la dreta sense selecció no fa res;
-- atura() durant la ronda no deixa temporitzadors vius;
-- cap phrasal de la ronda queda a `usats`.
+Tests obligatoris (tests/fase4b.test.mjs, amb aleatori simulat):
+- frases.js: tria de cada llista i mai dues iguals seguides;
+- encert → #joc-resultat conté una frase d'ENCERT; error → conté una frase d'ERROR i
+  "La resposta era: X";
+- "+N" amb els punts exactes (també a Parelles), aria-hidden, i no es crea amb reduced-motion;
+- pujada de x1 a x2 → classe de multiplicador a #joc-ratxa i confeti; sense pujada, cap confeti;
+  reduced-motion → cap confeti però sí la classe de color;
+- Game Over mostra una frase de la llista;
+- repas.js fa servir js/frases.js;
+- lang="en" a les opcions dels minijocs B i C i a la pregunta de B; no a les opcions del minijoc A.
 
-Puja a ?v=12 a tot arreu (imports i tests inclosos). Executa tots els tests (els 124 d'abans també
+Puja a ?v=14 a tot arreu (imports i tests inclosos). Executa tots els tests (els 141 d'abans també
 han de passar), actualitza docs/ESTAT.md i atura't.
 ```
 
-Després de la 4A: provar al mòbil (arribar a la pregunta 8 i jugar la ronda; comprovar que el temps
-s'atura) i avisar Claude per a la revisió.
+Després de la 4B: provar al mòbil (frases variades, "+N", confeti en arribar a x2, colors de la
+ratxa; i amb "reduir moviment" activat al mòbil, que no es mogui res) i avisar Claude.
 
 ## 📌 Pendents fora del codi
 
