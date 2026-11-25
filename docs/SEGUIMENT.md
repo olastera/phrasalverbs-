@@ -58,7 +58,7 @@
 | 2B | Minijoc B (Completa la frase) | ✅ Feta i revisada (amb `particulesProhibides`) |
 | 2C | Minijoc C (Substitueix) + barreja + dificultat + 30 % caixa 1 | ✅ Feta, revisada i provada al mòbil (commit `9cc360e`) |
 | 2D | Game Over complet, progrés, so i vibració | ✅ Feta, revisada i provada al mòbil (commit `020c826`) |
-| **3A** | API del rànquing (`api/ranking.php` + SQLite) i filtre de paraulotes | ⏳ **Encàrrec preparat** (vegeu a sota) |
+| 3A | API del rànquing (`api/ranking.php` + SQLite) i filtre de paraulotes | ✅ Feta i revisada (provada a Apache del Pi) |
 | 3B | Pantalles Inicials i Rànquing, token a cada partida, mode sense connexió | ⬜ |
 | 4 | Ronda bonus Parelles + poliment visual | ⬜ |
 | 5 | PWA (manifest, service worker, icones) | ⬜ |
@@ -83,6 +83,9 @@
 - El so es despertava amb `pointerdown`, que al mòbil no compta com a gest d'usuari (iPhone mut).
   **Solució:** `pointerup`/`touchend`/`click`/`keydown`.
 - `acaba()` sense protecció contra una doble crida (doble registre de la partida). Ara és idempotent.
+- API: un `SELECT` de PDO obert (sense `closeCursor()`) bloquejava SQLite i el doble enviament
+  donava `database is locked`. **Norma:** tancar les lectures abans d'escriure, `BEGIN IMMEDIATE` i
+  comprovar `rowCount()`.
 
 ## 🧪 Com provar
 

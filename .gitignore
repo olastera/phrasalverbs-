@@ -1,3 +1,5 @@
 # Base de dades del rànquing (només al servidor)
 *.db
+api/dades/*.db
+tests/tmp/
 __pycache__/
