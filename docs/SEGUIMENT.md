@@ -63,7 +63,7 @@
 | 4A | Ronda bonus ⚡ Parelles (minijoc D) | ✅ Feta, corregida, revisada i provada al mòbil (commit `b285e87`) |
 | **4B** | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ✅ Feta, revisada i provada al mòbil (commit `103eed4`) |
 | **5** | PWA (manifest, service worker, icones) | ✅ Feta, revisada i provada al mòbil (commit `e12e6ff`) |
-| **6** | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ✅ Feta i **desplegada** el 2026-11-25 (26 fitxers, 6/6 comprovacions HTTP OK); ⏳ prova al mòbil a producció |
+| **6** | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ✅ Feta i **desplegada** el 2026-11-25 (26 fitxers, 6/6 comprovacions HTTP OK); provada al mòbil a producció |
 | Futur | Connectors, codi de classe al rànquing, mode examen | ⬜ |
 
 ## 🔍 Errors trobats a les revisions (perquè no tornin)
