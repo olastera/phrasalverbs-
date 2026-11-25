@@ -62,8 +62,8 @@
 | 3B | Pantalles Inicials i Rànquing, token a cada partida, mode sense connexió | ✅ Feta, corregida, revisada i provada al mòbil (commit `5adca30`) |
 | 4A | Ronda bonus ⚡ Parelles (minijoc D) | ✅ Feta, corregida, revisada i provada al mòbil (commit `b285e87`) |
 | **4B** | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ✅ Feta, revisada i provada al mòbil (commit `103eed4`) |
-| **5** | PWA (manifest, service worker, icones) | ⏳ **Encàrrec preparat** (vegeu a sota) |
-| 6 | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ⬜ |
+| **5** | PWA (manifest, service worker, icones) | ✅ Feta, revisada i provada al mòbil (commit `e12e6ff`) |
+| **6** | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ⏭️ **Següent** |
 | Futur | Connectors, codi de classe al rànquing, mode examen | ⬜ |
 
 ## 🔍 Errors trobats a les revisions (perquè no tornin)
@@ -101,6 +101,9 @@
 - Camins duplicats (encert / error) que fan el mateix: el de l'error no comprovava la ronda bonus.
   **Norma:** un sol punt de pas a la pregunta següent (`continuaDespresPregunta`).
 
+- Icones (5): Pillow no llegeix `.woff2` i va caure a la font per defecte → "P" blanca i deformada.
+  **Solució (Claude):** la "P" es dibuixa en pixel-art amb rectangles a `tools/gen_icones.py`.
+
 ## 🧪 Com provar
 
 - Tests: des de `www/phrasalverbs/`, `node --experimental-default-type=module --test tests/*.test.mjs`
@@ -114,7 +117,8 @@
 
 ## ⏭️ Pas següent: encàrrec per a opencode (fase 5: PWA)
 
-Revisat a 2026-11-25 (4B tancada, commit `103eed4`). Model: `www/volei/sw.js` (xarxa primer).
+Revisat a 2026-11-25 (4B tancada, commit `103eed4`). **Fase 5 feta per opencode i revisada:**
+SW correcte (xarxa primer, `api/` sense interceptar, memòria cau `phrasalhero-v15`); icones refetes per Claude. Model: `www/volei/sw.js` (xarxa primer).
 Pillow 11.1 és al Pi, per generar les icones amb un script a `tools/`.
 
 ```
