@@ -1,18 +1,23 @@
 import {
   DURADA_SEGONS,
   VIDES,
+  generaParelles,
   generaPreguntaA,
   generaPreguntaB,
   generaPreguntaC,
   multiplicador,
   puntsEncert
-} from './preguntes.js?v=11';
-import { estatPerDefecte, registraPartida } from './progres.js?v=11';
-import { creaSo } from './so.js?v=11';
+} from './preguntes.js?v=13';
+import { estatPerDefecte, registraPartida } from './progres.js?v=13';
+import { creaSo } from './so.js?v=13';
 
 const DURADA_MS = DURADA_SEGONS * 1000;
 const PAUSA_ENCERT_MS = 400;
 const PAUSA_ERROR_MS = 1500;
+const BONUS_DURADA_MS = 15000;
+const BONUS_PAUSA_MS = 1000;
+const BONUS_ERROR_MS = 400;
+const PARELLES = 5;
 const ETIQUETES_TIPUS = {
   A: '🤔 Què vol dir?',
   B: '🧩 Completa la frase',
@@ -75,6 +80,12 @@ export function iniciaJoc({
   let token = null;
   let guardat = false;
   let generacio = 0;
+  let bonusActiu = false;
+  let bonusIntervalId = null;
+  let bonusTimeoutId = null;
+  let bonusErrorTimeoutId = null;
+  let iniciBonus = 0;
+  let rondaBonus = null;
   const usats = new Set();
   const fallats = new Set();
   const comptadorIds = [];
@@ -188,8 +199,221 @@ export function iniciaJoc({
     }
   }
 
+  function cancelaBonusInterval() {
+    if (bonusIntervalId !== null) {
+      rellotge.atura(bonusIntervalId);
+      bonusIntervalId = null;
+    }
+  }
+
+  function cancelaBonusTimeout() {
+    if (bonusTimeoutId !== null) {
+      rellotge.cancela(bonusTimeoutId);
+      bonusTimeoutId = null;
+    }
+  }
+
+  function cancelaBonusErrorTimeout() {
+    if (bonusErrorTimeoutId !== null) {
+      rellotge.cancela(bonusErrorTimeoutId);
+      bonusErrorTimeoutId = null;
+    }
+  }
+
+  function mostraTempsBonus() {
+    if (!rondaBonus) return;
+    const segons = Math.ceil(rondaBonus.msRestants / 1000);
+    const tempsNode = node('bonus-temps');
+    tempsNode.textContent = String(segons);
+    tempsNode.classList.toggle('perill', rondaBonus.msRestants <= 5000);
+    const barra = node('bonus-barra');
+    barra.style.width = `${(rondaBonus.msRestants / BONUS_DURADA_MS) * 100}%`;
+    barra.parentElement?.setAttribute?.('aria-valuenow', String(segons));
+  }
+
+  function amagaBonus() {
+    const bonusNode = node('bonus');
+    if (bonusNode) bonusNode.hidden = true;
+    const preguntesNode = node('joc-preguntes');
+    if (preguntesNode) preguntesNode.hidden = false;
+    const opcionsNode = node('joc-opcions');
+    if (opcionsNode) opcionsNode.hidden = false;
+  }
+
+  function aturaBonus() {
+    cancelaBonusInterval();
+    cancelaBonusTimeout();
+    cancelaBonusErrorTimeout();
+    bonusActiu = false;
+    if (rondaBonus) rondaBonus.finalitzant = true;
+    amagaBonus();
+  }
+
+  function acabaBonus() {
+    if (!bonusActiu || !rondaBonus || rondaBonus.finalitzant) return;
+    rondaBonus.finalitzant = true;
+    cancelaBonusInterval();
+    cancelaBonusErrorTimeout();
+    bonusActiu = false;
+    amagaBonus();
+    const encertsBonus = rondaBonus.encerts;
+    const errorsBonus = rondaBonus.errors;
+    if (encertsBonus === PARELLES && errorsBonus === 0) {
+      node('joc-resultat').textContent = '⚡ Perfecte! 5/5 🤩';
+    } else if (encertsBonus === PARELLES) {
+      node('joc-resultat').textContent = `⚡ 5/5 parelles · ${errorsBonus} ${errorsBonus === 1 ? 'error' : 'errors'}`;
+    } else {
+      node('joc-resultat').textContent = `⚡ ${encertsBonus}/5 parelles`;
+    }
+    bonusTimeoutId = rellotge.despres(BONUS_PAUSA_MS, () => {
+      bonusTimeoutId = null;
+      if (!actiu || acabat) return;
+      node('joc-resultat').textContent = '';
+      seguentPregunta();
+      if (!bonusActiu && !acabat) iniciaRellotge();
+    });
+  }
+
+  function continuaDespresPregunta() {
+    if (!actiu || acabat) return;
+    if (preguntesFetes > 0 && preguntesFetes % 8 === 0 && comencaBonus()) return;
+    seguentPregunta();
+    if (!bonusActiu && !acabat) iniciaRellotge();
+  }
+
+  function mostraBonus() {
+    node('bonus').hidden = false;
+    node('joc-preguntes').hidden = true;
+    node('joc-opcions').hidden = true;
+    node('joc-resultat').textContent = '';
+    node('bonus-titol').textContent = '⚡ RONDA BONUS: Parelles';
+    node('bonus-estat').textContent = '⚡ Uneix cada phrasal amb el seu significat';
+    node('bonus-esquerra').replaceChildren(...rondaBonus.esquerra.map((entry) => {
+      const boto = dom.createElement('button');
+      boto.type = 'button';
+      boto.className = 'boto boto-resposta bonus-boto';
+      boto.textContent = entry.phrasal;
+      boto.setAttribute('lang', 'en');
+      boto.dataset.id = entry.id;
+      boto.dataset.significat = entry.significat;
+      boto.addEventListener('click', () => seleccionaPhrasal(entry, boto));
+      return boto;
+    }));
+    node('bonus-dreta').replaceChildren(...rondaBonus.dreta.map((significat) => {
+      const boto = dom.createElement('button');
+      boto.type = 'button';
+      boto.className = 'boto boto-resposta bonus-boto';
+      boto.textContent = significat;
+      boto.addEventListener('click', () => responDreta(significat, boto));
+      return boto;
+    }));
+    mostraTempsBonus();
+  }
+
+  function comencaBonus() {
+    const ronda = generaParelles(phrasals, {
+      aleatori,
+      nivells: nivellsPermesos(preguntesFetes),
+      exclosos: [...usats]
+    });
+    if (!ronda) return false;
+    aturaRellotge();
+    bloquejat = true;
+    rondaBonus = {
+      esquerra: ronda.esquerra,
+      dreta: ronda.dreta,
+      solucio: ronda.solucio,
+      fetes: 0,
+      encerts: 0,
+      errors: 0,
+      msRestants: BONUS_DURADA_MS,
+      seleccionat: null,
+      finalitzant: false
+    };
+    bonusActiu = true;
+    iniciBonus = rellotge.ara();
+    mostraBonus();
+    cancelaBonusInterval();
+    bonusIntervalId = rellotge.cada(250, () => {
+      if (!bonusActiu || !rondaBonus || rondaBonus.finalitzant || acabat) return;
+      rondaBonus.msRestants = Math.max(0, BONUS_DURADA_MS - (rellotge.ara() - iniciBonus));
+      mostraTempsBonus();
+      if (rondaBonus.msRestants === 0) acabaBonus();
+    });
+    return true;
+  }
+
+  function seleccionaPhrasal(entry, boto) {
+    if (!bonusActiu || !rondaBonus || rondaBonus.finalitzant || boto.disabled) return;
+    for (const fill of node('bonus-esquerra').children) fill.classList.remove('seleccionada');
+    rondaBonus.seleccionat = { entry, boto };
+    boto.classList.add('seleccionada');
+    node('bonus-estat').textContent = `🎯 ${entry.phrasal}: tria el significat`;
+  }
+
+  function responDreta(significat, boto) {
+    if (!bonusActiu || !rondaBonus || rondaBonus.finalitzant || boto.disabled || !rondaBonus.seleccionat) return;
+    const { entry, boto: esquerra } = rondaBonus.seleccionat;
+    rondaBonus.seleccionat = null;
+    esquerra.classList.remove('seleccionada');
+    if (esquerra.disabled || boto.disabled) return;
+
+    if (rondaBonus.solucio[entry.id] !== significat) {
+      soJoc.error?.();
+      fallats.add(entry.id);
+      errors += 1;
+      rondaBonus.errors += 1;
+      vides = Math.max(0, vides - 1);
+      ratxa = 0;
+      esquerra.classList.add('erronia');
+      boto.classList.add('erronia');
+      node('bonus-estat').textContent = `😵 ${entry.phrasal} = ${rondaBonus.solucio[entry.id]}`;
+      mostraCap();
+
+      if (vides === 0) {
+        cancelaBonusInterval();
+        cancelaBonusTimeout();
+        rondaBonus.finalitzant = true;
+        bonusTimeoutId = rellotge.despres(BONUS_PAUSA_MS, () => {
+          bonusTimeoutId = null;
+          if (!actiu || acabat) return;
+          acaba('vides');
+        });
+        return;
+      }
+
+      cancelaBonusErrorTimeout();
+      bonusErrorTimeoutId = rellotge.despres(BONUS_ERROR_MS, () => {
+        bonusErrorTimeoutId = null;
+        esquerra.classList.remove('erronia');
+        boto.classList.remove('erronia');
+        node('bonus-estat').textContent = '⚡ Uneix cada phrasal amb el seu significat';
+      });
+      return;
+    }
+
+    esquerra.disabled = true;
+    boto.disabled = true;
+    rondaBonus.fetes += 1;
+    const multiplicadorAnterior = multiplicador(ratxa);
+    ratxa += 1;
+    millorRatxa = Math.max(millorRatxa, ratxa);
+    encerts += 1;
+    punts += 10 * multiplicador(ratxa);
+    soJoc.encert?.();
+    if (multiplicador(ratxa) > multiplicadorAnterior) soJoc.pujada?.();
+    esquerra.classList.add('encert');
+    boto.classList.add('encert');
+    rondaBonus.encerts += 1;
+    node('bonus-estat').textContent = `⚡ ${entry.phrasal} = ${significat}`;
+    mostraCap();
+
+    if (rondaBonus.fetes === PARELLES) acabaBonus();
+  }
+
   function acaba(motiu) {
     if (acabat) return; // mai registrar la mateixa partida dos cops
+    aturaBonus();
     aturaRellotge();
     actiu = false;
     acabat = true;
@@ -323,8 +547,7 @@ export function iniciaJoc({
       timeoutId = rellotge.despres(PAUSA_ENCERT_MS, () => {
         timeoutId = null;
         if (!actiu || acabat) return;
-        seguentPregunta();
-        iniciaRellotge();
+        continuaDespresPregunta();
       });
       return;
     }
@@ -348,14 +571,15 @@ export function iniciaJoc({
         acaba('vides');
         return;
       }
-      seguentPregunta();
-      iniciaRellotge();
+      continuaDespresPregunta();
     });
   }
 
   function reinicia() {
+    aturaBonus();
     aturaRellotge();
     cancelaComptador();
+    rondaBonus = null;
     fallats.clear();
     msRestants = DURADA_MS;
     vides = VIDES;
@@ -396,6 +620,7 @@ export function iniciaJoc({
   }
 
   function atura() {
+    aturaBonus();
     aturaRellotge();
     cancelaComptador();
     actiu = false;
@@ -407,5 +632,12 @@ export function iniciaJoc({
     navega('#joc');
   });
 
-  return { mostra, atura, fallats: () => [...fallats], resultat, marcaGuardat };
+  return {
+    mostra,
+    atura,
+    fallats: () => [...fallats],
+    usats: () => [...usats],
+    resultat,
+    marcaGuardat
+  };
 }

@@ -1,4 +1,4 @@
-import { normalitzaInicials, teParaulota } from './paraulotes.js?v=11';
+import { normalitzaInicials, teParaulota } from './paraulotes.js?v=12';
 
 const URL_API = 'api/ranking.php';
 const MIDA_CASELLES = 5;

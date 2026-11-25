@@ -1,25 +1,26 @@
-# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D + Fase 3A + Fase 3B
+# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D + Fase 3A + Fase 3B + Subfase 4A (corregida)
 
 Estat: Fase 1 acabada; Fase 2A corregida; Fase 2B ajustada amb `particulesProhibides`;
 subfase 2C (minijoc C, "Substitueix", dificultat, no repetició i caixa 1) implementada i provada;
 subfase 2D (Game Over complet, efectes al progrés i so) implementada i provada; Fase 3A (servidor
 del rànquing i filtre de paraulotes) implementada i provada; Fase 3B (client del rànquing:
-API, token per partida, inicials i taula) implementada, provada i corregida. No s'han fet commits ni
-desplegaments.
+API, token per partida, inicials i taula) implementada, provada i corregida; subfase 4A (ronda
+bonus "⚡ Parelles") implementada, provada i corregida. No s'han fet commits ni desplegaments.
 `contingut/phrasals.json` no s'ha tocat; el camp `particulesProhibides` ja era a les dades revisades.
 
 ## Correcció de versions (importants)
 
-- Tots els imports interns de JS porten versió. Ara són `?v=10`, inclòs `index.html` i
+- Tots els imports interns de JS porten versió. Ara són `?v=13`, inclòs `index.html` i
   `css/estils.css` (fonts incloses), i s'ha mantingut la norma a `AGENTS.md`: pujar `?v=N` a
   `index.html` i a tot arreu quan canviï qualsevol fitxer JS o CSS.
 - Versions successives: `?v=3` (imports interns), `?v=4` (2A), `?v=5` (correccions 2A),
-  `?v=6` (2B), `?v=7` (ajust 2B i 2C), `?v=8` (2D i 3A), `?v=9` (3B) i **`?v=10` ara**
-  (correccions de la 3B).
+  `?v=6` (2B), `?v=7` (ajust 2B i 2C), `?v=8` (2D i 3A), `?v=9` (3B), `?v=10` (correccions de la 3B),
+  `?v=11` (correcció del rànquing local), `?v=12` (subfase 4A) i **`?v=13` ara** (correccions de la 4A).
 - La 3A va mantenir `?v=8` perquè no va tocar `index.html` ni cap JS/CSS existent. A la 3B es va
-  pujar a `?v=9`; amb les correccions s'ha pujat tot a `?v=10`: `index.html`, `css/estils.css`,
-  tots els imports de JS i les URLs dels tests. `js/ranking.js` importa `js/paraulotes.js?v=10` i
-  `js/app.js` importa `js/ranking.js?v=10`.
+  pujar a `?v=9`, amb les correccions a `?v=10`, la 4A a `?v=12` i les correccions de la 4A a `?v=13`:
+  `index.html`, `css/estils.css`, tots els imports de JS i les URLs dels tests. `js/joc.js` importa
+  `preguntes.js?v=13`, `progres.js?v=13` i `so.js?v=13`; `js/app.js` importa `js/ranking.js?v=13`.
+  `js/ranking.js` no s'ha tocat per restricció explícita i conserva `js/paraulotes.js?v=12`.
 - **`VERSIO_DADES` és 3** perquè les dades han canviat (`contingut/phrasals.json?v=3`).
 - A `AGENTS.md` hi ha la norma: si `contingut/*.json` canvia, puja `VERSIO_DADES`.
 - A `AGENTS.md` hi ha la comanda de tests:
@@ -183,17 +184,52 @@ desplegaments.
   del servidor i les inicials s'escapen amb `textContent`.
 - No s'han modificat `api/ranking.php` ni `js/paraulotes.js`.
 
+## Subfase 4A: ronda bonus "⚡ Parelles"
+
+- `js/preguntes.js`: nova funció pura `generaParelles(phrasals, { aleatori, nivells, exclosos })`.
+  - Filtra per `nivells` i `exclosos`, barreja amb `aleatori` i torna 5 entrades amb ids i significats únics.
+  - Descarta qualsevol parella amb relació `similars` en qualsevol direcció; si no n'hi ha 5, torna `null`.
+  - Retorna `{ esquerra, dreta, solucio }`; la dreta és la llista de significats barrejada.
+- `js/joc.js`:
+  - La ronda surt just després de respondre la pregunta normal 8, 16, 24... des de
+    `continuaDespresPregunta()`; si no es poden generar parelles, se salta.
+  - Fa servir `nivellsPermesos(preguntesFetes)` i exclou els phrasals ja usats a la partida;
+    les parelles no s'afegeixen a `usats`.
+  - El rellotge principal s'atura durant la ronda i el missatge d'1 s; la ronda dura 15 s amb
+    barra de temps i estat `perill` als últims 5 s.
+  - L'esquerra selecciona o canvia el phrasal; la dreta sense selecció no respon; després de
+    respondre, els dos botons es desactiven per evitar dobles tocs.
+  - Cada encert suma `10 × multiplicador(ratxa)` amb la ratxa ja incrementada, sense bonus de
+    velocitat; compta com a encert i actualitza `millorRatxa`.
+  - Cada error resta una vida, reinicia la ratxa, afegeix el phrasal a `fallats` i sona l'error;
+    amb 0 vides s'acaba la partida després del missatge.
+  - Missatge final `⚡ Perfecte! 5/5 🤩` o `⚡ N/5 parelles`; `atura()`, `reinicia()` i `acaba()`
+    cancel·len tots els temporitzadors de la ronda.
+  - El return exposa `usats()` juntament amb `fallats()`, `resultat()` i `marcaGuardat()`.
+- `index.html`: bloc `#bonus` dins `#joc` amb `#bonus-titol`, `#bonus-temps`, `#bonus-barra`,
+  `#bonus-estat` (`aria-live="polite"`), `#bonus-esquerra` i `#bonus-dreta`; `#joc-preguntes`
+  s'amaga mentre dura la ronda.
+- `css/estils.css`: estils `.bonus-parelles`, `.bonus-cap`, `.bonus-columnes`,
+  `.bonus-boto.seleccionada` i els estats `[disabled]`, amb botons de 48 px i
+  `prefers-reduced-motion` respectat.
+- No s'han modificat `api/ranking.php`, la lògica de `js/paraulotes.js` ni `js/ranking.js`, ni
+  `contingut/*.json`.
+- 14 tests nous a `tests/fase4a.test.mjs`; els tests llargs de 2A i 2C s'han ajustat per travessar
+  la ronda sense consumir la seqüència d'atzar de les preguntes normals.
+
 ## Proves executades
 
 - TDD en vermell: històricament 12 fallades esperades a 2C; a 2D el test nou fallava amb
   `progres.registraPartida is not a function` i amb `js/so.js` absent; a 3A fallava per
   `api/ranking.php` absent, taules inexistents i `js/paraulotes.js` inexistent; la 3B inicial
   fallava amb `Cannot find module .../js/ranking.js`; les correccions han fallat primer amb 7 tests
-  nous (avís 📡, ressaltat per posició, missatge persistent, cursa de pestanyes i versió).
+  nous (avís 📡, ressaltat per posició, missatge persistent, cursa de pestanyes i versió). A 4A el
+  test nou fallava amb `generaParelles is not a function`; després, els tests llargs de 2A i 2C
+  fallaven perquè la ronda interrompia la seqüència de preguntes (multiplicador, rellotge i nivells).
 - `php -l api/ranking.php`: sintaxi correcta. `node --check` sobre tots els fitxers `js/*.js` i
   `tests/*.mjs`: sintaxi correcta.
-- `node --experimental-default-type=module --test tests/*.test.mjs`: **123 tests, 123 passats,
-  0 fallats** (93 d'abans + 30 de 3B).
+- `node --experimental-default-type=module --test tests/*.test.mjs`: **141 tests, 141 passats,
+  0 fallats** (124 d'abans + 17 de 4A).
 - El test de 3A arrenca `php -S 127.0.0.1:8082 -t www/phrasalverbs` amb `PHRASAL_DB` dins
   `tests/tmp/`, simula el temps modificant `partides.inici` amb `php -r` i PDO, atura el servidor
   i esborra la base en acabar.
@@ -273,6 +309,38 @@ desplegaments.
 - [x] Test: `top()` porta `&t=` tant a `setmana` com a `sempre`.
 - [x] Test: `guarda()` fa `POST` amb JSON (no `GET`/query).
 
+## Correccions de la 4A (2026-11-25)
+
+- `responDreta()` ja no desactiva els botons ni compta `fetes` quan la parella és errònia: resta
+  una vida, reinicia la ratxa, afegeix el phrasal a `fallats`, mostra `erronia` amb `sacseig` als
+  dos botons durant 400 ms i després els deixa actius per poder repetir qualsevol dels dos.
+  Només una parella correcta desactiva els dos botons i incrementa `fetes`.
+- El camí d'error de `respon()` crida `continuaDespresPregunta()` (excepte amb l'última vida),
+  així que fallar la pregunta 8, 16 o 24 també obre la ronda bonus després de la pausa d'error.
+- `rondaBonus.errors` controla el missatge final: `⚡ Perfecte! 5/5 🤩` només amb 5/5 sense errors;
+  amb errors i 5/5 mostra `⚡ 5/5 parelles · N errors` (singular `1 error`); amb el temps esgotat,
+  `⚡ X/5 parelles`.
+- Tres tests nous cobreixen aquests casos. Total: 141/141 tests passen i `node --check` de tots
+  els fitxers JS acaba amb codi `0`.
+
+## Criteris d'acceptació 4A (subfase 4A corregida)
+
+- [x] Test: `generaParelles` dona 5 phrasals, 5 significats diferents, cap parella amb `similars` i `null` si no n'hi ha prou.
+- [x] Test: respecta els nivells rebuts i exclou els ids ja usats.
+- [x] Test: la ronda no surt fins a la pregunta 8 i torna a sortir a la 16.
+- [x] Test: durant la ronda i el missatge el rellotge principal no baixa; després continua.
+- [x] Test: als 15 s la ronda s'acaba sola i torna la pregunta normal.
+- [x] Test: parella correcta = `10 × multiplicador(ratxa)`, sense bonus de velocitat, amb `encerts +1`.
+- [x] Test: parella errònia = `−1` vida, ratxa `0`, phrasal a `fallats` i, amb l'última vida, Game Over.
+- [x] Test: error de parella deixa els dos botons actius, treu `erronia` al cap de 400 ms i permet
+      repetir tant el phrasal fallat com el significat triat.
+- [x] Test: `Perfecte! 5/5` només si la ronda no ha tingut errors; si n'hi ha, `5/5 parelles · N errors`.
+- [x] Test: fallar la pregunta 8 també obre la ronda bonus després de la pausa d'error.
+- [x] Test: doble toc només puntua un cop i tocar la dreta sense selecció no fa res.
+- [x] Test: `atura()` durant la ronda cancel·la tots els temporitzadors.
+- [x] Test: cap phrasal de la ronda queda a `usats`.
+- [x] Test: HTML i CSS inclouen `aria-live`, botons de 48 px i versions `?v=13`.
+
 ## Correcció de la 3B (2026-11-25)
 
 - Ressaltat per posició: `enDesat` passa `posicioSetmana` i `posicioSempre` a `ranking.prepara()`;
@@ -298,7 +366,8 @@ desplegaments.
 
 ## Pendent (no fet ara)
 
-- Fase 4: ronda bonus i poliment.
+- Resta de Fase 4 (4B i poliment): frases i emojis aleatoris al joc, `+N` volant, confeti en pujar
+  de ratxa i ratxa de dies; la subfase 4A de Parelles ja està acabada.
 - Verificació opcional en navegador real i a Aruba (ara només s'han provat tests, sintaxi i HTTP).
 - Fase 5: PWA.
 - Fase 6: script de desplegament (sense executar-lo).

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const base = new URL('../js/', import.meta.url).href;
-const carrega = (nom) => import(`${base}${nom}.js?v=11`);
+const carrega = (nom) => import(`${base}${nom}.js?v=13`);
 const dadesReals = JSON.parse(readFileSync(new URL('../contingut/phrasals.json', import.meta.url), 'utf8'));
 const perId = new Map(dadesReals.phrasals.map((entry) => [entry.id, entry]));
 const perPhrasal = new Map(dadesReals.phrasals.map((entry) => [entry.phrasal, entry]));
@@ -79,6 +79,14 @@ function rellotgeFake() {
       const index = timeouts.findIndex((pendent) => pendent.id === id);
       if (index >= 0) timeouts.splice(index, 1);
     },
+    avanca(ms) {
+      const fi = ara + ms;
+      while (interval && ara + interval.ms <= fi) {
+        ara += interval.ms;
+        interval.funcio();
+      }
+      ara = fi;
+    },
     disparaTimeout() { timeouts.shift()?.funcio(); }
   };
 }
@@ -91,7 +99,8 @@ function aleatoriCiclic(valors) {
 function entornJoc(opcions = {}) {
   const dom = domFake();
   const rellotge = rellotgeFake();
-  const estat = { navegat: null };
+  const estat = { navegat: null, enBonus: false, respostes: 0 };
+  const aleatori = opcions.aleatori ?? (() => 0.5);
   return {
     dom,
     rellotge,
@@ -102,10 +111,16 @@ function entornJoc(opcions = {}) {
       dom,
       rellotge,
       navega: (hash) => { estat.navegat = hash; },
-      aleatori: () => 0.5,
-      ...opcions
+      ...opcions,
+      aleatori: () => (estat.enBonus ? 0.5 : aleatori())
     }
   };
+}
+
+function passaBonus(entorn) {
+  if (!entorn.node('joc-preguntes').hidden) return;
+  entorn.rellotge.avanca(parseInt(entorn.node('bonus-temps').textContent, 10) * 1000);
+  entorn.rellotge.disparaTimeout();
 }
 
 function clicaCorrecta(entorn) {
@@ -120,7 +135,11 @@ function clicaCorrecta(entorn) {
   const index = entorn.node('joc-opcions').children.findIndex((boto) => boto.textContent === valor);
   assert.notEqual(index, -1, `No s'ha trobat la resposta correcta: ${valor}`);
   entorn.node('joc-opcions').children[index].clica();
+  if ((entorn.estat.respostes + 1) % 8 === 0) entorn.estat.enBonus = true;
   entorn.rellotge.disparaTimeout();
+  entorn.estat.enBonus = false;
+  passaBonus(entorn);
+  entorn.estat.respostes += 1;
   return entrada;
 }
 

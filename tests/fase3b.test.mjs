@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const base = new URL('../js/', import.meta.url).href;
-const carrega = (nom) => import(`${base}${nom}.js?v=11`);
+const carrega = (nom) => import(`${base}${nom}.js?v=13`);
 const { creaClientRanking, iniciaInicials, iniciaRanking } = await carrega('ranking');
 
 function respostaJson(dades) {
@@ -638,5 +638,5 @@ test('l’HTML i l’app connecten les pantalles noves, el botó i la versió 9'
   assert.doesNotMatch(html, /\?v=8|\?v=9/);
   assert.doesNotMatch(css, /\?v=8|\?v=9/);
   assert.doesNotMatch(app, /\?v=8|\?v=9/);
-  assert.match(app, /ranking\.js\?v=11/);
+  assert.match(app, /ranking\.js\?v=13/);
 });

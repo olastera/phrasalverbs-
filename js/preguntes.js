@@ -118,6 +118,30 @@ export function generaPreguntaB(phrasals, { aleatori = Math.random, exclosos = [
   };
 }
 
+export function generaParelles(phrasals, { aleatori = Math.random, nivells, exclosos = [] } = {}) {
+  const pool = Array.isArray(nivells) && nivells.length > 0
+    ? phrasals.filter((entry) => nivells.includes(entry.nivell) && !exclosos.includes(entry.id))
+    : phrasals.filter((entry) => !exclosos.includes(entry.id));
+  const triats = [];
+
+  for (const entry of barreja(pool, aleatori)) {
+    if (triats.length === 5) break;
+    if (triats.some((other) => other.id === entry.id || other.significat === entry.significat)) continue;
+    if (triats.some((other) =>
+      (entry.similars ?? []).includes(other.id) || (other.similars ?? []).includes(entry.id)
+    )) continue;
+    triats.push(entry);
+  }
+
+  if (triats.length !== 5) return null;
+
+  return {
+    esquerra: barreja(triats, aleatori),
+    dreta: barreja(triats.map((entry) => entry.significat), aleatori),
+    solucio: Object.fromEntries(triats.map((entry) => [entry.id, entry.significat]))
+  };
+}
+
 export function generaPreguntaC(phrasals, { aleatori = Math.random, exclosos = [], id } = {}) {
   const disponibles = phrasals.filter((entry) => !exclosos.includes(entry.id));
   const pool = disponibles.length > 0 ? disponibles : phrasals;

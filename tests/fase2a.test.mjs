@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const base = new URL('../js/', import.meta.url).href;
-const carrega = (nom) => import(`${base}${nom}.js?v=11`);
+const carrega = (nom) => import(`${base}${nom}.js?v=13`);
 const dadesReals = JSON.parse(readFileSync(new URL('../contingut/phrasals.json', import.meta.url), 'utf8'));
 
 function elementFake(tag = 'div') {
@@ -84,7 +84,8 @@ function rellotgeFake() {
 function entornJoc(opcions = {}) {
   const dom = domFake();
   const rellotge = rellotgeFake();
-  const estat = { navegat: null };
+  const estat = { navegat: null, enBonus: false, respostes: 0 };
+  const aleatori = opcions.aleatori ?? (() => 0.99);
   return {
     dom,
     rellotge,
@@ -95,8 +96,8 @@ function entornJoc(opcions = {}) {
       dom,
       rellotge,
       navega: (hash) => { estat.navegat = hash; },
-      aleatori: () => 0.99,
-      ...opcions
+      ...opcions,
+      aleatori: () => (estat.enBonus ? 0.5 : aleatori())
     }
   };
 }
@@ -122,9 +123,19 @@ function clicaResposta(entorn, correcte) {
   return boto;
 }
 
+function passaBonus(entorn) {
+  if (!entorn.node('joc-preguntes').hidden) return;
+  entorn.rellotge.avanca(parseInt(entorn.node('bonus-temps').textContent, 10) * 1000);
+  entorn.rellotge.disparaTimeout();
+}
+
 function respon(entorn, correcte) {
   const boto = clicaResposta(entorn, correcte);
+  if ((entorn.estat.respostes + 1) % 8 === 0) entorn.estat.enBonus = true;
   entorn.rellotge.disparaTimeout();
+  entorn.estat.enBonus = false;
+  passaBonus(entorn);
+  entorn.estat.respostes += 1;
   return boto;
 }
 
@@ -334,6 +345,7 @@ test('20 encerts ràpids descompten el temps contestat sense comptar les pauses'
     assert.equal(entorn.rellotge.tempsPendent(), 400);
     entorn.rellotge.avanca(400);
     entorn.rellotge.disparaTimeout();
+    passaBonus(entorn);
   }
 
   const segons = parseInt(entorn.node('joc-temps').textContent, 10);

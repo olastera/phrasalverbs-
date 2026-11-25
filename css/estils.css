@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../fonts/press-start-2p-400-latin.woff2?v=11') format('woff2');
+  src: url('../fonts/press-start-2p-400-latin.woff2?v=13') format('woff2');
 }
 
 @font-face {
@@ -11,7 +11,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=11') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=13') format('woff2');
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=11') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=13') format('woff2');
 }
 
 @font-face {
@@ -27,7 +27,7 @@
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=11') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=13') format('woff2');
 }
 
 :root {
@@ -758,6 +758,55 @@ kbd {
   color: var(--vermell);
   animation: sacseig .3s ease;
 }
+
+.bonus-parelles {
+  margin-top: 14px;
+  padding: 14px;
+  border: 2px solid var(--groc);
+  border-radius: var(--radi);
+  background: rgba(255, 225, 77, .08);
+  box-shadow: 0 0 18px rgba(255, 225, 77, .2);
+}
+
+.bonus-titol {
+  margin: 0 0 10px;
+  color: var(--groc);
+  font-family: var(--font-arcade);
+  font-size: clamp(11px, 3.4vw, 16px);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.bonus-cap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bonus-cap .barra-temps { flex: 1; margin-bottom: 0; }
+
+.bonus-columnes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.bonus-columna { display: grid; gap: 8px; min-width: 0; }
+
+.bonus-parelles button {
+  min-height: 48px;
+  padding: 8px;
+  overflow-wrap: anywhere;
+}
+
+.bonus-boto.seleccionada {
+  border-color: var(--cian);
+  background: rgba(0, 229, 255, .22);
+  color: var(--cian);
+  box-shadow: 0 0 14px rgba(0, 229, 255, .35);
+}
+
+.bonus-boto[disabled] { opacity: .72; }
 
 @keyframes sacseig {
   0%, 100% { transform: translateX(0); }

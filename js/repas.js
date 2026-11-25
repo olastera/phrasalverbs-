@@ -1,11 +1,11 @@
 import {
   TEMES, NIVELLS, comptaPerTema, comptaPerVerb,
   filtraConjunt, ordenaPerLeitner
-} from './dades.js?v=11';
+} from './dades.js?v=13';
 import {
   actualitzaLeitner, alternaPreferit, desaRepasEnCurs,
   llegeixRepasEnCurs, registraActivitat
-} from './progres.js?v=11';
+} from './progres.js?v=13';
 
 const LIMIT = 20;
 const MISSATGES_OK = ['Brutal! 🔥', 'Ets una màquina! 🤖', 'Crack! 😎'];

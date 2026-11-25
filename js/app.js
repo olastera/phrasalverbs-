@@ -1,9 +1,9 @@
-import { carregaConjunt, comptaPerVerb } from './dades.js?v=11';
-import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=11';
-import { iniciaRepas } from './repas.js?v=11';
-import { iniciaJoc } from './joc.js?v=11';
-import { creaSo } from './so.js?v=11';
-import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=11';
+import { carregaConjunt, comptaPerVerb } from './dades.js?v=13';
+import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=13';
+import { iniciaRepas } from './repas.js?v=13';
+import { iniciaJoc } from './joc.js?v=13';
+import { creaSo } from './so.js?v=13';
+import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=13';
 
 const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'inicials', 'ranking', 'progres'];
 const NOMBRE = new Intl.NumberFormat('ca-ES');

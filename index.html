@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#120a2e">
   <title>🦸 Phrasal Hero</title>
-  <link rel="stylesheet" href="css/estils.css?v=11">
+  <link rel="stylesheet" href="css/estils.css?v=13">
 </head>
 <body>
   <div class="fons" aria-hidden="true">
@@ -128,12 +128,28 @@
 
       <p id="joc-ratxa" class="joc-ratxa" aria-live="polite">🔥 x1</p>
 
-      <div class="joc-pregunta-caixa">
+      <div id="joc-preguntes" class="joc-pregunta-caixa">
         <span id="joc-tipus" class="cara-etiqueta">🤔 Què vol dir?</span>
         <strong id="joc-pregunta" class="joc-pregunta" lang="en"></strong>
         <p id="joc-traduccio" class="joc-traduccio" lang="ca" hidden></p>
       </div>
       <div id="joc-opcions" class="joc-opcions"></div>
+
+      <div id="bonus" class="bonus-parelles" hidden aria-labelledby="bonus-titol">
+        <h3 id="bonus-titol" class="bonus-titol">⚡ RONDA BONUS: Parelles</h3>
+        <div class="bonus-cap">
+          <span id="bonus-temps" class="joc-temps" aria-label="Segons restants de la ronda">15</span>
+          <div class="barra-temps" role="progressbar" aria-label="Temps restant de la ronda" aria-valuemin="0" aria-valuemax="15" aria-valuenow="15">
+            <div id="bonus-barra"></div>
+          </div>
+        </div>
+        <p id="bonus-estat" class="resultat" aria-live="polite"></p>
+        <div class="bonus-columnes">
+          <div id="bonus-esquerra" class="bonus-columna" aria-label="Phrasals"></div>
+          <div id="bonus-dreta" class="bonus-columna" aria-label="Significats"></div>
+        </div>
+      </div>
+
       <p id="joc-resultat" class="resultat" aria-live="polite"></p>
     </section>
 
@@ -218,6 +234,6 @@
 
   <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
 
-  <script type="module" src="js/app.js?v=11"></script>
+  <script type="module" src="js/app.js?v=13"></script>
 </body>
 </html>
