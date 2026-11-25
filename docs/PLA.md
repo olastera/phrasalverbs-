@@ -48,8 +48,10 @@ posterior (vegeu §12), però el codi s'ha d'escriure pensant que hi haurà un s
 - **Tipografies:** Google Fonts està permès: `Press Start 2P` per a títols, marcadors i rànquing
   (estètica arcade) i `Nunito` per al text. Posa-hi sempre una alternativa (`system-ui`), perquè ha
   de funcionar sense connexió.
-- **Res d'analítica ni de galetes** (Google Analytics, píxels...). Està pendent de decidir; de
-  moment, res.
+- **Res de galetes.** Analítica: GA4 `G-KJNSZ0HZ9C` **sense galetes** (`client_storage: 'none'`,
+  sense senyals de Google ni anuncis), només a `www.iespai.com`, a `js/analitica.js` (decidit el
+  2026-11-25). Esdeveniments: `page_view` per pantalla, `partida_acabada`, `repas_acabat`,
+  `ranking_guardat`, `search` (diccionari) i `repassa_diccionari`. Mai inicials ni dades personals.
 - **Sense dependències externes de JS.**
 - Ha de funcionar bé en un mòbil de **360 px** d'amplada i també a l'ordinador.
 

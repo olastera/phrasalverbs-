@@ -1,4 +1,4 @@
-import { NIVELLS, TEMES, comptaPerTema, comptaPerVerb, filtraConjunt } from './dades.js?v=16';
+import { NIVELLS, TEMES, comptaPerTema, comptaPerVerb, filtraConjunt } from './dades.js?v=17';
 
 export function pintaExempleMarcat(desti, exempleMarcat) {
   const trossos = String(exempleMarcat ?? '').split('**');

@@ -1,13 +1,15 @@
-import { carregaConjunt, comptaPerVerb } from './dades.js?v=16';
-import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=16';
-import { iniciaRepas } from './repas.js?v=16';
-import { iniciaDiccionari } from './diccionari.js?v=16';
-import { iniciaJoc } from './joc.js?v=16';
-import { creaSo } from './so.js?v=16';
-import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=16';
+import { carregaConjunt, comptaPerVerb } from './dades.js?v=17';
+import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=17';
+import { iniciaRepas } from './repas.js?v=17';
+import { iniciaDiccionari } from './diccionari.js?v=17';
+import { iniciaJoc } from './joc.js?v=17';
+import { creaSo } from './so.js?v=17';
+import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=17';
+import { iniciaAnalitica, registra, registraPantalla } from './analitica.js?v=17';
 
 const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'inicials', 'ranking', 'diccionari', 'progres'];
 const NOMBRE = new Intl.NumberFormat('ca-ES');
+iniciaAnalitica(); // abans de la primera pantalla, perquè compti la primera visita
 const estat = carregaEstat();
 const so = creaSo({ activat: () => estat.so });
 let conjunt = null;
@@ -23,11 +25,10 @@ const inicials = iniciaInicials({
   desa,
   partida: () => joc?.resultat() ?? null,
   navega: (hash) => { location.hash = hash; },
-  enDesat: ({ posicioSetmana, posicioSempre }) => ranking.prepara({
-    periode: 'setmana',
-    posicioSetmana,
-    posicioSempre
-  }),
+  enDesat: ({ posicioSetmana, posicioSempre }) => {
+    registra('ranking_guardat', { posicio_setmana: posicioSetmana });
+    ranking.prepara({ periode: 'setmana', posicioSetmana, posicioSempre });
+  },
   marcaGuardat: () => joc?.marcaGuardat(),
   avisa
 });
@@ -149,6 +150,7 @@ function mostraPantalla() {
   const hash = location.hash.replace('#', '');
   const activa = PANTALLES.includes(hash) ? hash : 'inici';
   for (const id of PANTALLES) node(id).hidden = id !== activa;
+  registraPantalla(activa);
   if (activa !== 'joc') joc?.atura();
   if (activa === 'joc') joc?.mostra();
   if (activa === 'progres') renderProgres();
@@ -292,7 +294,7 @@ window.addEventListener('hashchange', mostraPantalla);
 function registraServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   try {
-    const registre = navigator.serviceWorker.register('sw.js?v=16');
+    const registre = navigator.serviceWorker.register('sw.js?v=17');
     registre.catch((error) => console.warn('SW no registrat', error));
   } catch (error) {
     console.warn('SW no registrat', error);

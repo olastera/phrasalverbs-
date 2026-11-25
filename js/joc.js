@@ -7,10 +7,11 @@ import {
   generaPreguntaC,
   multiplicador,
   puntsEncert
-} from './preguntes.js?v=16';
-import { estatPerDefecte, registraPartida } from './progres.js?v=16';
-import { creaSo } from './so.js?v=16';
-import { fraseEncert, fraseError, fraseGameOver } from './frases.js?v=16';
+} from './preguntes.js?v=17';
+import { estatPerDefecte, registraPartida } from './progres.js?v=17';
+import { creaSo } from './so.js?v=17';
+import { fraseEncert, fraseError, fraseGameOver } from './frases.js?v=17';
+import { registra } from './analitica.js?v=17';
 
 const DURADA_MS = DURADA_SEGONS * 1000;
 const PAUSA_ENCERT_MS = 400;
@@ -490,6 +491,7 @@ export function iniciaJoc({
       punts, encerts, errors, fallats: [...fallats]
     });
     desa();
+    registra('partida_acabada', { punts, encerts, errors, motiu, millor_ratxa: millorRatxa });
     soJoc.gameOver?.();
     node('gameover-titol').textContent = motiu === 'temps' ? '⏰ TEMPS!' : '💀 GAME OVER';
     ultimaFraseGameOver = fraseGameOver({ aleatori, anterior: ultimaFraseGameOver });

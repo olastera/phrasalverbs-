@@ -6,7 +6,8 @@ pensada per als alumnes de 2n de Batxillerat que preparen l'examen d'anglès de 
 ▶️ **Juga-hi:** <https://www.iespai.com/phrasalverbs/>
 
 - 📱 Feta per al mòbil, però també funciona a l'ordinador.
-- 🙅 Sense registre, sense comptes, sense galetes i sense analítica.
+- 🙅 Sense registre, sense comptes i sense galetes. Només una analítica anònima (GA4 configurat
+  perquè no desi res al dispositiu) per saber quant es fa servir.
 - 📲 S'instal·la com una app (PWA) i funciona sense connexió.
 - 🪶 HTML, CSS i JavaScript sense frameworks, i un sol fitxer PHP per al rànquing.
 
@@ -88,6 +89,9 @@ phrasalverbs/
 │   ├── frases.js           frases i emojis del joc
 │   ├── so.js               sons generats amb Web Audio (sense fitxers d'àudio)
 │   ├── ranking.js          inicials i rànquing
+│   ├── diccionari.js       cerca, fitxes i pronunciació
+│   ├── filtres.js          xips de filtre compartits
+│   ├── analitica.js        GA4 sense galetes (només a www.iespai.com)
 │   └── paraulotes.js       filtre d'inicials
 ├── api/
 │   ├── ranking.php         API del rànquing (PHP + SQLite)

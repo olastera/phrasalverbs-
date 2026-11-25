@@ -1,6 +1,7 @@
-import { NIVELLS, TEMES, filtraConjunt, ordenaPerLeitner } from './dades.js?v=16';
-import { alternaPreferit } from './progres.js?v=16';
-import { pintaExempleMarcat, renderFiltres } from './filtres.js?v=16';
+import { NIVELLS, TEMES, filtraConjunt, ordenaPerLeitner } from './dades.js?v=17';
+import { alternaPreferit } from './progres.js?v=17';
+import { pintaExempleMarcat, renderFiltres } from './filtres.js?v=17';
+import { registra } from './analitica.js?v=17';
 
 const ICONES_CAIXA = ['🆕', '😵', '🤔', '🧠'];
 const TEXTOS_CAIXA = [
@@ -130,6 +131,7 @@ export function iniciaDiccionari({
   let filtre = 'tots';
   let obert = null;
   let nodesPerId = new Map();
+  let esperaCerca = null;
 
   function ambVeu() {
     try {
@@ -338,11 +340,17 @@ export function iniciaDiccionari({
     consulta = elements.cerca.value;
     obert = null;
     render();
+    clearTimeout(esperaCerca);
+    esperaCerca = setTimeout(() => {
+      const terme = normalitza(consulta).slice(0, 30);
+      if (terme.length >= 3) registra('search', { search_term: terme, resultats: resultats().length });
+    }, 1500);
   });
 
   elements.repassa.addEventListener('click', () => {
     const ids = ordenaPerLeitner(resultats(), estat.leitner, 20, aleatori).map((entry) => entry.id);
     if (ids.length === 0) return;
+    registra('repassa_diccionari', { quantitat: ids.length });
     navega('#repas');
     repas?.comenca(ids, 'diccionari');
     repas?.mostra();

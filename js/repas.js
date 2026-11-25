@@ -1,10 +1,11 @@
-import { TEMES, filtraConjunt, ordenaPerLeitner } from './dades.js?v=16';
+import { TEMES, filtraConjunt, ordenaPerLeitner } from './dades.js?v=17';
 import {
   actualitzaLeitner, alternaPreferit, desaRepasEnCurs,
   llegeixRepasEnCurs, registraActivitat
-} from './progres.js?v=16';
-import { fraseEncert, fraseError } from './frases.js?v=16';
-import { pintaExempleMarcat, renderFiltres } from './filtres.js?v=16';
+} from './progres.js?v=17';
+import { fraseEncert, fraseError } from './frases.js?v=17';
+import { pintaExempleMarcat, renderFiltres } from './filtres.js?v=17';
+import { registra } from './analitica.js?v=17';
 
 const LIMIT = 20;
 
@@ -161,6 +162,7 @@ export function iniciaRepas({ estat, phrasals, desa, avisa, aleatori = Math.rand
 
   function acaba() {
     vista = 'resum';
+    registra('repas_acabat', { encerts: sessio.ok, errors: sessio.ko, filtre: String(sessio.filtre ?? '') });
     desaRepasEnCurs(estat, null);
     desa();
     elements.sessio.hidden = true;

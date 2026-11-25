@@ -31,7 +31,7 @@
 | Progrés | `localStorage` (clau `phrasalhero:v1`) |
 | Tecnologia | HTML/CSS/JS vanilla (mòduls ES), sense frameworks ni build |
 | Fonts | Allotjades a `fonts/` (no Google Fonts, per privacitat dels menors i per l'ús offline) |
-| Analítica | **Cap** de moment (pendent de decidir) |
+| Analítica | GA4 `G-KJNSZ0HZ9C` **sense galetes**, només a producció (`js/analitica.js`, decidit el 2026-11-25) |
 | Partida a mitges | No es desa (arcade). La sessió de repàs a mitges sí |
 | Connectors | Fase futura. Les dades ja estan fetes |
 
@@ -154,7 +154,6 @@ Després de la 7: revisió de Claude → prova de l'Oscar a https://pi.iespai.co
 
 ## 📌 Pendents fora del codi
 
-- Decidir si s'hi afegeix analítica (GA4 o cap).
 - Enllaçar Phrasal Hero des d'algun lloc d'iespai.com quan estigui publicat.
 - El projecte és al repo d'Iespai (des del commit `0fd6955`). Decidir si més endavant va a un
   repo propi (com Sender).

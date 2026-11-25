@@ -5,9 +5,9 @@ import { readFileSync, existsSync } from 'node:fs';
 const arrel = new URL('../', import.meta.url);
 const base = new URL('../js/', import.meta.url).href;
 const llegir = (nom) => readFileSync(new URL(nom, arrel), 'utf8');
-const carregaDiccionari = () => import(`${base}diccionari.js?v=16`);
-const dades = await import(`${base}dades.js?v=16`);
-const progres = await import(`${base}progres.js?v=16`);
+const carregaDiccionari = () => import(`${base}diccionari.js?v=17`);
+const dades = await import(`${base}dades.js?v=17`);
+const progres = await import(`${base}progres.js?v=17`);
 const dadesReals = JSON.parse(llegir('contingut/phrasals.json')).phrasals;
 
 function fills(node) {
@@ -243,21 +243,22 @@ test('index.html té la pantalla, el quart botó i la capçalera del diccionari'
   assert.match(menu, /📖 <span>Diccionari<\/span>/);
 });
 
-test('totes les versions estàtiques són ?v=16', () => {
+test('totes les versions estàtiques són ?v=17', () => {
   const html = llegir('index.html');
   const css = llegir('css/estils.css');
   const app = llegir('js/app.js');
   const sw = llegir('sw.js');
-  assert.match(html, /css\/estils\.css\?v=16/);
-  assert.match(html, /js\/app\.js\?v=16/);
-  assert.match(app, /dades\.js\?v=16/);
-  assert.match(app, /diccionari\.js\?v=16/);
-  assert.match(app, /repas\.js\?v=16/);
-  assert.match(app, /ranking\.js\?v=16/);
-  assert.match(app, /serviceWorker\.register\('sw\.js\?v=16'\)/);
-  assert.match(sw, /phrasalhero-v16\b/);
-  assert.match(sw, /js\/diccionari\.js\?v=16/);
-  assert.match(sw, /css\/estils\.css\?v=16/);
+  const versio = html.match(/js\/app\.js\?v=(\d+)/)[1];
+  assert.match(html, /css\/estils\.css\?v=17/);
+  assert.match(html, /js\/app\.js\?v=17/);
+  assert.match(app, /dades\.js\?v=17/);
+  assert.match(app, /diccionari\.js\?v=17/);
+  assert.match(app, /repas\.js\?v=17/);
+  assert.match(app, /ranking\.js\?v=17/);
+  assert.match(app, /serviceWorker\.register\('sw\.js\?v=17'\)/);
+  assert.match(sw, /phrasalhero-v17\b/);
+  assert.match(sw, /js\/diccionari\.js\?v=17/);
+  assert.match(sw, /css\/estils\.css\?v=17/);
   for (const fitxer of ['index.html', 'css/estils.css', 'js/app.js', 'js/dades.js', 'js/repas.js',
     'js/joc.js', 'js/progres.js', 'js/ranking.js', 'js/frases.js', 'js/so.js', 'js/filtres.js',
     'js/diccionari.js', 'sw.js']) {
@@ -265,7 +266,7 @@ test('totes les versions estàtiques són ?v=16', () => {
     assert.doesNotMatch(codi, /\?v=15\b/, `${fitxer} encara té ?v=15`);
     if (fitxer.endsWith('.js') && fitxer !== 'sw.js' && fitxer !== 'js/ranking.js') {
       for (const imp of codi.matchAll(/from '\.\/[\w-]+\.js\?v=(\d+)'/g)) {
-        assert.equal(imp[1], '16', `import antic a ${fitxer}`);
+        assert.equal(imp[1], versio, `import antic a ${fitxer}`);
       }
     }
   }
@@ -274,7 +275,7 @@ test('totes les versions estàtiques són ?v=16', () => {
 test('sw.js inclou el mòdul nou i la fitxa continua sent accessible sense connexió', () => {
   const sw = llegir('sw.js');
   const entrades = [...sw.match(/const SHELL\s*=\s*\[(.*?)\];/s)[1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
-  assert.ok(entrades.includes('js/diccionari.js?v=16'));
+  assert.ok(entrades.includes('js/diccionari.js?v=17'));
   assert.ok(entrades.includes('index.html'));
   assert.ok(existsSync(new URL('../js/diccionari.js', import.meta.url)));
 });
