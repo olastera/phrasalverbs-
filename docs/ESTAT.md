@@ -1,18 +1,20 @@
-# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C
+# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D
 
 Estat: Fase 1 acabada; Fase 2A corregida; Fase 2B ajustada amb `particulesProhibides`;
-Fase 2, subfase 2C (minijoc C, "Substitueix", dificultat, no repetició i caixa 1) implementada i
-provada. No s'han fet commits ni desplegaments. `contingut/phrasals.json` no s'ha tocat; el camp
-`particulesProhibides` ja era a les dades revisades.
+subfase 2C (minijoc C, "Substitueix", dificultat, no repetició i caixa 1) implementada i provada;
+subfase 2D (Game Over complet, efectes al progrés i so) implementada i provada. No s'han fet
+commits ni desplegaments. `contingut/phrasals.json` no s'ha tocat; el camp `particulesProhibides`
+ja era a les dades revisades.
 
 ## Correcció de versions (importants)
 
-- Tots els imports interns de JS portaven versió. S'han posat a `?v=7`, inclòs `index.html` i
+- Tots els imports interns de JS porten versió. S'han posat a `?v=8`, inclòs `index.html` i
   `css/estils.css` (fonts incloses), i s'ha mantingut la norma a `AGENTS.md`: pujar `?v=N` a
   `index.html` i a tots els imports quan canviï qualsevol fitxer JS o CSS.
 - Versions successives: `?v=3` (imports interns), `?v=4` (2A), `?v=5` (correccions 2A),
-  `?v=6` (2B) i **`?v=7` ara** (ajust 2B i 2C). `js/dades.js`, `js/progres.js` i
-  `js/preguntes.js` s'importen amb `?v=7`.
+  `?v=6` (2B), `?v=7` (ajust 2B i 2C) i **`?v=8` ara** (2D). `js/dades.js`, `js/preguntes.js`,
+  `js/progres.js`, `js/joc.js`, `js/repas.js`, `js/app.js` i el nou `js/so.js` s'importen amb
+  `?v=8`.
 - **`VERSIO_DADES` és 3** perquè les dades han canviat (`contingut/phrasals.json?v=3`).
 - A `AGENTS.md` hi ha la norma: si `contingut/*.json` canvia, puja `VERSIO_DADES`.
 - A `AGENTS.md` hi ha la comanda de tests:
@@ -82,15 +84,52 @@ provada. No s'han fet commits ni desplegaments. `contingut/phrasals.json` no s'h
 - 7/7 tests de 2C passen; inclouen preferència de mateix verb, posició aleatòria de la correcta i
   cap phrasal ja preguntat com a opció d'una pregunta C.
 
+## Fase 2D: Game Over complet, progrés i so 🔊
+
+- `js/progres.js`: nova `registraPartida(estat, { punts, encerts, errors, fallats, data, dia })`.
+  - Llegeix el millor rècord abans de desar; `nouRecord = punts > 0 && punts > recordAnterior`.
+  - Cada id fallat únic va a la caixa 1 amb `actualitzaLeitner(estat, id, false, dia)`;
+    els encerts del joc no canvien la caixa.
+  - Desa el top 5 de records amb data ISO, suma `partides`, `encerts` i `errors`, actualitza
+    `ratxa` i `millorRatxa` i registra l'activitat del dia.
+  - Retorna `{ nouRecord, recordAnterior }`; `js/joc.js` rep l'estat viu via funció.
+- `js/so.js`: nou mòdul amb `creaSo({ activat, navegador, factoria })` i API
+  `{ desperta, encert, error, pujada, gameOver }`.
+  - `AudioContext` diferit fins al primer gest d'usuari (`desperta()`); `pointerdown` global i
+    el botó `#boto-so` el desperten.
+  - Web Audio amb oscil·ladors `triangle` i rampes de guany; sense Web Audio, sense vibració o
+    amb so desactivat no peta ni sona.
+  - `navigator.vibrate(80)` només a l'error; `pujada` puja de to i `gameOver` baixa de to.
+  - El so s'injecta a `iniciaJoc({ so })` com `rellotge` i `aleatori`, així els tests comproven
+    les crides sense àudio real.
+- `js/joc.js`:
+  - Comptador animat de 0 al total en 20 passos de 50 ms; amb `prefers-reduced-motion` el número
+    apareix directament i no es crea confeti.
+  - Mostra encerts, errors, millor ratxa i avís `🆕 NOU RÈCORD PERSONAL!` només si escau.
+  - Llista els phrasals fallats sense repetits amb significat; si no n'hi ha cap, mostra
+    `🎉 No has fallat cap phrasal. Perfecte!` i amaga `📚 Repassar els fallats`.
+  - En acabar crida `registraPartida`, desa, sona `gameOver` i navega a `#gameover`.
+  - `fallats()` exposa els ids per al repàs; `reinicia()` i `atura()` cancel·len el comptador.
+- `js/repas.js`: `mostra()` ja no sobreescriu una sessió acabada de crear amb
+  `comenca(ids, 'fallats')`; `comenca` s'exposa al return.
+- `js/app.js`: `const so = creaSo({ activat: () => estat.so })`; passa `estat`, `desa` i `so` al
+  joc; `#gameover-repassa` obre el repàs amb els ids fallats; `#gameover-ranking` mostra
+  l'avís "Properament"; en tornar a `#inici` es redibuixa el resum sense recarregar.
+- `index.html` i `css/estils.css`: nous elements del Game Over, estils de rècord/fallats/confeti i
+  animació `confeti-cau`; amb moviment reduït s'amaga el confeti i s'atura `batega` al rècord.
+- 16/16 tests de 2D passen, incloent-hi deduplicació de fallats, caixa 1, rècord, so/vibració,
+  moviment reduït i el fil `repas-a-jugar → #joc`.
+
 ## Proves executades
 
-- Primer, TDD en vermell: 12 fallades esperades (versió de dades, `particulesProhibides`,
-  minijoc C, barreja de tipus, dificultat i caixa 1), cadascuna pel motiu correcte.
+- TDD en vermell: històricament 12 fallades esperades a 2C; a 2D el test nou fallava amb
+  `progres.registraPartida is not a function` i amb `js/so.js` absent, fins que s'han implementat.
 - `node --check` sobre tots els fitxers `js/*.js`: sintaxi correcta.
-- `node --experimental-default-type=module --test tests/*.test.mjs`: **52 tests, 52 passats,
-  0 fallats** (19 de Fase 1, 16 de 2A, 10 de 2B i 7 de 2C).
-- Servidor `php -S 127.0.0.1:8081 -t /mnt/disco/Iespai/www/phrasalverbs`: `/`, `index.html`,
-  `css/estils.css?v=7`, `js/app.js?v=7`, `js/joc.js?v=7`, `js/preguntes.js?v=7` i
+- `node --experimental-default-type=module --test tests/*.test.mjs`: **69 tests, 69 passats,
+  0 fallats** (53 d'abans + 16 de 2D).
+- Servidor `php -S 127.0.0.1:8081 -t /mnt/disco/Iespai/www/phrasalverbs`: `/`, `/index.html`,
+  `css/estils.css?v=8`, `js/app.js?v=8`, `js/so.js?v=8`, `js/joc.js?v=8`, `js/progres.js?v=8`,
+  `js/repas.js?v=8`, `js/preguntes.js?v=8`, `js/dades.js?v=8` i
   `contingut/phrasals.json?v=3` responen 200. Servidor aturat després de la prova.
 - No s'ha fet servir un navegador real; la comprovació és de tests, sintaxi i HTTP.
 
@@ -113,6 +152,18 @@ provada. No s'han fet commits ni desplegaments. `contingut/phrasals.json` no s'h
 - [x] Test: jugant, surten els 3 tipus de pregunta barrejats.
 - [x] Test: un 30 % de les preguntes surten de la caixa 1 si n'hi ha.
 
+## Criteris d'acceptació 2D (§10)
+
+- [x] Test: cada fallat únic va a la caixa 1; els encerts del joc no canvien la caixa.
+- [x] Test: rècord només si `punts > 0` i superen el millor anterior, comparat abans de desar.
+- [x] Test: top 5 de records amb data, estadístiques, ratxa i activitat del dia actualitzats.
+- [x] Test: llista de fallats sense repetits amb significat; si no n'hi ha cap, missatge positiu
+      i botó de repàs amagat.
+- [x] Test: comptador animat en 20 passos de 50 ms i número directe amb moviment reduït.
+- [x] Test: confeti només amb nou rècord i sense moviment reduït.
+- [x] Test: `encert`, `pujada`, `error` i `gameOver` cridats; amb so apagat no sona ni vibra.
+- [x] Test: `repas-a-jugar → #joc`, `comenca(ids, 'fallats')` i resum de l'Inici redibuixat.
+
 ## Revisió de Claude de la 2C (2026-11-25)
 
 - `js/app.js` passa `leitner: () => estat.leitner` i `js/joc.js` accepta un objecte o una funció.
@@ -123,5 +174,14 @@ provada. No s'han fet commits ni desplegaments. `contingut/phrasals.json` no s'h
 
 ## Pendent (no fet ara)
 
-- Fase 2D: Game Over complet, efectes al progrés i so.
-- Fase 3: rànquing i API PHP.
+- Fase 3: rànquing real amb API PHP. De moment `#gameover-ranking` només mostra l'avís
+  "Properament", tal com demana la 2D.
+- No s'han fet commits ni desplegaments.
+
+## Revisió de Claude de la 2D (2026-11-25)
+
+- `js/app.js`: el so es desperta amb `pointerup`, `touchend`, `click` i `keydown` (abans només
+  `pointerdown`, que al mòbil, sobretot a l'iPhone, no compta com a gest d'usuari i el so no sonava).
+- `js/joc.js`: `acaba()` surt si la partida ja està acabada, perquè no es registri dos cops a
+  rècords i estadístiques.
+- Tests: **69 tests, 69 passats**.

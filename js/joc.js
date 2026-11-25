@@ -6,7 +6,9 @@ import {
   generaPreguntaC,
   multiplicador,
   puntsEncert
-} from './preguntes.js?v=7';
+} from './preguntes.js?v=8';
+import { estatPerDefecte, registraPartida } from './progres.js?v=8';
+import { creaSo } from './so.js?v=8';
 
 const DURADA_MS = DURADA_SEGONS * 1000;
 const PAUSA_ENCERT_MS = 400;
@@ -44,9 +46,15 @@ export function iniciaJoc({
   rellotge = rellotgeNatiu,
   navega = (hash) => { location.hash = hash; },
   aleatori = Math.random,
-  leitner = {}
+  leitner = {},
+  estat = null,
+  desa = () => {},
+  so = null,
+  redueixMoviment = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 } = {}) {
   const node = (id) => dom.getElementById(id);
+  const soJoc = so ?? creaSo();
+  const estatLocal = estatPerDefecte();
   let intervalId = null;
   let timeoutId = null;
   let actiu = false;
@@ -64,6 +72,68 @@ export function iniciaJoc({
   let preguntesFetes = 0;
   let pregunta = null;
   const usats = new Set();
+  const fallats = new Set();
+  const comptadorIds = [];
+
+  function estatActual() {
+    return typeof estat === 'function' ? estat() : estat ?? estatLocal;
+  }
+
+  function cancelaComptador() {
+    while (comptadorIds.length > 0) rellotge.cancela(comptadorIds.pop());
+  }
+
+  function comptaPunts(total) {
+    cancelaComptador();
+    node('gameover-punts').textContent = '0';
+    if (redueixMoviment()) {
+      node('gameover-punts').textContent = String(total);
+      return;
+    }
+    const passos = 20;
+    for (let pas = 1; pas <= passos; pas++) {
+      comptadorIds.push(rellotge.despres(50 * pas, () => {
+        node('gameover-punts').textContent = String(Math.round((total * pas) / passos));
+      }));
+    }
+  }
+
+  function mostraConfeti(nouRecord) {
+    const contenidor = node('gameover-confeti');
+    if (!contenidor) return;
+    contenidor.replaceChildren();
+    if (!nouRecord || redueixMoviment()) return;
+    const peces = Array.from({ length: 18 }, (_, index) => {
+      const peca = dom.createElement('span');
+      peca.className = 'confeti';
+      peca.textContent = index % 2 === 0 ? '🎉' : '✨';
+      peca.style.left = `${(index * 37) % 100}%`;
+      peca.style.animationDelay = `${(index % 6) * 0.09}s`;
+      return peca;
+    });
+    contenidor.append(...peces);
+  }
+
+  function mostraFallats() {
+    const perId = new Map(phrasals.map((entrada) => [entrada.id, entrada]));
+    const llista = node('gameover-fallats');
+    llista?.replaceChildren(...[...fallats].map((id) => {
+      const entrada = perId.get(id);
+      const fila = dom.createElement('li');
+      const nom = dom.createElement('strong');
+      nom.textContent = entrada?.phrasal ?? id;
+      nom.setAttribute('lang', 'en');
+      fila.append(nom, dom.createTextNode(` — ${entrada?.significat ?? ''}`));
+      return fila;
+    }));
+    const sense = node('gameover-sense-fallats');
+    if (sense) {
+      sense.hidden = fallats.size > 0;
+      sense.textContent = fallats.size > 0 ? '' : '🎉 No has fallat cap phrasal. Perfecte!';
+    }
+    const boto = node('gameover-repassa');
+    if (boto) boto.hidden = fallats.size === 0;
+  }
 
   function mostraTemps() {
     const segons = Math.ceil(msRestants / 1000);
@@ -94,15 +164,28 @@ export function iniciaJoc({
   }
 
   function acaba(motiu) {
+    if (acabat) return; // mai registrar la mateixa partida dos cops
     aturaRellotge();
     actiu = false;
     acabat = true;
     bloquejat = true;
+    const resultat = registraPartida(estatActual(), {
+      punts, encerts, errors, fallats: [...fallats]
+    });
+    desa();
+    soJoc.gameOver?.();
     node('gameover-titol').textContent = motiu === 'temps' ? '⏰ TEMPS!' : '💀 GAME OVER';
-    node('gameover-punts').textContent = String(punts);
+    comptaPunts(punts);
     node('gameover-encerts').textContent = String(encerts);
     node('gameover-errors').textContent = String(errors);
     node('gameover-ratxa').textContent = `🔥 ${millorRatxa}`;
+    const avis = node('gameover-record');
+    if (avis) {
+      avis.hidden = !resultat.nouRecord;
+      avis.textContent = resultat.nouRecord ? '🆕 NOU RÈCORD PERSONAL!' : '';
+    }
+    mostraConfeti(resultat.nouRecord);
+    mostraFallats();
     navega('#gameover');
   }
 
@@ -201,10 +284,13 @@ export function iniciaJoc({
     const segons = (rellotge.ara() - iniciPregunta) / 1000;
 
     if (pregunta.opcions[index] === pregunta.correcta) {
+      const multiplicadorAnterior = multiplicador(ratxa);
       ratxa += 1;
       millorRatxa = Math.max(millorRatxa, ratxa);
       encerts += 1;
       punts += puntsEncert(ratxa, segons);
+      soJoc.encert?.();
+      if (multiplicador(ratxa) > multiplicadorAnterior) soJoc.pujada?.();
       boto.classList.add('encert');
       node('joc-resultat').textContent = '🎉 Brutal!';
       mostraCap();
@@ -219,6 +305,8 @@ export function iniciaJoc({
     }
 
     boto.classList.add('erronia');
+    soJoc.error?.();
+    fallats.add(pregunta.id);
     const correctIndex = pregunta.opcions.indexOf(pregunta.correcta);
     node('joc-opcions').children[correctIndex]?.classList.add('correcta');
     errors += 1;
@@ -242,6 +330,8 @@ export function iniciaJoc({
 
   function reinicia() {
     aturaRellotge();
+    cancelaComptador();
+    fallats.clear();
     msRestants = DURADA_MS;
     vides = VIDES;
     punts = 0;
@@ -268,6 +358,7 @@ export function iniciaJoc({
 
   function atura() {
     aturaRellotge();
+    cancelaComptador();
     actiu = false;
     bloquejat = true;
   }
@@ -277,5 +368,5 @@ export function iniciaJoc({
     navega('#joc');
   });
 
-  return { mostra, atura };
+  return { mostra, atura, fallats: () => [...fallats] };
 }

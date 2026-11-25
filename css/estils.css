@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../fonts/press-start-2p-400-latin.woff2?v=7') format('woff2');
+  src: url('../fonts/press-start-2p-400-latin.woff2?v=8') format('woff2');
 }
 
 @font-face {
@@ -11,7 +11,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=7') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=8') format('woff2');
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=7') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=8') format('woff2');
 }
 
 @font-face {
@@ -27,7 +27,7 @@
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url('../fonts/nunito-latin.woff2?v=7') format('woff2');
+  src: url('../fonts/nunito-latin.woff2?v=8') format('woff2');
 }
 
 :root {
@@ -788,6 +788,60 @@ kbd {
 .gameover-numeros p { margin: 0; color: var(--text-suau); }
 .gameover-numeros strong { color: var(--groc); }
 
+.gameover-record {
+  margin: 0 0 12px;
+  padding: 12px;
+  border: 2px solid var(--groc);
+  border-radius: 12px;
+  color: var(--groc);
+  font-family: var(--font-arcade);
+  font-size: clamp(10px, 3vw, 14px);
+  line-height: 1.6;
+  text-align: center;
+  text-shadow: 0 0 12px rgba(255, 225, 77, .6);
+  animation: bategar 1.1s ease-in-out infinite;
+}
+
+.gameover-fallats-caixa {
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid rgba(255, 77, 109, .3);
+  border-radius: var(--radi);
+  background: rgba(255, 77, 109, .06);
+}
+
+.gameover-fallats-caixa .subtitul-seccio { margin: 0 0 10px; }
+.gameover-fallats { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.gameover-fallats li {
+  padding: 10px 12px;
+  border-left: 3px solid var(--vermell);
+  border-radius: 8px;
+  background: rgba(29, 17, 71, .8);
+  color: var(--text-suau);
+  overflow-wrap: anywhere;
+}
+.gameover-fallats strong { color: var(--text); }
+.gameover-sense { margin: 0; color: var(--verd); text-align: center; }
+
+.confeti-caixa {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confeti {
+  position: absolute;
+  top: -32px;
+  font-size: 22px;
+  animation: confeti-cau 1.9s linear forwards;
+}
+
+@keyframes confeti-cau {
+  to { transform: translateY(110vh) rotate(540deg); }
+}
+
 #gameover .boto {
   display: flex;
   width: 100%;
@@ -815,4 +869,6 @@ kbd {
     scroll-behavior: auto !important;
   }
   .flotant { display: none; }
+  .confeti { display: none; }
+  .gameover-record { animation: none; }
 }

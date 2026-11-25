@@ -118,6 +118,25 @@ export function afegeixRecord(estat, resultat) {
   return estat;
 }
 
+function dataLocal() {
+  const data = new Date();
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const dia = String(data.getDate()).padStart(2, '0');
+  return `${data.getFullYear()}-${mes}-${dia}`;
+}
+
+export function registraPartida(estat, { punts = 0, encerts = 0, errors = 0, fallats = [], data, dia } = {}) {
+  const recordAnterior = estat.records.reduce((maxim, registre) => Math.max(maxim, registre?.punts ?? 0), 0);
+  const diaPartida = dia ?? dataLocal();
+  for (const id of new Set(fallats)) actualitzaLeitner(estat, id, false, diaPartida);
+  afegeixRecord(estat, { punts, encerts, data: data ?? new Date().toISOString() });
+  estat.estadistiques.partides += 1;
+  estat.estadistiques.encerts += encerts;
+  estat.estadistiques.errors += errors;
+  registraActivitat(estat, diaPartida);
+  return { nouRecord: punts > 0 && punts > recordAnterior, recordAnterior };
+}
+
 export function desaSo(estat, so) {
   estat.so = Boolean(so);
   return estat;

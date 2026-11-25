@@ -1,11 +1,11 @@
 import {
   TEMES, NIVELLS, comptaPerTema, comptaPerVerb,
   filtraConjunt, ordenaPerLeitner
-} from './dades.js?v=7';
+} from './dades.js?v=8';
 import {
   actualitzaLeitner, alternaPreferit, desaRepasEnCurs,
   llegeixRepasEnCurs, registraActivitat
-} from './progres.js?v=7';
+} from './progres.js?v=8';
 
 const LIMIT = 20;
 const MISSATGES_OK = ['Brutal! 🔥', 'Ets una màquina! 🤖', 'Crack! 😎'];
@@ -301,9 +301,15 @@ export function iniciaRepas({ estat, phrasals, desa, avisa }) {
   });
 
   return {
+    comenca,
     mostra() {
       const sessioDesada = llegeixRepasEnCurs(estat);
-      if (sessioDesada) mostraBanner(sessioDesada);
+      const mateixaSessio = sessioDesada && sessio
+        && sessioDesada.index === sessio.index
+        && sessioDesada.ids.length === sessio.ids.length
+        && sessioDesada.ids.every((id, index) => id === sessio.ids[index]);
+      if (sessioDesada && !mateixaSessio) mostraBanner(sessioDesada);
+      else if (vista === 'sessio' && sessio) mostraSessio();
       else if (vista === 'resum' && sessio) {
         elements.preparacio.hidden = true;
         elements.resum.hidden = false;

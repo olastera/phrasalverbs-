@@ -1,11 +1,13 @@
-import { carregaConjunt, comptaPerVerb } from './dades.js?v=7';
-import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=7';
-import { iniciaRepas } from './repas.js?v=7';
-import { iniciaJoc } from './joc.js?v=7';
+import { carregaConjunt, comptaPerVerb } from './dades.js?v=8';
+import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=8';
+import { iniciaRepas } from './repas.js?v=8';
+import { iniciaJoc } from './joc.js?v=8';
+import { creaSo } from './so.js?v=8';
 
 const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'progres'];
 const NOMBRE = new Intl.NumberFormat('ca-ES');
 const estat = carregaEstat();
+const so = creaSo({ activat: () => estat.so });
 let conjunt = null;
 let repas = null;
 let joc = null;
@@ -132,6 +134,7 @@ function mostraPantalla() {
   if (activa === 'joc') joc?.mostra();
   if (activa === 'progres') renderProgres();
   if (activa === 'repas') repas?.mostra();
+  if (activa === 'inici') renderResum();
 }
 
 async function carregaDades() {
@@ -146,6 +149,9 @@ async function carregaDades() {
     joc = iniciaJoc({
       phrasals: conjunt.phrasals,
       leitner: () => estat.leitner,
+      estat: () => estat,
+      desa,
+      so,
       navega: (hash) => { location.hash = hash; }
     });
     renderResum();
@@ -158,9 +164,16 @@ async function carregaDades() {
   }
 }
 
+// L'AudioContext només es pot activar dins d'un gest que compti com a activació de l'usuari.
+// Al mòbil, pointerdown NO compta (iPhone): cal pointerup/touchend/click.
+for (const tipus of ['pointerup', 'touchend', 'click', 'keydown']) {
+  document.addEventListener(tipus, () => so.desperta(), { passive: true });
+}
+
 node('boto-so').addEventListener('click', () => {
   desaSo(estat, !estat.so);
   desa();
+  so.desperta();
   renderSo();
 });
 
@@ -180,6 +193,18 @@ document.querySelectorAll('[data-fase]').forEach((boto) => {
 
 node('repas-a-jugar').addEventListener('click', () => {
   location.hash = '#joc';
+});
+
+node('gameover-repassa').addEventListener('click', () => {
+  const ids = joc?.fallats() ?? [];
+  if (ids.length === 0) return;
+  location.hash = '#repas';
+  repas?.comenca(ids, 'fallats');
+  repas?.mostra();
+});
+
+node('gameover-ranking').addEventListener('click', () => {
+  avisProperament('rànquing');
 });
 
 node('boto-esborra').addEventListener('click', () => {

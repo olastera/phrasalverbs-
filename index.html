@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#120a2e">
   <title>🦸 Phrasal Hero</title>
-  <link rel="stylesheet" href="css/estils.css?v=7">
+  <link rel="stylesheet" href="css/estils.css?v=8">
 </head>
 <body>
   <div class="fons" aria-hidden="true">
@@ -138,14 +138,23 @@
     </section>
 
     <section id="gameover" class="pantalla" hidden aria-labelledby="gameover-titol">
+      <div id="gameover-confeti" class="confeti-caixa" aria-hidden="true"></div>
       <h2 id="gameover-titol" class="gameover-titol">💀 GAME OVER</h2>
+      <p id="gameover-record" class="gameover-record" hidden aria-live="polite">🆕 NOU RÈCORD PERSONAL!</p>
       <div class="gameover-numeros">
         <p>💰 Punts: <strong id="gameover-punts">0</strong></p>
         <p>✅ Encerts: <strong id="gameover-encerts">0</strong></p>
         <p>❌ Errors: <strong id="gameover-errors">0</strong></p>
         <p>Millor ratxa: <strong id="gameover-ratxa">🔥 0</strong></p>
       </div>
+      <div class="gameover-fallats-caixa">
+        <h3 class="subtitul-seccio">📝 Phrasals que has fallat</h3>
+        <ul id="gameover-fallats" class="gameover-fallats"></ul>
+        <p id="gameover-sense-fallats" class="gameover-sense" hidden></p>
+      </div>
+      <button type="button" id="gameover-ranking" class="boto boto-principal">🏆 Guardar al rànquing</button>
       <button type="button" id="gameover-rejuga" class="boto boto-principal">🔁 Tornar a jugar</button>
+      <button type="button" id="gameover-repassa" class="boto boto-vermell" hidden>📚 Repassar els fallats</button>
       <a class="boto boto-fantasma" href="#inici">🏠 Torna a l'inici</a>
     </section>
 
@@ -178,6 +187,6 @@
 
   <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
 
-  <script type="module" src="js/app.js?v=7"></script>
+  <script type="module" src="js/app.js?v=8"></script>
 </body>
 </html>
