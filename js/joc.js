@@ -7,9 +7,10 @@ import {
   generaPreguntaC,
   multiplicador,
   puntsEncert
-} from './preguntes.js?v=13';
-import { estatPerDefecte, registraPartida } from './progres.js?v=13';
-import { creaSo } from './so.js?v=13';
+} from './preguntes.js?v=14';
+import { estatPerDefecte, registraPartida } from './progres.js?v=14';
+import { creaSo } from './so.js?v=14';
+import { fraseEncert, fraseError, fraseGameOver } from './frases.js?v=14';
 
 const DURADA_MS = DURADA_SEGONS * 1000;
 const PAUSA_ENCERT_MS = 400;
@@ -61,6 +62,8 @@ export function iniciaJoc({
   const node = (id) => dom.getElementById(id);
   const soJoc = so ?? creaSo();
   const estatLocal = estatPerDefecte();
+  const ratxaNode = node('joc-ratxa');
+  ratxaNode?.addEventListener?.('animationend', () => ratxaNode.classList.remove('pop'));
   let intervalId = null;
   let timeoutId = null;
   let actiu = false;
@@ -86,6 +89,9 @@ export function iniciaJoc({
   let bonusErrorTimeoutId = null;
   let iniciBonus = 0;
   let rondaBonus = null;
+  let ultimaFraseEncert = null;
+  let ultimaFraseError = null;
+  let ultimaFraseGameOver = null;
   const usats = new Set();
   const fallats = new Set();
   const comptadorIds = [];
@@ -181,9 +187,66 @@ export function iniciaJoc({
   }
 
   function mostraCap() {
+    const multiplicadorActual = multiplicador(ratxa);
+    const nodeRatxa = node('joc-ratxa');
     node('joc-vides').textContent = '❤️'.repeat(vides) + '💔'.repeat(VIDES - vides);
     node('joc-punts').textContent = String(punts);
-    node('joc-ratxa').textContent = `🔥 x${multiplicador(ratxa)}`;
+    nodeRatxa.textContent = `🔥 x${multiplicadorActual}`;
+    for (const classe of ['mult-1', 'mult-2', 'mult-3', 'mult-4']) nodeRatxa.classList.remove(classe);
+    nodeRatxa.classList.add(`mult-${multiplicadorActual}`);
+  }
+
+  function mostraPuntsVolants(puntsGuanyats, boto) {
+    if (redueixMoviment()) return;
+    const contenidor = node('joc-efectes');
+    if (!contenidor) return;
+    const efecte = dom.createElement('span');
+    efecte.className = 'punts-volants';
+    efecte.textContent = `+${puntsGuanyats}`;
+    efecte.setAttribute('aria-hidden', 'true');
+    if (typeof boto?.offsetLeft === 'number' && typeof boto?.offsetWidth === 'number') {
+      efecte.style.left = `${boto.offsetLeft + boto.offsetWidth / 2}px`;
+      efecte.style.top = `${boto.offsetTop}px`;
+    }
+    efecte.addEventListener('animationend', () => efecte.remove());
+    contenidor.append(efecte);
+  }
+
+  function mostraConfetiJoc() {
+    if (redueixMoviment()) return;
+    const contenidor = node('joc-confeti');
+    if (!contenidor) return;
+    contenidor.replaceChildren();
+    const peces = Array.from({ length: 10 }, (_, index) => {
+      const peca = dom.createElement('span');
+      peca.className = 'confeti';
+      peca.textContent = index % 2 === 0 ? '🎉' : '✨';
+      peca.style.left = `${(index * 41) % 100}%`;
+      peca.style.animationDelay = `${(index % 5) * 0.07}s`;
+      peca.addEventListener('animationend', () => peca.remove());
+      return peca;
+    });
+    contenidor.append(...peces);
+  }
+
+  function mostraPujadaMultiplicador() {
+    const nodeRatxa = node('joc-ratxa');
+    if (!redueixMoviment() && nodeRatxa) {
+      nodeRatxa.classList.remove('pop');
+      void nodeRatxa.offsetWidth;
+      nodeRatxa.classList.add('pop');
+    }
+    mostraConfetiJoc();
+  }
+
+  function mostraFraseEncert() {
+    ultimaFraseEncert = fraseEncert({ aleatori, anterior: ultimaFraseEncert });
+    node('joc-resultat').textContent = ultimaFraseEncert;
+  }
+
+  function mostraFraseError(correcta) {
+    ultimaFraseError = fraseError({ aleatori, anterior: ultimaFraseError });
+    node('joc-resultat').textContent = `${ultimaFraseError} La resposta era: ${correcta}`;
   }
 
   function aturaRellotge() {
@@ -399,13 +462,18 @@ export function iniciaJoc({
     ratxa += 1;
     millorRatxa = Math.max(millorRatxa, ratxa);
     encerts += 1;
-    punts += 10 * multiplicador(ratxa);
+    const guanyats = 10 * multiplicador(ratxa);
+    punts += guanyats;
     soJoc.encert?.();
-    if (multiplicador(ratxa) > multiplicadorAnterior) soJoc.pujada?.();
+    if (multiplicador(ratxa) > multiplicadorAnterior) {
+      soJoc.pujada?.();
+      mostraPujadaMultiplicador();
+    }
     esquerra.classList.add('encert');
     boto.classList.add('encert');
     rondaBonus.encerts += 1;
     node('bonus-estat').textContent = `⚡ ${entry.phrasal} = ${significat}`;
+    mostraPuntsVolants(guanyats, boto);
     mostraCap();
 
     if (rondaBonus.fetes === PARELLES) acabaBonus();
@@ -424,6 +492,8 @@ export function iniciaJoc({
     desa();
     soJoc.gameOver?.();
     node('gameover-titol').textContent = motiu === 'temps' ? '⏰ TEMPS!' : '💀 GAME OVER';
+    ultimaFraseGameOver = fraseGameOver({ aleatori, anterior: ultimaFraseGameOver });
+    node('gameover-frase').textContent = ultimaFraseGameOver;
     comptaPunts(punts);
     node('gameover-encerts').textContent = String(encerts);
     node('gameover-errors').textContent = String(errors);
@@ -457,6 +527,7 @@ export function iniciaJoc({
     preguntaNode.dataset.tipus = pregunta.tipus;
     preguntaNode.dataset.id = pregunta.id;
     node('joc-tipus').textContent = ETIQUETES_TIPUS[pregunta.tipus] ?? ETIQUETES_TIPUS.A;
+    preguntaNode.setAttribute('lang', pregunta.tipus === 'C' ? 'ca' : 'en');
 
     if (pregunta.tipus === 'B') {
       const trossos = pregunta.forat.split('___');
@@ -475,6 +546,7 @@ export function iniciaJoc({
     } else if (pregunta.tipus === 'C') {
       const sinonim = dom.createElement('strong');
       sinonim.textContent = pregunta.sinonim;
+      sinonim.setAttribute('lang', 'en');
       preguntaNode.textContent = '';
       preguntaNode.replaceChildren(
         dom.createTextNode('Quin phrasal vol dir '),
@@ -495,6 +567,7 @@ export function iniciaJoc({
       boto.type = 'button';
       boto.className = 'boto boto-resposta';
       boto.textContent = text;
+      if (pregunta.tipus !== 'A') boto.setAttribute('lang', 'en');
       boto.addEventListener('click', () => respon(index, boto));
       return boto;
     }));
@@ -537,11 +610,16 @@ export function iniciaJoc({
       ratxa += 1;
       millorRatxa = Math.max(millorRatxa, ratxa);
       encerts += 1;
-      punts += puntsEncert(ratxa, segons);
+      const guanyats = puntsEncert(ratxa, segons);
+      punts += guanyats;
       soJoc.encert?.();
-      if (multiplicador(ratxa) > multiplicadorAnterior) soJoc.pujada?.();
+      if (multiplicador(ratxa) > multiplicadorAnterior) {
+        soJoc.pujada?.();
+        mostraPujadaMultiplicador();
+      }
       boto.classList.add('encert');
-      node('joc-resultat').textContent = '🎉 Brutal!';
+      mostraFraseEncert();
+      mostraPuntsVolants(guanyats, boto);
       mostraCap();
       aturaRellotge();
       timeoutId = rellotge.despres(PAUSA_ENCERT_MS, () => {
@@ -561,7 +639,7 @@ export function iniciaJoc({
     vides = Math.max(0, vides - 1);
     ratxa = 0;
     mostraCap();
-    node('joc-resultat').textContent = `😵 La resposta era: ${pregunta.correcta}`;
+    mostraFraseError(pregunta.correcta);
     const ultimaVida = vides === 0;
     aturaRellotge();
     timeoutId = rellotge.despres(PAUSA_ERROR_MS, () => {
@@ -590,6 +668,12 @@ export function iniciaJoc({
     millorRatxa = 0;
     preguntesFetes = 0;
     usats.clear();
+    ultimaFraseEncert = null;
+    ultimaFraseError = null;
+    ultimaFraseGameOver = null;
+    node('joc-efectes')?.replaceChildren?.();
+    node('joc-confeti')?.replaceChildren?.();
+    node('joc-ratxa')?.classList?.remove?.('pop');
     pregunta = null;
     token = null;
     guardat = false;

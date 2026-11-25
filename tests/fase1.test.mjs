@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const base = new URL('../js/', import.meta.url).href;
-const dades = await import(`${base}dades.js?v=13`);
-const progres = await import(`${base}progres.js?v=13`);
-const repas = await import(`${base}repas.js?v=13`);
+const dades = await import(`${base}dades.js?v=14`);
+const progres = await import(`${base}progres.js?v=14`);
+const repas = await import(`${base}repas.js?v=14`);
 const fitxer = new URL('../contingut/phrasals.json', import.meta.url);
 const dadesReals = JSON.parse(readFileSync(fitxer, 'utf8'));
 

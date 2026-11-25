@@ -1,26 +1,30 @@
-# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D + Fase 3A + Fase 3B + Subfase 4A (corregida)
+# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D + Fase 3A + Fase 3B + Subfase 4A (corregida) + Subfase 4B
 
 Estat: Fase 1 acabada; Fase 2A corregida; Fase 2B ajustada amb `particulesProhibides`;
 subfase 2C (minijoc C, "Substitueix", dificultat, no repetició i caixa 1) implementada i provada;
 subfase 2D (Game Over complet, efectes al progrés i so) implementada i provada; Fase 3A (servidor
 del rànquing i filtre de paraulotes) implementada i provada; Fase 3B (client del rànquing:
 API, token per partida, inicials i taula) implementada, provada i corregida; subfase 4A (ronda
-bonus "⚡ Parelles") implementada, provada i corregida. No s'han fet commits ni desplegaments.
+bonus "⚡ Parelles") implementada, provada i corregida; subfase 4B (poliment visual del joc)
+implementada i provada, amb un retoc d'accessibilitat a la ronda Parelles. No s'han fet commits ni
+desplegaments.
 `contingut/phrasals.json` no s'ha tocat; el camp `particulesProhibides` ja era a les dades revisades.
 
 ## Correcció de versions (importants)
 
-- Tots els imports interns de JS porten versió. Ara són `?v=13`, inclòs `index.html` i
+- Tots els imports interns de JS porten versió. Ara són `?v=14`, inclòs `index.html` i
   `css/estils.css` (fonts incloses), i s'ha mantingut la norma a `AGENTS.md`: pujar `?v=N` a
   `index.html` i a tot arreu quan canviï qualsevol fitxer JS o CSS.
 - Versions successives: `?v=3` (imports interns), `?v=4` (2A), `?v=5` (correccions 2A),
   `?v=6` (2B), `?v=7` (ajust 2B i 2C), `?v=8` (2D i 3A), `?v=9` (3B), `?v=10` (correccions de la 3B),
-  `?v=11` (correcció del rànquing local), `?v=12` (subfase 4A) i **`?v=13` ara** (correccions de la 4A).
+  `?v=11` (correcció del rànquing local), `?v=12` (subfase 4A), `?v=13` (correccions de la 4A) i
+  **`?v=14` ara** (subfase 4B).
 - La 3A va mantenir `?v=8` perquè no va tocar `index.html` ni cap JS/CSS existent. A la 3B es va
-  pujar a `?v=9`, amb les correccions a `?v=10`, la 4A a `?v=12` i les correccions de la 4A a `?v=13`:
-  `index.html`, `css/estils.css`, tots els imports de JS i les URLs dels tests. `js/joc.js` importa
-  `preguntes.js?v=13`, `progres.js?v=13` i `so.js?v=13`; `js/app.js` importa `js/ranking.js?v=13`.
-  `js/ranking.js` no s'ha tocat per restricció explícita i conserva `js/paraulotes.js?v=12`.
+  pujar a `?v=9`, amb les correccions a `?v=10`, la 4A a `?v=12`, les correccions de la 4A a `?v=13`
+  i la 4B a `?v=14`: `index.html`, `css/estils.css`, tots els imports de JS i les URLs dels tests.
+  `js/joc.js` importa `preguntes.js?v=14`, `progres.js?v=14`, `so.js?v=14` i `frases.js?v=14`;
+  `js/app.js` importa `js/ranking.js?v=14`. `js/ranking.js` no s'ha tocat per restricció explícita i
+  conserva `js/paraulotes.js?v=12`.
 - **`VERSIO_DADES` és 3** perquè les dades han canviat (`contingut/phrasals.json?v=3`).
 - A `AGENTS.md` hi ha la norma: si `contingut/*.json` canvia, puja `VERSIO_DADES`.
 - A `AGENTS.md` hi ha la comanda de tests:
@@ -339,7 +343,7 @@ bonus "⚡ Parelles") implementada, provada i corregida. No s'han fet commits ni
 - [x] Test: doble toc només puntua un cop i tocar la dreta sense selecció no fa res.
 - [x] Test: `atura()` durant la ronda cancel·la tots els temporitzadors.
 - [x] Test: cap phrasal de la ronda queda a `usats`.
-- [x] Test: HTML i CSS inclouen `aria-live`, botons de 48 px i versions `?v=13`.
+- [x] Test: HTML i CSS inclouen `aria-live`, botons de 48 px i versions `?v=14`.
 
 ## Correcció de la 3B (2026-11-25)
 
@@ -364,10 +368,34 @@ bonus "⚡ Parelles") implementada, provada i corregida. No s'han fet commits ni
 - Corregit el castellanisme "partículas" → "partícules" als missatges de `fase2b.test.mjs`.
 - Tests: **53 tests, 53 passats**.
 
+## Subfase 4B: poliment visual del joc (2026-11-25)
+
+- `js/frases.js` (nou): llistes `ENCERT`, `ERROR` i `GAME_OVER`, amb `triaFrase()` pura i `aleatori`
+  injectable. Evita repetir la frase anterior i `js/repas.js` ja no defineix `MISSATGES_OK/KO`.
+- `js/joc.js`: en encertar, `#joc-resultat` mostra una frase d'`ENCERT`; en fallar, mostra
+  `<frase d'ERROR> La resposta era: X`, amb la correcció obligatòria.
+- `+N` volant en cada encert, inclosa la ronda de Parelles: punts exactes, `aria-hidden="true"`,
+  pujada i esvaïment en ~700 ms, eliminació del DOM amb `animationend` i cap element amb
+  `prefers-reduced-motion`.
+- Pujada de multiplicador: 10 peces de confeti a `#joc-confeti`, `pop` a `#joc-ratxa` i colors
+  `mult-1` a `mult-4` (text suau, groc, rosa i cian amb ombra de neó). Amb moviment reduït no hi ha
+  confeti ni `pop`, però el color del multiplicador continua canviant.
+- Game Over: frase aleatòria de `GAME_OVER` a `#gameover-frase`, sota `💀 GAME OVER`.
+- Accessibilitat §9: `lang="en"` a la pregunta del minijoc B, al sinònim anglès del C i a les opcions
+  angleses dels minijocs B i C; les opcions catalanes del minijoc A no porten `lang`.
+- `index.html` i `css/estils.css`: nous `#joc-confeti`, `#joc-efectes` i `#gameover-frase`, amb
+  animacions `punts-vola`, `ratxa-pop` i `confeti-joc-cau`; reduced-motion amaga el moviment.
+- Versions pujades a `?v=14` a `index.html`, `css/estils.css`, imports JS i URLs dels tests.
+- Retoc d'accessibilitat a la ronda Parelles: test nou a `tests/fase4b.test.mjs` que comprova que
+  els cinc botons de `#bonus-esquerra` porten `lang="en"` i que cap botó de `#bonus-dreta` en porta.
+  `js/joc.js` ja posava l'atribut; s'ha verificat en vermell en treure'l temporalment i en verd en
+  restaurar-lo. Versió mantinguda a `?v=14`.
+- Comprovació: `node --check` a tots els JS i tests; **152 tests, 152 passats, 0 fallats**.
+- No s'han tocat regles ni puntuació, ni `api/ranking.php`, `js/paraulotes.js`, `js/ranking.js` ni
+  `contingut/*.json`. No s'han fet commits ni desplegaments.
+
 ## Pendent (no fet ara)
 
-- Resta de Fase 4 (4B i poliment): frases i emojis aleatoris al joc, `+N` volant, confeti en pujar
-  de ratxa i ratxa de dies; la subfase 4A de Parelles ja està acabada.
 - Verificació opcional en navegador real i a Aruba (ara només s'han provat tests, sintaxi i HTTP).
 - Fase 5: PWA.
 - Fase 6: script de desplegament (sense executar-lo).

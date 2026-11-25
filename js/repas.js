@@ -1,15 +1,14 @@
 import {
   TEMES, NIVELLS, comptaPerTema, comptaPerVerb,
   filtraConjunt, ordenaPerLeitner
-} from './dades.js?v=13';
+} from './dades.js?v=14';
 import {
   actualitzaLeitner, alternaPreferit, desaRepasEnCurs,
   llegeixRepasEnCurs, registraActivitat
-} from './progres.js?v=13';
+} from './progres.js?v=14';
+import { fraseEncert, fraseError } from './frases.js?v=14';
 
 const LIMIT = 20;
-const MISSATGES_OK = ['Brutal! 🔥', 'Ets una màquina! 🤖', 'Crack! 😎'];
-const MISSATGES_KO = ['Uf, per poc! 🙈', 'Apunta-te-la! 📝', 'La pròxima és teva 💪'];
 
 function node(id) {
   return document.getElementById(id);
@@ -22,11 +21,7 @@ function avui() {
   return `${data.getFullYear()}-${mes}-${dia}`;
 }
 
-function triaAtzar(lista) {
-  return lista[Math.floor(Math.random() * lista.length)];
-}
-
-export function iniciaRepas({ estat, phrasals, desa, avisa }) {
+export function iniciaRepas({ estat, phrasals, desa, avisa, aleatori = Math.random }) {
   const elements = {
     filtres: node('filtres'),
     comptador: node('repas-comptador'),
@@ -62,6 +57,8 @@ export function iniciaRepas({ estat, phrasals, desa, avisa }) {
   let vista = 'prep';
   let girada = false;
   let actual = null;
+  let ultimaFraseOk = null;
+  let ultimaFraseKo = null;
 
   function desaActivitat() {
     registraActivitat(estat, avui());
@@ -244,7 +241,12 @@ export function iniciaRepas({ estat, phrasals, desa, avisa }) {
     desa();
     if (sessio.index >= sessio.ids.length) acaba();
     else mostraTargeta();
-    avisa(encert ? triaAtzar(MISSATGES_OK) : triaAtzar(MISSATGES_KO));
+    const frase = encert
+      ? fraseEncert({ aleatori, anterior: ultimaFraseOk })
+      : fraseError({ aleatori, anterior: ultimaFraseKo });
+    if (encert) ultimaFraseOk = frase;
+    else ultimaFraseKo = frase;
+    avisa(frase);
   }
 
   elements.comenca.addEventListener('click', () => comenca());
