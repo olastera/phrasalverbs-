@@ -59,8 +59,9 @@
 | 2C | Minijoc C (Substitueix) + barreja + dificultat + 30 % caixa 1 | ✅ Feta, revisada i provada al mòbil (commit `9cc360e`) |
 | 2D | Game Over complet, progrés, so i vibració | ✅ Feta, revisada i provada al mòbil (commit `020c826`) |
 | 3A | API del rànquing (`api/ranking.php` + SQLite) i filtre de paraulotes | ✅ Feta i revisada, provada a Apache del Pi (commit `c4aa469`) |
-| **3B** | Pantalles Inicials i Rànquing, token a cada partida, mode sense connexió | ⏳ **Encàrrec preparat** (vegeu a sota) |
-| 4 | Ronda bonus Parelles + poliment visual | ⬜ |
+| 3B | Pantalles Inicials i Rànquing, token a cada partida, mode sense connexió | ✅ Feta, corregida i revisada (commit `5adca30`); falta provar-la al mòbil |
+| **4A** | Ronda bonus ⚡ Parelles (minijoc D) | ⏳ **Encàrrec preparat** (vegeu a sota) |
+| 4B | Poliment: frases i emojis aleatoris al joc, "+N" volant, confeti en pujar multiplicador | ⬜ |
 | 5 | PWA (manifest, service worker, icones) | ⬜ |
 | 6 | Script `deploy-phrasalverbs.sh` (el desplegament el fa l'Oscar) | ⬜ |
 | Futur | Connectors, codi de classe al rànquing, mode examen | ⬜ |
@@ -86,6 +87,14 @@
 - API: un `SELECT` de PDO obert (sense `closeCursor()`) bloquejava SQLite i el doble enviament
   donava `database is locked`. **Norma:** tancar les lectures abans d'escriure, `BEGIN IMMEDIATE` i
   comprovar `rowCount()`.
+- Rànquing (3B): la fila pròpia es ressaltava comparant inicials → si unes inicials surten
+  diverses vegades, parpellegen totes. **Solució:** ressaltar per posició (`posicioSetmana` /
+  `posicioSempre` que torna el servidor), mai pel text.
+- Missatges que es queden enganxats d'una visita a l'altra ("🏆 Ets el número N", avís 📡 del
+  Game Over). **Norma:** cada missatge puntual s'esborra quan es torna a mostrar la pantalla o
+  comença una partida nova.
+- Respostes de xarxa que arriben desordenades (pestanya setmana/sempre clicada ràpid).
+  **Norma:** comptador de crida i descartar respostes velles, com ja fa el token del joc.
 
 ## 🧪 Com provar
 
@@ -98,73 +107,71 @@
   no s'han de pujar a producció.
 - Opencode no pot fer proves de navegador al Pi. **Les proves visuals les fa l'Oscar.**
 
-## ⏭️ Pas següent: encàrrec per a opencode (subfase 3B: pantalles del rànquing)
+## ⏭️ Pas següent: encàrrec per a opencode (subfase 4A: ronda bonus Parelles)
+
+Abans o en paral·lel: **provar la 3B al mòbil** a https://pi.iespai.com/phrasalverbs/ (guardar una
+puntuació de debò, pestanyes setmana i de sempre, mode avió). La revisió de Claude ja hi va afegir
+una correcció: els rècords locals no es ressalten mai (test inclòs, `?v=11`).
+
+Decisions de Claude per a Parelles (el pla §5.2 D no les concretava):
+- Cada parella correcta = `10 × multiplicador(ratxa)`, sense bonus de velocitat, i compta com a
+  encert i com a ratxa. Així es compleix el màxim de 60 punts per encert que valida el servidor.
+- El rellotge principal s'atura durant la ronda: la partida pot durar més de 90 s, però el
+  servidor accepta fins a 900 s.
 
 ```
-Projecte: www/phrasalverbs/. Llegeix www/phrasalverbs/AGENTS.md, www/phrasalverbs/docs/PLA.md
-(§4.4, §4.5, §4.6, §7.2, §8 i la Fase 3 de §10) i www/phrasalverbs/docs/ESTAT.md.
-L'API (api/ranking.php) i js/paraulotes.js ja estan fets i revisats (3A): NO els modifiquis.
+Projecte: www/phrasalverbs/. Llegeix AGENTS.md, docs/PLA.md (§4.3, §5.1, §5.2 D, §5.3, §5.4, §9)
+i docs/ESTAT.md. NO toquis api/ranking.php, js/paraulotes.js, js/ranking.js ni contingut/*.json.
+No facis commits ni desplegaments.
 
-Fes la subfase 3B: la part del client del rànquing.
+Fes la subfase 4A: el minijoc D, la ronda bonus "⚡ Parelles".
 
-1. js/ranking.js: tota la comunicació amb l'API.
-   - URL relativa 'api/ranking.php' (ha de funcionar a /phrasalverbs/ al Pi i a Aruba).
-   - demanaToken(), guarda({token, inicials, punts, encerts}) i top(periode).
-   - Cada crida amb un temps màxim de 5 s (AbortController). Si falla la xarxa o la resposta no
-     és JSON, retorna {ok:false, error:'sense_connexio'}; no llancis mai excepcions.
-   - top() afegeix &t=Date.now() a la URL: la memòria cau d'Aruba pot servir respostes velles.
-   - fetch es rep per paràmetre (per als tests), per defecte globalThis.fetch.
-2. Token a cada partida: en començar una partida nova (reinicia del joc), demana un token sense
-   esperar-lo (el joc comença igualment). Guarda'l amb la partida. Si no arriba, la partida
-   continua i ja no hi haurà token per a aquesta partida.
-3. Game Over: "🏆 Guardar al rànquing" porta a #inicials amb el resultat d'aquesta partida
-   (punts, encerts, token). Si la partida no té token, en lloc d'anar a #inicials mostra
-   "📡 Sense connexió: la puntuació només s'ha guardat al teu dispositiu". Un cop guardada,
-   el botó queda desactivat per a aquesta partida (i no es pot tornar a enviar).
-4. Pantalla #inicials (§4.5), exactament com el pla: 5 caselles amb ▲▼, A→Z i _, casella activa
-   que parpelleja (sense parpelleig si prefers-reduced-motion), input amagat per al teclat
-   (usa normalitzaInicials de js/paraulotes.js), regles d'1 a 5 lletres sense buits al mig,
-   precàrrega de estat.ultimesInicials.
-   - En prémer ✅ OK: comprova teParaulota al client ("😇 Ups! Prova unes altres inicials",
-     sense dir quina paraula) i, si passa, crida guarda(). Botó desactivat mentre s'envia
-     (res de dobles enviaments).
-   - Si ok: desa ultimesInicials (desaInicials + desa), "🏆 Ets el número N de la setmana!" i ves
-     a #ranking, pestanya setmana, amb la teva fila ressaltada i parpellejant si és al top 10.
-   - Errors del servidor amb missatge en català: inicials_invalides → el mateix "😇 Ups!...";
-     temps_invalid → "⏱️ Aquesta partida ja no es pot guardar"; token_invalid → "✅ Aquesta
-     partida ja estava guardada"; sense_connexio → el missatge 📡 del punt 3.
-   - Si s'entra a #inicials sense una partida pendent de guardar, ves a #inici.
-5. Pantalla #ranking (§4.6): pestanyes 📅 Aquesta setmana / 👑 De sempre, top 10 amb 🥇🥈🥉,
-   inicials, punts i data dd/mm, estètica arcade amb scanlines CSS. A sota, "👤 Els teus rècords"
-   (estat.records, top 5 local). Sense connexió: "📡 Sense connexió. Mostrem només els teus
-   rècords". Llista buida: un missatge que convidi a ser el primer.
-   - Afegeix 'inicials' i 'ranking' a PANTALLES. El botó 🏆 Rànquing de l'Inici (ara data-fase)
-     porta a #ranking.
-   - Les inicials i tot el que ve del servidor es pinten amb textContent (mai innerHTML).
+1. Quan surt: just després de respondre la pregunta normal número 8, 16, 24... (comptador
+   preguntesFetes de js/joc.js), si la partida no s'ha acabat. Si no hi ha prou phrasals vàlids
+   (vegeu el punt 2), se la salta i el joc continua normal.
+2. Generació (funció pura nova a js/preguntes.js, p. ex. generaParelles(phrasals, {aleatori,
+   nivells})): 5 phrasals dels nivells permesos en aquell moment, amb 5 significats diferents, i
+   cap dels 5 a la llista `similars` d'un altre dels 5. Retorna { esquerra: [phrasals barrejats],
+   dreta: [significats barrejats], solucio } o null si no n'hi ha 5. Les Parelles no consumeixen
+   els phrasals de la partida (no els afegeixis a `usats`).
+3. Pantalla dins de #joc (no una secció nova): títol "⚡ RONDA BONUS: Parelles", compte enrere
+   propi de 15 s (barra), 5 botons a l'esquerra (phrasal dins <span lang="en">) i 5 a la dreta
+   (significat). Botons de debò, mínim 48 px, dues columnes també al mòbil. Les preguntes normals
+   s'amaguen mentre dura.
+4. Interacció: toques un botó de l'esquerra (queda seleccionat; si en toques un altre de l'esquerra,
+   canvia la selecció) i després un de la dreta.
+   - Correcta: tots dos en verd i desactivats, punts += 10 × multiplicador(ratxa) (ratxa +1 abans
+     de calcular, com a les preguntes normals; sense bonus de velocitat), encerts += 1, so d'encert
+     i pujada si toca.
+   - Errònia: −1 vida, ratxa = 0, el phrasal seleccionat va a fallats (i a la caixa 1 com tots
+     els errors del joc), sacseig vermell curt, so d'error i vibració, i es deselecciona. Si era
+     l'última vida, Game Over (motiu 'vides') després de la pausa curta.
+   - Protecció contra dobles tocs mentre es resol una parella.
+   - Toques la dreta sense res seleccionat a l'esquerra: no passa res.
+5. Final de la ronda: les 5 fetes o els 15 s exhaurits. Missatge curt ("⚡ Perfecte! 5/5 🤩" o
+   "⚡ 3/5 parelles") ~1 s, i torna la pregunta normal amb el rellotge principal en marxa.
+   El rellotge principal NO baixa durant la ronda bonus ni durant aquest missatge.
+6. atura() (sortir de #joc) i reinicia() han de cancel·lar també el compte enrere de la ronda bonus.
+7. aria-live per a l'estat de la ronda, prefers-reduced-motion sense sacseig, colors del §9.
 
-Tests obligatoris (tests/fase3b.test.mjs, amb fetch simulat; no cal servidor real), a més dels
-criteris d'acceptació de la Fase 3 del pla que siguin del client:
-- ranking.js: sense xarxa, amb resposta no JSON o amb timeout → {ok:false,error:'sense_connexio'};
-  top() porta &t= a la URL;
-- una partida nova demana un token i el joc comença encara que el token no arribi mai;
-- inicials: ▲ des de A → B, ▼ des de A → _, ▼ des de _ → Z; teclat 'òscar' → OSCAR;
-  'A_B' no és vàlid; 'AB___' es guarda com 'AB'; es precarreguen ultimesInicials;
-- PUTO al client mostra "😇 Ups!" i NO crida guarda();
-- doble clic a OK → una sola crida a guarda();
-- després de guardar bé, el botó Guardar del Game Over queda desactivat;
-- cada codi d'error del servidor mostra el seu missatge;
-- rànquing: 🥇🥈🥉 als tres primers, data dd/mm, fila pròpia ressaltada, i sense connexió es
-  mostren només els rècords locals;
-- unes inicials '<b>' que vinguin del servidor es mostren com a text.
+Tests obligatoris (tests/fase4a.test.mjs, amb rellotge i aleatori simulats):
+- generaParelles: 5 phrasals, 5 significats diferents, cap parell dins de `similars`, null si
+  no n'hi ha prou; respecta els nivells.
+- la ronda surt després de la pregunta 8 i de la 16, i no abans;
+- durant la ronda (i el missatge final) el temps principal no baixa; després continua;
+- als 15 s la ronda s'acaba sola i torna el joc;
+- parella correcta: punts = 10 × multiplicador, sense bonus encara que sigui ràpida; encerts +1;
+- parella errònia: −1 vida, ratxa 0, phrasal a fallats; última vida → Game Over;
+- doble toc a la mateixa parella només puntua un cop; tocar la dreta sense selecció no fa res;
+- atura() durant la ronda no deixa temporitzadors vius;
+- cap phrasal de la ronda queda a `usats`.
 
-Puja la versió a ?v=9 a tot arreu (imports inclosos). No facis commits ni desplegaments.
-Executa tots els tests (els 93 d'abans també han de passar), actualitza docs/ESTAT.md i atura't.
+Puja a ?v=12 a tot arreu (imports i tests inclosos). Executa tots els tests (els 124 d'abans també
+han de passar), actualitza docs/ESTAT.md i atura't.
 ```
 
-Després de la 3B: provar al mòbil a https://pi.iespai.com/phrasalverbs/ (guardar una puntuació
-de debò, el rànquing setmanal i el de sempre, i el mode avió per a l'avís sense connexió) i
-avisar Claude per a la revisió. Les puntuacions de prova al Pi no van a producció (la base és
-local, `api/dades/ranking.db`, i el deploy no la puja mai).
+Després de la 4A: provar al mòbil (arribar a la pregunta 8 i jugar la ronda; comprovar que el temps
+s'atura) i avisar Claude per a la revisió.
 
 ## 📌 Pendents fora del codi
 
