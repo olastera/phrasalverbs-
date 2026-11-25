@@ -1,34 +1,19 @@
-# Estat: Fase 1 + Fase 2A (corregida) + Fase 2B (ajustada) + Fase 2C + Fase 2D + Fase 3A + Fase 3B + Subfase 4A (corregida) + Subfase 4B
+# Estat: Fase 1 + 2A-2D + 3A-3B + 4A-4B + 5 (PWA)
 
-Estat: Fase 1 acabada; Fase 2A corregida; Fase 2B ajustada amb `particulesProhibides`;
-subfase 2C (minijoc C, "Substitueix", dificultat, no repetició i caixa 1) implementada i provada;
-subfase 2D (Game Over complet, efectes al progrés i so) implementada i provada; Fase 3A (servidor
-del rànquing i filtre de paraulotes) implementada i provada; Fase 3B (client del rànquing:
-API, token per partida, inicials i taula) implementada, provada i corregida; subfase 4A (ronda
-bonus "⚡ Parelles") implementada, provada i corregida; subfase 4B (poliment visual del joc)
-implementada i provada, amb un retoc d'accessibilitat a la ronda Parelles. No s'han fet commits ni
-desplegaments.
-`contingut/phrasals.json` no s'ha tocat; el camp `particulesProhibides` ja era a les dades revisades.
+Estat: fases 1-4B acabades; Fase 5 (PWA) implementada i provada. No s'han fet commits ni
+desplegaments. `contingut/phrasals.json` i `contingut/connectors.json` no s'han tocat. Tampoc no
+s'han tocat `api/ranking.php`, `js/paraulotes.js`, `js/ranking.js` ni cap regla de joc.
 
-## Correcció de versions (importants)
+## Versions
 
-- Tots els imports interns de JS porten versió. Ara són `?v=14`, inclòs `index.html` i
-  `css/estils.css` (fonts incloses), i s'ha mantingut la norma a `AGENTS.md`: pujar `?v=N` a
-  `index.html` i a tot arreu quan canviï qualsevol fitxer JS o CSS.
-- Versions successives: `?v=3` (imports interns), `?v=4` (2A), `?v=5` (correccions 2A),
-  `?v=6` (2B), `?v=7` (ajust 2B i 2C), `?v=8` (2D i 3A), `?v=9` (3B), `?v=10` (correccions de la 3B),
-  `?v=11` (correcció del rànquing local), `?v=12` (subfase 4A), `?v=13` (correccions de la 4A) i
-  **`?v=14` ara** (subfase 4B).
-- La 3A va mantenir `?v=8` perquè no va tocar `index.html` ni cap JS/CSS existent. A la 3B es va
-  pujar a `?v=9`, amb les correccions a `?v=10`, la 4A a `?v=12`, les correccions de la 4A a `?v=13`
-  i la 4B a `?v=14`: `index.html`, `css/estils.css`, tots els imports de JS i les URLs dels tests.
-  `js/joc.js` importa `preguntes.js?v=14`, `progres.js?v=14`, `so.js?v=14` i `frases.js?v=14`;
-  `js/app.js` importa `js/ranking.js?v=14`. `js/ranking.js` no s'ha tocat per restricció explícita i
-  conserva `js/paraulotes.js?v=12`.
-- **`VERSIO_DADES` és 3** perquè les dades han canviat (`contingut/phrasals.json?v=3`).
-- A `AGENTS.md` hi ha la norma: si `contingut/*.json` canvia, puja `VERSIO_DADES`.
-- A `AGENTS.md` hi ha la comanda de tests:
-  `node --experimental-default-type=module --test tests/*.test.mjs`.
+- Versió estàtica actual: **`?v=15`** a `index.html`, `css/estils.css` (fonts incloses), tots els
+  imports JS i les URLs dels tests. `js/app.js` importa `js/ranking.js?v=15`; `js/ranking.js` no
+  s'ha tocat per restricció explícita i conserva `js/paraulotes.js?v=12`.
+- Service worker: memòria cau **`phrasalhero-v15`**, fitxer `sw.js?v=15`, registrat després de
+  `load` només si `navigator.serviceWorker` existeix, dins `try/catch`.
+- **`VERSIO_DADES` és 3** (`contingut/phrasals.json?v=3`). Si canvien `contingut/*.json`, cal
+  pujar `VERSIO_DADES` i la referència corresponent a `sw.js`.
+- Comanda de tests: `node --experimental-default-type=module --test tests/*.test.mjs`.
 
 ## Fase 1 (recordatori)
 
@@ -425,3 +410,35 @@ Corregit a `api/ranking.php`:
 - Tests: **93 tests, 93 passats**.
 
 Per al desplegament (Fase 6): a Aruba, `api/dades/` ha de tenir permís d'escriptura per a PHP.
+
+## Fase 5: PWA
+
+- `manifest.webmanifest` (arrel): `name`/`short_name` "Phrasal Hero", `display` "standalone",
+  `start_url` "./", `scope` "./", `lang` "ca", `background_color` i `theme_color` "#120a2e",
+  icones `icon-192.png` i `icon-512.png` amb `purpose` "any maskable".
+- Icones generades amb `tools/gen_icones.py` (Python + Pillow, sense emojis): fons lila #120a2e,
+  "P" gran de neó cian amb resplendor, centrada dins el 60% central. Fitxers: `icon-192.png`,
+  `icon-512.png`, `apple-touch-icon.png` (180 px).
+- `sw.js` (arrel), basat en `www/volei/sw.js`: cache `phrasalhero-v15`; instal·la shell amb
+  `./`, `index.html`, manifest, icones, `css/estils.css?v=15`, tots els `js/*.js?v=15`, les dues
+  fonts `?v=15` i `contingut/phrasals.json?v=3`. `connectors.json` no s'inclou perquè l'app no el
+  carrega. Estratègia xarxa primer, fallback a cache amb `ignoreSearch`; navegacions sense xarxa
+  cauen a `index.html`. Només GET del mateix origen; qualsevol ruta amb `/api/` fa `return` abans
+  de `respondWith`. En activar, esborra caches velles.
+- `index.html`: afegits `<link rel="manifest">`, `<link rel="apple-touch-icon">`,
+  `meta apple-mobile-web-app-capable` i `apple-mobile-web-app-title`. Pujat tot a `?v=15`.
+- `js/app.js`: registra `sw.js?v=15` només si `serviceWorker` in navigator, dins `try/catch`,
+  després del `load`; la promesa de registre també té `.catch`. No trenca tests sense navegador.
+
+## Proves Fase 5
+
+- `node --experimental-default-type=module --test tests/fase5.test.mjs`: **6/6 passats**.
+- `node --experimental-default-type=module --test tests/*.test.mjs`: **158/158 passats, 0 fallats**.
+- Comprovació manual de fitxers: manifest JSON vàlid, icones PNG amb mides 192/512/180, SW amb
+  versió coherent, comprovació `/api/` abans de `respondWith`, sense rutes absolutes a SHELL.
+
+## Pendent
+
+- Fase 6: script de desplegament (sense executar-lo).
+- Verificació manual opcional en navegador real/PWA i a Aruba.
+

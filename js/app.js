@@ -1,9 +1,9 @@
-import { carregaConjunt, comptaPerVerb } from './dades.js?v=14';
-import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=14';
-import { iniciaRepas } from './repas.js?v=14';
-import { iniciaJoc } from './joc.js?v=14';
-import { creaSo } from './so.js?v=14';
-import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=14';
+import { carregaConjunt, comptaPerVerb } from './dades.js?v=15';
+import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=15';
+import { iniciaRepas } from './repas.js?v=15';
+import { iniciaJoc } from './joc.js?v=15';
+import { creaSo } from './so.js?v=15';
+import { creaClientRanking, iniciaInicials, iniciaRanking } from './ranking.js?v=15';
 
 const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'inicials', 'ranking', 'progres'];
 const NOMBRE = new Intl.NumberFormat('ca-ES');
@@ -277,6 +277,17 @@ document.addEventListener('keydown', (esdeveniment) => {
 node('boto-retry').addEventListener('click', carregaDades);
 window.addEventListener('hashchange', mostraPantalla);
 
+function registraServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const registre = navigator.serviceWorker.register('sw.js?v=15');
+    registre.catch((error) => console.warn('SW no registrat', error));
+  } catch (error) {
+    console.warn('SW no registrat', error);
+  }
+}
+
 renderSo();
 mostraPantalla();
 carregaDades();
+window.addEventListener('load', registraServiceWorker, { once: true });

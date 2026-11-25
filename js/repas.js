@@ -1,12 +1,12 @@
 import {
   TEMES, NIVELLS, comptaPerTema, comptaPerVerb,
   filtraConjunt, ordenaPerLeitner
-} from './dades.js?v=14';
+} from './dades.js?v=15';
 import {
   actualitzaLeitner, alternaPreferit, desaRepasEnCurs,
   llegeixRepasEnCurs, registraActivitat
-} from './progres.js?v=14';
-import { fraseEncert, fraseError } from './frases.js?v=14';
+} from './progres.js?v=15';
+import { fraseEncert, fraseError } from './frases.js?v=15';
 
 const LIMIT = 20;
 

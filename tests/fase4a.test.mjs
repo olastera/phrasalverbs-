@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const base = new URL('../js/', import.meta.url).href;
-const carrega = (nom) => import(`${base}${nom}.js?v=14`);
+const carrega = (nom) => import(`${base}${nom}.js?v=15`);
 const dadesReals = JSON.parse(readFileSync(new URL('../contingut/phrasals.json', import.meta.url), 'utf8'));
 const { generaParelles } = await carrega('preguntes');
 const { iniciaJoc } = await carrega('joc');
