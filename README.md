@@ -167,3 +167,11 @@ Un projecte d'[Iespai](https://www.iespai.com/).
 Tipografies: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) (CodeMan38) i
 [Nunito](https://fonts.google.com/specimen/Nunito) (Vernon Adams i altres), totes dues amb
 llicència SIL Open Font License 1.1.
+
+---
+
+## 📄 Llicència
+
+El codi i les dades es publiquen amb la [llicència MIT](LICENSE): els pots fer servir, copiar i
+modificar lliurement, també a classe, sempre que hi mantinguis l'avís de copyright. Les tipografies
+de `fonts/` tenen la seva pròpia llicència (SIL OFL 1.1).
