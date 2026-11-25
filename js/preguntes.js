@@ -36,16 +36,21 @@ export function generaPreguntaA(phrasals, { aleatori = Math.random, exclosos = [
     [...idsSimilars].map((id) => perId.get(id)).filter(Boolean).map((entry) => entry.significat)
   );
 
-  const perSignificat = new Map();
-  for (const entry of phrasals) {
-    if (idsSimilars.has(entry.id) || significatsSimilars.has(entry.significat)) continue;
-    if (!perSignificat.has(entry.significat)) perSignificat.set(entry.significat, entry);
-  }
-  const altres = [...perSignificat.values()].filter((entry) => entry.significat !== encert.significat);
-  const preferits = encert.nivell >= 2 ? altres.filter((entry) => entry.verb === encert.verb) : [];
+  const creaAltres = (idsProhibits) => {
+    const perSignificat = new Map();
+    for (const entry of phrasals) {
+      if (entry.id === encert.id || idsProhibits.has(entry.id)) continue;
+      if (significatsSimilars.has(entry.significat)) continue;
+      if (!perSignificat.has(entry.significat)) perSignificat.set(entry.significat, entry);
+    }
+    return [...perSignificat.values()].filter((entry) => entry.significat !== encert.significat);
+  };
+  const altres = creaAltres(new Set([...idsSimilars, ...exclosos]));
+  const base = altres.length >= NOMBRE_OPCIONS - 1 ? altres : creaAltres(idsSimilars);
+  const preferits = encert.nivell >= 2 ? base.filter((entry) => entry.verb === encert.verb) : [];
   const distractors = barreja(preferits, aleatori).slice(0, NOMBRE_OPCIONS - 1);
   const jaTriats = new Set(distractors.map((entry) => entry.id));
-  const reserva = barreja(altres.filter((entry) => !jaTriats.has(entry.id)), aleatori);
+  const reserva = barreja(base.filter((entry) => !jaTriats.has(entry.id)), aleatori);
   for (const entry of reserva) {
     if (distractors.length === NOMBRE_OPCIONS - 1) break;
     distractors.push(entry);
@@ -85,12 +90,15 @@ export function generaPreguntaB(phrasals, { aleatori = Math.random, exclosos = [
     ...particulesSimilars
   ]);
   const numParaules = encert.particula.trim().split(/\s+/).length;
-  const candidats = [...new Set(phrasals.map((entry) => entry.particula))]
-    .filter((particula) => particula !== encert.particula && !prohibides.has(particula));
-  const mateixNom = candidats.filter(
+  const creaCandidats = (idsProhibits) => [...new Set(
+    phrasals.filter((entry) => !idsProhibits.has(entry.id)).map((entry) => entry.particula)
+  )].filter((particula) => particula !== encert.particula && !prohibides.has(particula));
+  const candidats = creaCandidats(new Set(exclosos));
+  const baseParticules = candidats.length >= NOMBRE_OPCIONS - 1 ? candidats : creaCandidats(new Set());
+  const mateixNom = baseParticules.filter(
     (particula) => particula.trim().split(/\s+/).length === numParaules
   );
-  const reserva = candidats.filter(
+  const reserva = baseParticules.filter(
     (particula) => particula.trim().split(/\s+/).length !== numParaules
   );
   const distractors = barreja(mateixNom, aleatori).slice(0, NOMBRE_OPCIONS - 1);
@@ -119,16 +127,20 @@ export function generaPreguntaC(phrasals, { aleatori = Math.random, exclosos = [
   if (!encert) return null;
 
   const idsSimilars = new Set(Array.isArray(encert.similars) ? encert.similars : []);
-  const perPhrasal = new Map();
-  for (const entry of phrasals) {
-    if (entry.id === encert.id || idsSimilars.has(entry.id)) continue;
-    if (encert.sinonim && entry.sinonim === encert.sinonim) continue;
-    if (entry.phrasal === encert.phrasal || perPhrasal.has(entry.phrasal)) continue;
-    perPhrasal.set(entry.phrasal, entry);
-  }
-  const candidats = [...perPhrasal.values()];
-  const preferits = candidats.filter((entry) => entry.verb === encert.verb);
-  const altres = candidats.filter((entry) => entry.verb !== encert.verb);
+  const creaCandidats = (idsProhibits) => {
+    const perPhrasal = new Map();
+    for (const entry of phrasals) {
+      if (entry.id === encert.id || idsSimilars.has(entry.id) || idsProhibits.has(entry.id)) continue;
+      if (encert.sinonim && entry.sinonim === encert.sinonim) continue;
+      if (entry.phrasal === encert.phrasal || perPhrasal.has(entry.phrasal)) continue;
+      perPhrasal.set(entry.phrasal, entry);
+    }
+    return [...perPhrasal.values()];
+  };
+  const candidats = creaCandidats(new Set(exclosos));
+  const base = candidats.length >= NOMBRE_OPCIONS - 1 ? candidats : creaCandidats(new Set());
+  const preferits = base.filter((entry) => entry.verb === encert.verb);
+  const altres = base.filter((entry) => entry.verb !== encert.verb);
   const distractors = barreja(preferits, aleatori).slice(0, NOMBRE_OPCIONS - 1);
   for (const entry of barreja(altres, aleatori)) {
     if (distractors.length === NOMBRE_OPCIONS - 1) break;

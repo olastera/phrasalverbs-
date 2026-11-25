@@ -3,13 +3,32 @@ import {
   VIDES,
   generaPreguntaA,
   generaPreguntaB,
+  generaPreguntaC,
   multiplicador,
   puntsEncert
-} from './preguntes.js?v=6';
+} from './preguntes.js?v=7';
 
 const DURADA_MS = DURADA_SEGONS * 1000;
 const PAUSA_ENCERT_MS = 400;
 const PAUSA_ERROR_MS = 1500;
+const ETIQUETES_TIPUS = {
+  A: '🤔 Què vol dir?',
+  B: '🧩 Completa la frase',
+  C: '🔁 Substitueix'
+};
+
+function nivellsPermesos(numero) {
+  if (numero <= 5) return [1];
+  if (numero <= 15) return [1, 2];
+  return [1, 2, 3];
+}
+
+function triaGenerador(aleatori) {
+  const valor = aleatori();
+  if (valor < 1 / 3) return generaPreguntaA;
+  if (valor < 2 / 3) return generaPreguntaB;
+  return generaPreguntaC;
+}
 
 const rellotgeNatiu = {
   ara: () => Date.now(),
@@ -24,7 +43,8 @@ export function iniciaJoc({
   dom = document,
   rellotge = rellotgeNatiu,
   navega = (hash) => { location.hash = hash; },
-  aleatori = Math.random
+  aleatori = Math.random,
+  leitner = {}
 } = {}) {
   const node = (id) => dom.getElementById(id);
   let intervalId = null;
@@ -41,6 +61,7 @@ export function iniciaJoc({
   let errors = 0;
   let ratxa = 0;
   let millorRatxa = 0;
+  let preguntesFetes = 0;
   let pregunta = null;
   const usats = new Set();
 
@@ -103,9 +124,7 @@ export function iniciaJoc({
     const traduccioNode = node('joc-traduccio');
     preguntaNode.dataset.tipus = pregunta.tipus;
     preguntaNode.dataset.id = pregunta.id;
-    node('joc-tipus').textContent = pregunta.tipus === 'B'
-      ? '🧩 Completa la frase'
-      : '🤔 Què vol dir?';
+    node('joc-tipus').textContent = ETIQUETES_TIPUS[pregunta.tipus] ?? ETIQUETES_TIPUS.A;
 
     if (pregunta.tipus === 'B') {
       const trossos = pregunta.forat.split('___');
@@ -121,6 +140,17 @@ export function iniciaJoc({
       );
       traduccioNode.textContent = pregunta.traduccio;
       traduccioNode.hidden = false;
+    } else if (pregunta.tipus === 'C') {
+      const sinonim = dom.createElement('strong');
+      sinonim.textContent = pregunta.sinonim;
+      preguntaNode.textContent = '';
+      preguntaNode.replaceChildren(
+        dom.createTextNode('Quin phrasal vol dir '),
+        sinonim,
+        dom.createTextNode('?')
+      );
+      traduccioNode.textContent = '';
+      traduccioNode.hidden = true;
     } else {
       preguntaNode.replaceChildren();
       preguntaNode.textContent = pregunta.phrasal;
@@ -140,12 +170,25 @@ export function iniciaJoc({
   }
 
   function seguentPregunta() {
-    const genera = aleatori() < 0.5 ? generaPreguntaB : generaPreguntaA;
-    pregunta = genera(phrasals, { aleatori, exclosos: [...usats] });
+    const genera = triaGenerador(aleatori);
+    const numero = preguntesFetes + 1;
+    const nivells = nivellsPermesos(numero);
+    let candidats = phrasals.filter((entry) => !usats.has(entry.id) && nivells.includes(entry.nivell));
+    if (candidats.length === 0) candidats = phrasals.filter((entry) => !usats.has(entry.id));
+    if (candidats.length === 0) candidats = phrasals;
+    let pool = candidats;
+    if ((numero - 1) % 10 < 3) {
+      const caixes = typeof leitner === 'function' ? leitner() : leitner;
+      const deCaixa1 = candidats.filter((entry) => caixes?.[entry.id]?.caixa === 1);
+      if (deCaixa1.length > 0) pool = deCaixa1;
+    }
+    const encert = pool[Math.floor(aleatori() * pool.length)];
+    pregunta = genera(phrasals, { aleatori, exclosos: [...usats], id: encert.id });
     if (!pregunta) {
       acaba('temps');
       return;
     }
+    preguntesFetes += 1;
     usats.add(pregunta.id);
     iniciPregunta = rellotge.ara();
     bloquejat = false;
@@ -206,6 +249,7 @@ export function iniciaJoc({
     errors = 0;
     ratxa = 0;
     millorRatxa = 0;
+    preguntesFetes = 0;
     usats.clear();
     pregunta = null;
     actiu = true;

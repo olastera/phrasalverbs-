@@ -8,6 +8,14 @@ const dadesReals = JSON.parse(readFileSync(new URL('../contingut/phrasals.json',
 const perId = new Map(dadesReals.phrasals.map((entry) => [entry.id, entry]));
 const perPhrasal = new Map(dadesReals.phrasals.map((entry) => [entry.phrasal, entry]));
 const valorsAleatoris = [0, 0.25, 0.5, 0.75, 0.99];
+const sinteticsC = [
+  { id: 'put-off', phrasal: 'put off', verb: 'put', sinonim: 'postpone', similars: [] },
+  { id: 'put-up', phrasal: 'put up', verb: 'put', sinonim: 'build', similars: [] },
+  { id: 'put-on', phrasal: 'put on', verb: 'put', sinonim: 'wear', similars: [] },
+  { id: 'put-away', phrasal: 'put away', verb: 'put', sinonim: 'store', similars: [] },
+  { id: 'get-up', phrasal: 'get up', verb: 'get', sinonim: 'rise', similars: [] },
+  { id: 'look-up', phrasal: 'look up', verb: 'look', sinonim: 'search', similars: [] }
+];
 
 function elementFake(tag = 'div') {
   const classes = new Set();
@@ -131,6 +139,24 @@ test('generaPreguntaC no ofereix get back ni come back per a give-back', async (
   }
 });
 
+test('generaPreguntaC prefereix distractors del mateix verb', async () => {
+  const p = await carrega('preguntes');
+  const pregunta = p.generaPreguntaC(sinteticsC, { aleatori: () => 0.5, id: 'put-off' });
+  const incorrectes = pregunta.opcions.filter((opcio) => opcio !== pregunta.correcta);
+  assert.equal(incorrectes.length, 3);
+  assert.ok(incorrectes.every((opcio) => sinteticsC.find((entry) => entry.phrasal === opcio).verb === 'put'),
+    `Distractors d'un altre verb: ${incorrectes}`);
+});
+
+test('generaPreguntaC canvia la posició de la correcta segons aleatori', async () => {
+  const p = await carrega('preguntes');
+  const posicions = valorsAleatoris.map((valor) => {
+    const pregunta = p.generaPreguntaC(dadesReals.phrasals, { aleatori: () => valor, id: 'put-off' });
+    return pregunta.opcions.indexOf(pregunta.correcta);
+  });
+  assert.ok(new Set(posicions).size >= 2, `Posició sempre la mateixa: ${posicions}`);
+});
+
 test('generaPreguntaC dóna 4 opcions diferents amb una sola de correcta per als 161 phrasals', async () => {
   const p = await carrega('preguntes');
   for (const entrada of dadesReals.phrasals) {
@@ -180,6 +206,12 @@ test('40 preguntes comencen amb nivell 1, no repeteixen id i barregen els 3 tipu
   const nivells = [];
   for (let i = 0; i < 40; i++) {
     const preguntaNode = entorn.node('joc-pregunta');
+    if (preguntaNode.dataset.tipus === 'C') {
+      for (const boto of entorn.node('joc-opcions').children) {
+        const idOpció = perPhrasal.get(boto.textContent)?.id;
+        assert.ok(!ids.includes(idOpció), `El phrasal ${idOpció} ja s'havia preguntat`);
+      }
+    }
     ids.push(preguntaNode.dataset.id);
     tipus.add(preguntaNode.dataset.tipus);
     nivells.push(perId.get(preguntaNode.dataset.id).nivell);
@@ -211,4 +243,27 @@ test('un 30 % de les preguntes surten de la caixa 1 si n’hi ha', async () => {
   }
 
   assert.ok(deCaixa1 >= 12, `Només ${deCaixa1} preguntes de la caixa 1`);
+});
+
+test('el joc llegeix el leitner actual si rep una funció (esborrar el progrés)', async () => {
+  const caixa1Ids = dadesReals.phrasals.filter((entrada) => entrada.nivell === 1).slice(0, 30).map((entrada) => entrada.id);
+  const estat = { leitner: {} };
+  const entorn = entornJoc({
+    aleatori: aleatoriCiclic([0.1, 0.5, 0.9]),
+    leitner: () => estat.leitner
+  });
+  const joc = await carrega('joc');
+  const partida = joc.iniciaJoc(entorn.opcions);
+  // Com fa app.js en esborrar el progrés: l'objecte leitner se substitueix per un de nou.
+  estat.leitner = Object.fromEntries(caixa1Ids.map((id) => [id, { caixa: 1 }]));
+  partida.mostra();
+
+  let deCaixa1 = 0;
+  for (let i = 0; i < 40; i++) {
+    const id = entorn.node('joc-pregunta').dataset.id;
+    if (caixa1Ids.includes(id)) deCaixa1 += 1;
+    clicaCorrecta(entorn);
+  }
+
+  assert.ok(deCaixa1 >= 12, `El joc no veu el leitner nou: només ${deCaixa1} preguntes de la caixa 1`);
 });

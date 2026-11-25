@@ -1,7 +1,7 @@
-import { carregaConjunt, comptaPerVerb } from './dades.js?v=6';
-import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=6';
-import { iniciaRepas } from './repas.js?v=6';
-import { iniciaJoc } from './joc.js?v=6';
+import { carregaConjunt, comptaPerVerb } from './dades.js?v=7';
+import { carregaEstat, desaEstat, desaSo, esborraProgres, estatPerDefecte } from './progres.js?v=7';
+import { iniciaRepas } from './repas.js?v=7';
+import { iniciaJoc } from './joc.js?v=7';
 
 const PANTALLES = ['inici', 'repas', 'joc', 'gameover', 'progres'];
 const NOMBRE = new Intl.NumberFormat('ca-ES');
@@ -145,6 +145,7 @@ async function carregaDades() {
     repas = iniciaRepas({ estat, phrasals: conjunt.phrasals, desa, avisa });
     joc = iniciaJoc({
       phrasals: conjunt.phrasals,
+      leitner: () => estat.leitner,
       navega: (hash) => { location.hash = hash; }
     });
     renderResum();

@@ -84,7 +84,7 @@ test('generaPreguntaB mai ofereix partícules que formen un put diferent', async
     assert.equal(pregunta.tipus, 'B');
     assert.equal(pregunta.correcta, 'off');
     assert.ok(pregunta.opcions.every((opcio) => !prohibides.has(opcio)),
-      `put-off ofereix una partícule prohibida: ${pregunta.opcions}`);
+      `put-off ofereix una partícula prohibida: ${pregunta.opcions}`);
     assert.ok(pregunta.opcions.every((opcio) => paraules(opcio) === 1),
       `put-off ofereix partícules d'un altre nombre de paraules: ${pregunta.opcions}`);
   }
@@ -97,7 +97,7 @@ test('generaPreguntaB mai ofereix into, away ni over per a run-out-of', async ()
     const pregunta = p.generaPreguntaB(dadesReals.phrasals, { aleatori: () => valor, id: 'run-out-of' });
     assert.equal(pregunta.correcta, 'out of');
     assert.ok(pregunta.opcions.every((opcio) => !prohibides.has(opcio)),
-      `run-out-of ofereix una partícule prohibida: ${pregunta.opcions}`);
+      `run-out-of ofereix una partícula prohibida: ${pregunta.opcions}`);
     assert.ok(pregunta.opcions.every((opcio) => paraules(opcio) === 2),
       `run-out-of ofereix partícules d'un altre nombre de paraules: ${pregunta.opcions}`);
   }
